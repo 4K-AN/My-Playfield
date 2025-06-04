@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Penyewaan VCD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+        }
+        
+        .card-header {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .table-container {
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            color: #333;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #eaeaea;
+            color: #444;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f7ff;
+        }
+        
+        .highlight {
+            color: #2980b9;
+            font-weight: 500;
+        }
+        
+        .note {
+            background: #fff9e6;
+            border-left: 4px solid #ffcc00;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        
+        .note h3 {
+            margin-bottom: 8px;
+            color: #d35400;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 0 20px;
+            font-size: 0.9rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card-header {
+                font-size: 1.3rem;
+                padding: 15px;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistem Manajemen Penyewaan VCD</h1>
+            <p>Desain database terstruktur untuk manajemen penyewaan film VCD dengan sistem terintegrasi</p>
+        </header>
+        
+        <div class="dashboard">
+            <!-- Tabel VCD -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tabel VCD</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kode VCD</th>
+                                <th>Judul Film</th>
+                                <th>Harga Sewa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>VCD001</td>
+                                <td>Avengers: Endgame</td>
+                                <td>Rp 20.000</td>
+                            </tr>
+                            <tr>
+                                <td>VCD002</td>
+                                <td>The Lion King</td>
+                                <td>Rp 15.000</td>
+                            </tr>
+                            <tr>
+                                <td>VCD003</td>
+                                <td>Frozen II</td>
+                                <td>Rp 18.000</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Tabel Anggota -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tabel Anggota</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kode Anggota</th>
+                                <th>Nama Anggota</th>
+                                <th>Alamat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AG001</td>
+                                <td>Rike Andriani</td>
+                                <td>Malang</td>
+                            </tr>
+                            <tr>
+                                <td>AG002</td>
+                                <td>Boy Saputra</td>
+                                <td>Kediri</td>
+                            </tr>
+                            <tr>
+                                <td>AG003</td>
+                                <td>Anisa Fitri</td>
+                                <td>Surabaya</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Tabel Transaksi Sewa -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Tabel Transaksi Sewa</h2>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Kode Transaksi</th>
+                                <th>Tanggal Sewa</th>
+                                <th>Kode VCD</th>
+                                <th>Kode Anggota</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>TRX001</td>
+                                <td>05/10/2023</td>
+                                <td>VCD001</td>
+                                <td>AG001</td>
+                            </tr>
+                            <tr>
+                                <td>TRX002</td>
+                                <td>06/10/2023</td>
+                                <td>VCD003</td>
+                                <td>AG002</td>
+                            </tr>
+                            <tr>
+                                <td>TRX003</td>
+                                <td>07/10/2023</td>
+                                <td>VCD002</td>
+                                <td>AG003</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <h3>Catatan Desain Database:</h3>
+            <p>Struktur database ini terdiri dari 3 tabel terpisah untuk memenuhi prinsip normalisasi:</p>
+            <ul>
+                <li><span class="highlight">Tabel VCD</span> - Menyimpan informasi koleksi film</li>
+                <li><span class="highlight">Tabel Anggota</span> - Menyimpan data pelanggan</li>
+                <li><span class="highlight">Tabel Transaksi Sewa</span> - Mencatat aktivitas penyewaan</li>
+            </ul>
+            <p>Relasi antar tabel dijaga melalui foreign key (Kode VCD dan Kode Anggota) untuk memastikan integritas data.</p>
+        </div>
+        
+        <footer>
+            <p>&copy; 2023 Sistem Penyewaan VCD | Desain Database Terstruktur</p>
+        </footer>
+    </div>
+</body>
+</html>

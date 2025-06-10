@@ -2,7 +2,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Menekan pesan TensorFlow
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0' # Menonaktifkan optimasi oneDNN jika menyebabkan masalah
 
-import cv2
+import cv2 
 import numpy as np
 from deepface import DeepFace
 import time
@@ -14,7 +14,7 @@ FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 TARGET_FPS = 30 # Target FPS untuk kamera, aktual mungkin berbeda
 RECOGNITION_ACTIONS = ['age', 'gender', 'emotion', 'race'] # Tambahkan 'race'
-
+#nVaraible acak yand sedang didefiniskan oleh angka acak
 # Variabel Global untuk Threading dan Hasil Analisis
 face_analysis_results = [] # Akan menyimpan hasil analisis untuk setiap wajah
 last_analysis_time = 0

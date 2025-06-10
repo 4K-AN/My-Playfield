@@ -21,7 +21,7 @@ last_analysis_time = 0
 analysis_interval = 1.0  # Analisis setiap X detik (dapat diubah dengan +/-)
 analysis_in_progress = False # Flag untuk menandakan apakah analisis sedang berjalan
 analysis_thread = None # Objek thread
-
+#Inisiasi metode yang  beda
 # --- Inisialisasi Kamera ---
 print("Mencoba membuka kamera...")
 # Mencoba backend yang umum digunakan terlebih dahulu

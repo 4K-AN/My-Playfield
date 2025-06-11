@@ -3,132 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selamat Ulang Tahun!</title>
+    <title>Ada Sesuatu Buat Kamu!</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
     <style>
-        /* CSS Styling untuk Kartu Ucapan */
+        /* CSS untuk Styling & Animasi */
+        :root {
+            --bg-color: #f0f8ff; /* AliceBlue */
+            --char-color: #ffc0cb; /* Pink */
+            --gift-color1: #7b68ee; /* MediumSlateBlue */
+            --gift-color2: #ffa500; /* Orange */
+            --text-color: #4b4b4b;
+        }
 
-        /* 1. Pengaturan Dasar & Latar Belakang */
         body {
+            margin: 0;
             font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
-            color: #333;
+            overflow: hidden;
+            transition: background-color 0.5s;
         }
 
-        /* 2. Style untuk Wadah Kartu Utama */
-        .birthday-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            padding: 40px 50px;
-            max-width: 550px;
-            width: 90%;
+        .scene {
+            position: relative;
             text-align: center;
-            backdrop-filter: blur(10px); /* Efek Kaca Buram */
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeInCard 1s ease-in-out;
         }
 
-        /* 3. Style untuk Judul Utama (Selamat Ulang Tahun) */
-        .card-title {
-            font-family: 'Pacifico', cursive;
-            color: #e83e8c; /* Warna pink yang ceria */
-            font-size: 3rem; /* Ukuran font lebih besar */
-            margin-bottom: 15px;
-            /* Animasi teks bersinar */
-            animation: glow 2s ease-in-out infinite;
+        #character {
+            width: 150px;
+            height: 150px;
+            background-color: var(--char-color);
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 0 auto;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 20; 
+        }
+        #character:hover {
+            transform: scale(1.05);
         }
 
-        /* 4. Style untuk Nama & Pesan */
-        .recipient-name {
-            font-size: 1.5rem;
+        .eyes {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        .eye {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .pupil {
+            width: 10px;
+            height: 10px;
+            background-color: #333;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        #character.blushing .pupil {
+            transform: translateX(3px); /* Melirik malu */
+        }
+
+        .blush {
+            position: absolute;
+            width: 30px;
+            height: 10px;
+            background: #ff69b4; /* HotPink */
+            border-radius: 50%;
+            top: 55%;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .blush.left { left: 15px; }
+        .blush.right { right: 15px; }
+        #character.blushing .blush {
+            opacity: 0.7;
+        }
+
+        #dialogue-box {
+            margin-top: 25px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 1.2rem;
             font-weight: 600;
-            color: #555;
-            margin-bottom: 25px;
+            color: var(--text-color);
+            display: inline-block;
         }
 
-        .message {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #666;
-            margin-bottom: 30px;
+        #gift-box {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            /* --- PERUBAHAN 1: Posisi Kado --- */
+            /* Diubah dari 'bottom' menjadi 'top' agar berada di atas karakter */
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+        #gift-box.visible {
+            transform: translateX(-50%) scale(1);
+        }
+        .gift-lid {
+            width: 110px;
+            height: 30px;
+            background-color: var(--gift-color1);
+            position: absolute;
+            top: -10px; left: -5px;
+            border-radius: 5px;
+        }
+        .gift-body {
+            width: 100px;
+            height: 80px;
+            background-color: var(--gift-color1);
+            position: absolute;
+            top: 20px;
+            border-radius: 5px;
+        }
+        .ribbon {
+            background-color: var(--gift-color2);
+            position: absolute;
+        }
+        .ribbon.v {
+            width: 20px;
+            height: 100%;
+            left: 40px;
+        }
+        .ribbon.h {
+            width: 100%;
+            height: 20px;
+            top: 30px;
+        }
+        #gift-box.open .gift-lid {
+            animation: open-lid 1s forwards;
         }
 
-        /* 5. Style untuk Penutup/Pengirim */
-        .card-footer {
-            font-size: 1rem;
-            font-style: italic;
-            color: #888;
+        @keyframes open-lid {
+            0% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-100px) rotate(-15deg); }
+            100% { transform: translateY(-200px) rotate(-30deg) scale(0); opacity: 0; }
         }
-        
-        /* 6. Emoji untuk hiasan */
-        .emoji {
-            font-size: 2rem;
-            margin: 0 10px;
-        }
-        
-        /* 7. Animasi */
 
-        /* Animasi untuk kartu agar muncul secara perlahan */
-        @keyframes fadeInCard {
-            from {
-                opacity: 0;
-                transform: translateY(-30px) scale(0.95);
-            }
+        .birthday-message-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s, visibility 1s;
+            z-index: 100;
+        }
+        .birthday-message-container.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .birthday-message-container h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 0 10px #ff69b4, 0 0 20px #ff69b4;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .birthday-message-container p {
+            font-size: 1.5rem;
+            color: white;
+            max-width: 600px;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: #f00;
+            top: -50px;
+            opacity: 0;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
             to {
+                transform: translateY(110vh) rotate(360deg);
                 opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Animasi untuk teks judul agar bersinar */
-        @keyframes glow {
-            0%, 100% {
-                text-shadow: 0 0 5px #ffc1cc, 0 0 10px #ffc1cc, 0 0 15px #ffc1cc;
-            }
-            50% {
-                text-shadow: 0 0 10px #ff8fab, 0 0 20px #ff8fab, 0 0 30px #ff8fab;
             }
         }
 
     </style>
 </head>
 <body>
-
-    <div class="birthday-card">
-        
-        <h1 class="card-title">
-            <span class="emoji">🎉</span>
-            Selamat Ulang Tahun!
-            <span class="emoji">🎉</span>
-        </h1>
-        
-        <h2 class="recipient-name">
-            Untuk [Nama Teman Anda]
-        </h2>
-        
-        <p class="message">
-            Semoga di hari yang spesial ini kamu mendapatkan semua yang terbaik. 
-            Semoga panjang umur, sehat selalu, dan semua cita-citamu tercapai.
-            Teruslah menjadi pribadi yang menginspirasi. Selamat berbahagia!
-        </p>
-        
-        <div class="card-footer">
-            <span class="emoji">🎂</span>
-            Dengan tulus, Sahabatmu
-            <span class="emoji">🎈</span>
+    
+    <div class="scene" id="scene">
+        <div id="character">
+            <div class="eyes">
+                <div class="eye"><div class="pupil"></div></div>
+                <div class="eye"><div class="pupil"></div></div>
+            </div>
+            <div class="blush left"></div>
+            <div class="blush right"></div>
         </div>
-
+        <div id="dialogue-box">Psstt... Sentuh aku dong!</div>
+        <div id="gift-box">
+            <div class="gift-lid"></div>
+            <div class="ribbon v"></div>
+            <div class="gift-body">
+                <div class="ribbon h"></div>
+            </div>
+        </div>
     </div>
+
+    <div class="birthday-message-container" id="birthday-message">
+        <h1 id="nama-ultah"></h1>
+        <p>Semoga panjang umur, sehat selalu, dan semua keinginanmu terkabul! Terus jadi orang yang baik dan lucu ya! 🎉</p>
+    </div>
+
+    <audio id="birthday-song" src="https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3" loop></audio>
+
+    <script>
+        // --- PERUBAHAN 2: Tempat Mengganti Nama ---
+        // Ganti tulisan "Sahabatku" dengan nama yang Anda inginkan.
+        const NAMA_YANG_ULTAH = "Sahabatku";
+        // -----------------------------------------
+
+        // JavaScript untuk Interaksi
+        const character = document.getElementById('character');
+        const dialogueBox = document.getElementById('dialogue-box');
+        const giftBox = document.getElementById('gift-box');
+        const birthdayMessage = document.getElementById('birthday-message');
+        const namaUltah = document.getElementById('nama-ultah');
+        const birthdaySong = document.getElementById('birthday-song');
+        
+        // Mengatur nama pada pesan ulang tahun
+        namaUltah.textContent = `SELAMAT ULANG TAHUN, ${NAMA_YANG_ULTAH.toUpperCase()}!`;
+        
+        let interactionStep = 0;
+
+        const dialogues = [
+            "Ehh...",
+            "Aku ada sesuatu buat kamu...",
+            "Tapi aku malu... >.<",
+            "Klik kadonya buat buka!"
+        ];
+
+        character.addEventListener('click', () => {
+            if (interactionStep < dialogues.length -1) {
+                dialogueBox.textContent = dialogues[interactionStep];
+                
+                if (interactionStep === 0) {
+                    character.classList.add('blushing');
+                }
+                if (interactionStep === 1) {
+                    giftBox.classList.add('visible');
+                }
+                interactionStep++;
+            } else {
+                dialogueBox.textContent = dialogues[dialogues.length - 1];
+            }
+        });
+
+        giftBox.addEventListener('click', () => {
+            if (interactionStep >= 2) {
+                giftBox.classList.add('open');
+                
+                setTimeout(() => {
+                    document.getElementById('scene').style.transition = 'opacity 0.5s';
+                    document.getElementById('scene').style.opacity = '0';
+                }, 500);
+
+                setTimeout(() => {
+                    document.body.style.backgroundColor = '#2c3e50';
+                    birthdayMessage.classList.add('visible');
+                    createConfetti();
+                    birthdaySong.play();
+                }, 1000);
+            }
+        });
+
+        function createConfetti() {
+            const container = document.body;
+            for (let i = 0; i < 150; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.classList.add('confetti-piece');
+                confettiPiece.style.left = Math.random() * 100 + 'vw';
+                confettiPiece.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confettiPiece.style.animationDelay = Math.random() * 2 + 's';
+                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confettiPiece.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(confettiPiece);
+            }
+        }
+    </script>
 
 </body>
 </html>

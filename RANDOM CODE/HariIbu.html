@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sebuah Taman Untuk Ibu</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS untuk Styling & Animasi */
+        :root {
+            --bg-dark: #1a2238;
+            --orb-color: #f7d794;
+            --text-light: #f4f4f4;
+            --flower-kasih: #ff79a7;
+            --flower-sabar: #7dafff;
+            --flower-tawa: #f7d794;
+            --flower-pelukan: #ffab79;
+            --flower-nasihat: #a979ff;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Comfortaa', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            overflow: hidden;
+            transition: background-color 2s;
+        }
+
+        #garden-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* --- Layar Pembuka --- */
+        #intro-screen {
+            text-align: center;
+            animation: fadeIn 2s ease-in-out;
+        }
+        #intro-screen h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+        }
+        #intro-screen p {
+            font-size: 1.2rem;
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
+        #start-button {
+            background-color: var(--orb-color);
+            color: var(--bg-dark);
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Comfortaa', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        #start-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--orb-color);
+        }
+
+        /* --- Area Interaktif --- */
+        #interactive-area {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1s, visibility 1s;
+        }
+        
+        .orb {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: var(--orb-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            color: var(--bg-dark);
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--orb-color), inset 0 0 10px white;
+            animation: pulse 2.5s infinite ease-in-out;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .orb:hover {
+            transform: scale(1.1);
+        }
+        
+        #message-display {
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.5);
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+            max-width: 80%;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none; /* Agar tidak bisa diklik */
+        }
+        
+        /* --- Bunga --- */
+        .flower {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            transform-origin: center;
+            animation: bloom 1s forwards;
+        }
+        .petal {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            border-radius: 50% 50% 0 0;
+            left: 30px; top: 0;
+            transform-origin: bottom center;
+        }
+        .petal:nth-child(1) { transform: rotate(0deg); }
+        .petal:nth-child(2) { transform: rotate(60deg); }
+        .petal:nth-child(3) { transform: rotate(120deg); }
+        .petal:nth-child(4) { transform: rotate(180deg); }
+        .petal:nth-child(5) { transform: rotate(240deg); }
+        .petal:nth-child(6) { transform: rotate(300deg); }
+        .flower-center {
+            position: absolute;
+            width: 30px; height: 30px;
+            background: white;
+            border-radius: 50%;
+            left: 35px; top: 35px;
+            box-shadow: 0 0 10px white;
+        }
+        
+        /* Warna Bunga */
+        .flower-kasih .petal { background-color: var(--flower-kasih); box-shadow: 0 0 15px var(--flower-kasih); }
+        .flower-sabar .petal { background-color: var(--flower-sabar); box-shadow: 0 0 15px var(--flower-sabar); }
+        .flower-tawa .petal { background-color: var(--flower-tawa); box-shadow: 0 0 15px var(--flower-tawa); }
+        .flower-pelukan .petal { background-color: var(--flower-pelukan); box-shadow: 0 0 15px var(--flower-pelukan); }
+        .flower-nasihat .petal { background-color: var(--flower-nasihat); box-shadow: 0 0 15px var(--flower-nasihat); }
+
+        /* --- Layar Final --- */
+        #final-message {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 2s 1s; /* Muncul setelah 1 detik */
+        }
+        #final-message .content {
+            animation: fadeIn 2s forwards;
+        }
+        #final-message h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            text-shadow: 0 0 20px #fff;
+        }
+         #final-message p {
+            font-size: 1.3rem;
+            max-width: 650px;
+            line-height: 1.7;
+        }
+
+        /* --- Animasi --- */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px var(--orb-color), inset 0 0 10px white; }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px var(--orb-color), inset 0 0 15px white; }
+            100% { transform: scale(1); box-shadow: 0 0 15px var(--orb-color), inset 0 0 10px white; }
+        }
+        @keyframes bloom {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="garden-container">
+        
+        <div id="intro-screen">
+            <h1>Sebuah Taman Untuk Ibu</h1>
+            <p>Ibu, mari kita tanam beberapa kenangan indah bersama untuk melihat betapa hebatnya dirimu.</p>
+            <button id="start-button">Mulai Tanam</button>
+        </div>
+
+        <div id="interactive-area">
+            </div>
+
+        <div id="message-display"></div>
+        
+        <div id="final-message">
+            <div class="content">
+                <h1>Taman Ini Mekar Karenamu, Bu</h1>
+                <p>Lihatlah, setiap kebaikan yang Ibu tanam telah tumbuh menjadi keindahan yang luar biasa. Terima kasih telah menjadi Ibu terhebat. Jangan pernah lelah untuk bersinar, karena Ibu adalah semangat dan cahaya bagi kami semua. Kami sangat mencintaimu!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <audio id="background-music" src="https://www.chosic.com/wp-content/uploads/2021/04/When-You-Are-With-Me-chosic.com_.mp3" loop></audio>
+    
+    <script>
+        // JavaScript untuk semua interaksi
+        const startButton = document.getElementById('start-button');
+        const introScreen = document.getElementById('intro-screen');
+        const interactiveArea = document.getElementById('interactive-area');
+        const messageDisplay = document.getElementById('message-display');
+        const finalMessage = document.getElementById('final-message');
+        const music = document.getElementById('background-music');
+        
+        const memories = {
+            kasih: { text: "Untuk KASIH SAYANG yang tak pernah habis, menghangatkan lebih dari mentari pagi.", pos: { top: '20%', left: '20%' } },
+            sabar: { text: "Untuk KESABARAN seluas samudra, dalam menghadapi setiap kenakalanku.", pos: { top: '35%', left: '75%' } },
+            tawa: { text: "Untuk TAWA renyah yang membuat rumah terasa lebih hidup dan ceria.", pos: { top: '65%', left: '15%' } },
+            pelukan: { text: "Untuk PELUKAN ajaib yang bisa menyembuhkan segala luka dan resah.", pos: { top: '70%', left: '60%' } },
+            nasihat: { text: "Untuk NASIHAT bijak yang selalu menjadi pemandu di jalan yang gelap.", pos: { top: '15%', left: '55%' } }
+        };
+
+        let memoriesPlanted = 0;
+        const totalMemories = Object.keys(memories).length;
+
+        // 1. Saat tombol "Mulai" diklik
+        startButton.addEventListener('click', () => {
+            introScreen.style.transition = 'opacity 1s';
+            introScreen.style.opacity = '0';
+            music.volume = 0.3;
+            music.play();
+
+            setTimeout(() => {
+                introScreen.style.display = 'none';
+                interactiveArea.style.opacity = '1';
+                interactiveArea.style.visibility = 'visible';
+                createOrbs();
+            }, 1000);
+        });
+        
+        // 2. Membuat bola-bola kenangan
+        function createOrbs() {
+            for (const key in memories) {
+                const memory = memories[key];
+                const orb = document.createElement('div');
+                orb.className = 'orb';
+                orb.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                orb.dataset.memory = key;
+                orb.style.top = memory.pos.top;
+                orb.style.left = memory.pos.left;
+                
+                orb.addEventListener('click', handleOrbClick);
+                interactiveArea.appendChild(orb);
+            }
+        }
+
+        // 3. Saat sebuah bola kenangan diklik
+        function handleOrbClick(event) {
+            const orb = event.currentTarget;
+            const memoryKey = orb.dataset.memory;
+
+            // Nonaktifkan orb agar tidak bisa diklik lagi
+            orb.style.pointerEvents = 'none';
+            orb.style.opacity = '0';
+            orb.style.transform = 'scale(0)';
+            
+            // Tampilkan pesan
+            showMessage(memories[memoryKey].text);
+
+            // Tanam bunga
+            plantFlower(orb.offsetLeft, orb.offsetTop, memoryKey);
+
+            memoriesPlanted++;
+            
+            // 5. Cek jika semua bunga sudah ditanam
+            if (memoriesPlanted === totalMemories) {
+                setTimeout(triggerFinalScene, 4000); // Tunggu 4 detik sebelum adegan final
+            }
+        }
+        
+        // Fungsi untuk menampilkan pesan
+        function showMessage(text) {
+            messageDisplay.textContent = text;
+            messageDisplay.style.opacity = '1';
+            setTimeout(() => {
+                messageDisplay.style.opacity = '0';
+            }, 3500); // Pesan hilang setelah 3.5 detik
+        }
+        
+        // Fungsi untuk menanam bunga
+        function plantFlower(x, y, type) {
+            const flower = document.createElement('div');
+            flower.className = `flower flower-${type}`;
+            flower.style.left = `${x}px`;
+            flower.style.top = `${y}px`;
+            
+            for(let i=0; i<6; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                flower.appendChild(petal);
+            }
+            const center = document.createElement('div');
+            center.className = 'flower-center';
+            flower.appendChild(center);
+
+            interactiveArea.appendChild(flower);
+        }
+        
+        // 6. Adegan Final
+        function triggerFinalScene() {
+            finalMessage.style.visibility = 'visible';
+            finalMessage.style.opacity = '1';
+            music.volume = 0.5; // Naikkan volume musik untuk efek dramatis
+        }
+
+    </script>
+
+</body>
+</html>

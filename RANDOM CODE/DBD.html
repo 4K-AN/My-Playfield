@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Penyewaan VCD</title>
+    <title>Sistem Penyewaan VCD Modern</title>
     <style>
         * {
             margin: 0;
@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px; /* Lebarkan kontainer untuk menampung lebih banyak kolom */
             margin: 0 auto;
         }
         
@@ -45,17 +45,19 @@
         
         .dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Ukuran minimum kartu disesuaikan */
             gap: 25px;
             margin-top: 20px;
         }
         
         .card {
-            background: rgba(255, 255, 255, 0.92);
+            background: rgba(255, 255, 255, 0.95); /* Sedikit lebih solid */
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; /* Menggunakan flexbox untuk tata letak */
+            flex-direction: column;
         }
         
         .card:hover {
@@ -76,6 +78,7 @@
         .table-container {
             padding: 20px;
             overflow-x: auto;
+            flex-grow: 1; /* Agar container tabel mengisi sisa ruang kartu */
         }
         
         table {
@@ -99,6 +102,7 @@
             padding: 14px 15px;
             border-bottom: 1px solid #eaeaea;
             color: #444;
+            vertical-align: middle; /* Teks di tengah secara vertikal */
         }
         
         tr:nth-child(even) {
@@ -113,19 +117,42 @@
             color: #2980b9;
             font-weight: 500;
         }
+
+        /* Gaya untuk Status */
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+            display: inline-block;
+        }
+        .status-tersedia { background-color: #2ecc71; /* Hijau */ }
+        .status-disewa { background-color: #e74c3c; /* Merah */ }
+        .status-kembali { background-color: #3498db; /* Biru */ }
         
         .note {
             background: #fff9e6;
             border-left: 4px solid #ffcc00;
-            padding: 15px;
-            margin: 20px 0;
+            padding: 20px;
+            margin: 25px 0;
             border-radius: 0 8px 8px 0;
-            font-size: 0.95rem;
+            font-size: 0.98rem;
         }
         
         .note h3 {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #d35400;
+        }
+
+        .note ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .note li {
+            margin-bottom: 8px;
         }
         
         footer {
@@ -156,14 +183,13 @@
     <div class="container">
         <header>
             <h1>Sistem Manajemen Penyewaan VCD</h1>
-            <p>Desain database terstruktur untuk manajemen penyewaan film VCD dengan sistem terintegrasi</p>
+            <p>Desain database fungsional untuk manajemen penyewaan film VCD dengan sistem terintegrasi yang lebih detail dan realistis.</p>
         </header>
         
         <div class="dashboard">
-            <!-- Tabel VCD -->
             <div class="card">
                 <div class="card-header">
-                    <h2>Tabel VCD</h2>
+                    <h2>Tabel VCD (tb_vcd)</h2>
                 </div>
                 <div class="table-container">
                     <table>
@@ -171,34 +197,53 @@
                             <tr>
                                 <th>Kode VCD</th>
                                 <th>Judul Film</th>
+                                <th>Genre</th>
                                 <th>Harga Sewa</th>
+                                <th>Stok</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>VCD001</td>
                                 <td>Avengers: Endgame</td>
+                                <td>Aksi/Sci-Fi</td>
                                 <td>Rp 20.000</td>
+                                <td>2</td>
+                                <td><span class="status status-disewa">Disewa</span></td>
                             </tr>
                             <tr>
                                 <td>VCD002</td>
                                 <td>The Lion King</td>
+                                <td>Animasi/Keluarga</td>
                                 <td>Rp 15.000</td>
+                                <td>3</td>
+                                <td><span class="status status-tersedia">Tersedia</span></td>
                             </tr>
                             <tr>
                                 <td>VCD003</td>
                                 <td>Frozen II</td>
+                                <td>Animasi/Fantasi</td>
                                 <td>Rp 18.000</td>
+                                <td>0</td>
+                                <td><span class="status status-disewa">Disewa</span></td>
+                            </tr>
+                            <tr>
+                                <td>VCD004</td>
+                                <td>Joker</td>
+                                <td>Thriller/Drama</td>
+                                <td>Rp 20.000</td>
+                                <td>4</td>
+                                <td><span class="status status-tersedia">Tersedia</span></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- Tabel Anggota -->
             <div class="card">
                 <div class="card-header">
-                    <h2>Tabel Anggota</h2>
+                    <h2>Tabel Anggota (tb_anggota)</h2>
                 </div>
                 <div class="table-container">
                     <table>
@@ -207,6 +252,8 @@
                                 <th>Kode Anggota</th>
                                 <th>Nama Anggota</th>
                                 <th>Alamat</th>
+                                <th>No. Telepon</th>
+                                <th>Tgl Daftar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -214,55 +261,88 @@
                                 <td>AG001</td>
                                 <td>Rike Andriani</td>
                                 <td>Malang</td>
+                                <td>081234567890</td>
+                                <td>15/08/2023</td>
                             </tr>
                             <tr>
                                 <td>AG002</td>
                                 <td>Boy Saputra</td>
                                 <td>Kediri</td>
+                                <td>085789012345</td>
+                                <td>01/09/2023</td>
                             </tr>
                             <tr>
                                 <td>AG003</td>
                                 <td>Anisa Fitri</td>
                                 <td>Surabaya</td>
+                                <td>087765432109</td>
+                                <td>20/09/2023</td>
+                            </tr>
+                             <tr>
+                                <td>AG004</td>
+                                <td>Budi Santoso</td>
+                                <td>Malang</td>
+                                <td>082198765432</td>
+                                <td>02/10/2023</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             
-            <!-- Tabel Transaksi Sewa -->
             <div class="card">
                 <div class="card-header">
-                    <h2>Tabel Transaksi Sewa</h2>
+                    <h2>Tabel Transaksi Sewa (tb_transaksi)</h2>
                 </div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
                                 <th>Kode Transaksi</th>
-                                <th>Tanggal Sewa</th>
+                                <th>Tgl Sewa</th>
+                                <th>Tgl Kembali</th>
                                 <th>Kode VCD</th>
                                 <th>Kode Anggota</th>
+                                <th>Denda</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>TRX001</td>
                                 <td>05/10/2023</td>
+                                <td>08/10/2023</td>
                                 <td>VCD001</td>
                                 <td>AG001</td>
+                                <td class="highlight">Rp 0</td>
+                                <td><span class="status status-kembali">Kembali</span></td>
                             </tr>
                             <tr>
                                 <td>TRX002</td>
                                 <td>06/10/2023</td>
+                                <td>-</td>
                                 <td>VCD003</td>
                                 <td>AG002</td>
+                                <td class="highlight">Rp 0</td>
+                                <td><span class="status status-disewa">Disewa</span></td>
                             </tr>
                             <tr>
                                 <td>TRX003</td>
                                 <td>07/10/2023</td>
+                                <td>11/10/2023</td>
                                 <td>VCD002</td>
                                 <td>AG003</td>
+                                <td class="highlight">Rp 5.000</td>
+                                <td><span class="status status-kembali">Kembali</span></td>
+                            </tr>
+                            <tr>
+                                <td>TRX004</td>
+                                <td>08/10/2023</td>
+                                <td>-</td>
+                                <td>VCD003</td>
+                                <td>AG004</td>
+                                <td class="highlight">Rp 0</td>
+                                <td><span class="status status-disewa">Disewa</span></td>
                             </tr>
                         </tbody>
                     </table>
@@ -271,18 +351,35 @@
         </div>
         
         <div class="note">
-            <h3>Catatan Desain Database:</h3>
-            <p>Struktur database ini terdiri dari 3 tabel terpisah untuk memenuhi prinsip normalisasi:</p>
+            <h3>Penjelasan Desain & Relasi Database:</h3>
+            <p>Struktur database ini menerapkan prinsip <strong>normalisasi</strong> untuk mengurangi redundansi dan meningkatkan integritas data. Setiap tabel memiliki fungsi spesifik dan dihubungkan melalui kunci (key).</p>
             <ul>
-                <li><span class="highlight">Tabel VCD</span> - Menyimpan informasi koleksi film</li>
-                <li><span class="highlight">Tabel Anggota</span> - Menyimpan data pelanggan</li>
-                <li><span class="highlight">Tabel Transaksi Sewa</span> - Mencatat aktivitas penyewaan</li>
+                <li><strong>Primary Key (Kunci Utama):</strong> Adalah kolom unik yang mengidentifikasi setiap baris dalam sebuah tabel. Contoh: <code>Kode VCD</code> di tabel VCD.</li>
+                <li><strong>Foreign Key (Kunci Asing):</strong> Adalah kolom di satu tabel yang merujuk pada Primary Key di tabel lain untuk menciptakan relasi.</li>
             </ul>
-            <p>Relasi antar tabel dijaga melalui foreign key (Kode VCD dan Kode Anggota) untuk memastikan integritas data.</p>
+            <br>
+            <p>Relasi antar tabel:</p>
+            <ul>
+                <li><span class="highlight">Tabel VCD (tb_vcd):</span> Menyimpan semua informasi film. <strong>Primary Key</strong>-nya adalah <code>Kode VCD</code>. Penambahan kolom <strong>Genre, Stok,</strong> dan <strong>Status</strong> memberikan informasi yang lebih kaya.</li>
+                <li><span class="highlight">Tabel Anggota (tb_anggota):</span> Menyimpan data pelanggan. <strong>Primary Key</strong>-nya adalah <code>Kode Anggota</code>. Penambahan <strong>No. Telepon</strong> dan <strong>Tanggal Daftar</strong> penting untuk manajemen anggota.</li>
+                <li><span class="highlight">Tabel Transaksi (tb_transaksi):</span> Mencatat semua aktivitas penyewaan. Tabel ini menggunakan <code>Kode VCD</code> dan <code>Kode Anggota</code> sebagai <strong>Foreign Key</strong> untuk terhubung ke dua tabel lainnya. Penambahan <strong>Tanggal Kembali, Denda,</strong> dan <strong>Status</strong> sangat krusial untuk melacak riwayat dan operasional harian.</li>
+            </ul>
+        </div>
+
+        <div class="note">
+            <h3>Potensi Pengembangan Sistem:</h3>
+            <p>Untuk sistem yang lebih canggih, beberapa pengembangan dapat ditambahkan:</p>
+            <ul>
+                <li><strong>Tabel Genre:</strong> Tabel terpisah untuk genre (misal: GR01-Aksi, GR02-Komedi) untuk standarisasi.</li>
+                <li><strong>Manajemen Denda Otomatis:</strong> Sistem bisa secara otomatis menghitung denda berdasarkan tanggal kembali yang terlambat.</li>
+                <li><strong>Fitur Pencarian & Filter:</strong> Memudahkan pencarian VCD berdasarkan judul, genre, atau status ketersediaan.</li>
+                <li><strong>Autentikasi Pengguna:</strong> Sistem login untuk admin atau kasir yang bertugas.</li>
+                <li><strong>Laporan (Reporting):</strong> Membuat laporan VCD paling sering disewa, anggota paling aktif, dan total pendapatan.</li>
+            </ul>
         </div>
         
         <footer>
-            <p>&copy; 2023 Sistem Penyewaan VCD | Desain Database Terstruktur</p>
+            <p>&copy; 2025 Sistem Penyewaan VCD | Desain Database Fungsional</p>
         </footer>
     </div>
 </body>

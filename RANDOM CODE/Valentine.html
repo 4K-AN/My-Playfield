@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Hari Valentine!</title>
+    <style>
+        /* Mengimpor Font dari Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        :root {
+            --pink-soft: #fce4ec;
+            --pink-medium: #f8bbd0;
+            --red-heart: #e53935;
+            --text-dark: #424242;
+            --bg-gradient: linear-gradient(135deg, #ffcdd2, #f8bbd0);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--pink-soft);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden; /* Mencegah scroll karena animasi */
+            position: relative;
+        }
+
+        /* Kontainer untuk animasi hati yang jatuh */
+        .heart-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--red-heart);
+            transform: rotate(-45deg);
+            animation: fall 10s linear infinite;
+        }
+
+        .heart::before,
+        .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--red-heart);
+            border-radius: 50%;
+        }
+
+        .heart::before {
+            top: -10px;
+            left: 0;
+        }
+
+        .heart::after {
+            top: 0;
+            left: 10px;
+        }
+
+        /* Animasi Hati Jatuh */
+        @keyframes fall {
+            0% {
+                transform: translateY(-10vh) rotate(-45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        /* Sebar hati secara acak */
+        .heart:nth-child(1) { left: 10%; animation-delay: 0s; transform: scale(0.6); }
+        .heart:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 12s; }
+        .heart:nth-child(3) { left: 30%; animation-delay: 4s; transform: scale(0.8); }
+        .heart:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 8s; }
+        .heart:nth-child(5) { left: 50%; animation-delay: 3s; }
+        .heart:nth-child(6) { left: 60%; animation-delay: 5s; transform: scale(0.7); }
+        .heart:nth-child(7) { left: 70%; animation-delay: 1.5s; animation-duration: 11s; }
+        .heart:nth-child(8) { left: 80%; animation-delay: 6s; }
+        .heart:nth-child(9) { left: 90%; animation-delay: 2.5s; transform: scale(0.9); }
+        .heart:nth-child(10) { left: 5%; animation-delay: 7s; }
+
+        /* Desain Kartu Ucapan */
+        .valentine-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+            border: 1px solid var(--pink-medium);
+        }
+
+        .card-header .icon {
+            font-size: 50px;
+            color: var(--red-heart);
+            animation: beat 1.5s infinite ease-in-out;
+        }
+
+        /* Animasi detak jantung */
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .card-header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--red-heart);
+            margin-top: 10px;
+        }
+
+        .message {
+            margin: 30px 0;
+            color: var(--text-dark);
+        }
+
+        .message h2 {
+            font-weight: 600;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .message p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .closing {
+            margin-top: 30px;
+        }
+
+        .closing p {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: #5c5c5c;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15px;
+            color: #adadad;
+            font-size: 0.9rem;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="heart-container">
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+    </div>
+
+    <div class="valentine-card">
+        <div class="card-header">
+            <div class="icon">❤</div>
+            <h1>Selamat Hari Valentine</h1>
+        </div>
+        
+        <div class="message">
+            <h2>Untukmu yang Teristimewa,</h2>
+            <p>
+                Semoga harimu dipenuhi dengan cinta, kebahagiaan, dan semua hal manis di dunia. Kamu membuat duniaku menjadi tempat yang lebih indah.
+            </p>
+        </div>
+
+        <div class="closing">
+            <p>Dengan Penuh Cinta,</p>
+        </div>
+    </div>
+
+    <footer>
+        Dibuat dengan ❤️ di tahun 2025
+    </footer>
+
+</body>
+</html>

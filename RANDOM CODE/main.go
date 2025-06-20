@@ -1,10 +1,17 @@
-package main
+package main 
 
-import (
-	"fmt"
-	"math"
-)
+import "fmt"
 
-func main() {
-	fmt.Println(math.Pi)
+func add(x,y int) int {
+    return x+y
+}
+func swap(x,y string) (string,string) {
+    return y,x
+
+}
+
+func main () {
+    fmt.Println(add(10,20))
+a,b := swap("AKHMAD","ANAM")
+fmt.Println(a,b)
 }

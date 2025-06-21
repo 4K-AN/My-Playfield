@@ -14,4 +14,6 @@ func main () {
     fmt.Println(add(10,20))
 a,b := swap("AKHMAD","ANAM")
 fmt.Println(a,b)
+
+// var a int = 10
 }

@@ -11,6 +11,3 @@ print(kurang)
 print(kali)
 print(bagi)
 
-# 1.1.2.1
-# 1.1.2.2
-#

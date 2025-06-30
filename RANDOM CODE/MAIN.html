@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotak Warna Ajaib</title>
+    <style>
+        /* Mengimpor font agar lebih menarik */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #color-box {
+            width: 250px;
+            height: 250px;
+            background-color: #3498db; /* Warna awal */
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            cursor: pointer;
+            border: 5px solid rgba(0, 0, 0, 0.05);
+            transition: background-color 0.5s ease, transform 0.2s ease;
+        }
+        
+        /* Efek saat kursor mouse di atas kotak */
+        #color-box:hover {
+            transform: scale(1.05);
+        }
+
+        #color-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #555;
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Kotak Warna Ajaib</h1>
+        <p>Klik kotak di bawah untuk mengubah warnanya!</p>
+        
+        <div id="color-box"></div>
+        
+        <p>Kode Warna: <span id="color-name">#3498db</span></p>
+    </div>
+
+    <script>
+        // Mengambil elemen dari HTML untuk dimanipulasi
+        const colorBox = document.getElementById('color-box');
+        const colorName = document.getElementById('color-name');
+
+        // Daftar warna-warna cerah yang bisa dipilih
+        const colors = [
+            '#ff6b6b', '#f9ca24', '#78e08f', '#1dd1a1', '#48dbfb', 
+            '#ff9ff3', '#f368e0', '#e056fd', '#be2edd', '#686de0'
+        ];
+
+        // Fungsi yang akan dijalankan saat kotak diklik
+        function changeColor() {
+            // 1. Pilih warna acak dari daftar 'colors'
+            // Math.random() menghasilkan angka acak antara 0 dan 1.
+            // Kita kalikan dengan panjang array dan bulatkan ke bawah untuk dapat indeks acak.
+            const randomIndex = Math.floor(Math.random() * colors.length);
+            const newColor = colors[randomIndex];
+
+            // 2. Terapkan warna baru ke kotak
+            colorBox.style.backgroundColor = newColor;
+
+            // 3. Tampilkan nama kode warna baru di teks
+            colorName.textContent = newColor;
+        }
+
+        // Menambahkan "pendengar acara" ke kotak. 
+        // Saat 'click' terjadi, jalankan fungsi 'changeColor'.
+        colorBox.addEventListener('click', changeColor);
+
+    </script>
+
+</body>
+</html>

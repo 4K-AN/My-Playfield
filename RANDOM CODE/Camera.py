@@ -233,7 +233,7 @@ while True:
 
 print("Membersihkan sumber daya...")
 if analysis_thread and analysis_thread.is_alive():
-    print("Menunggu thread analisis selesai...")
+    print("Menunggu thread analisis selesai Kalau habis selesai maka harus ditutup dengan salam...")
     analysis_thread.join() 
 
 cap.release()

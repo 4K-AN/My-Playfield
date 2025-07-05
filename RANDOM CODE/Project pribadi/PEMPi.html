@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Meta Tags untuk PWA -->
+    <title>Dompet Digital</title>
+    <meta name="theme-color" content="#1f2937"/>
+    <meta name="description" content="Aplikasi pencatat keuangan pribadi yang simpel dan bekerja offline, didukung oleh AI.">
+    <link rel="manifest" href="data:application/manifest+json,{
+        &quot;name&quot;: &quot;Dompet Digital&quot;,
+        &quot;short_name&quot;: &quot;Dompet&quot;,
+        &quot;start_url&quot;: &quot;.&quot;,
+        &quot;display&quot;: &quot;standalone&quot;,
+        &quot;background_color&quot;: &quot;#111827&quot;,
+        &quot;theme_color&quot;: &quot;#1f2937&quot;,
+        &quot;description&quot;: &quot;Aplikasi pencatat keuangan pribadi dengan analisis AI.&quot;,
+        &quot;icons&quot;: [
+            { &quot;src&quot;: &quot;https://placehold.co/192x192/3b82f6/ffffff?text=D&quot;, &quot;sizes&quot;: &quot;192x192&quot;, &quot;type&quot;: &quot;image/png&quot; },
+            { &quot;src&quot;: &quot;https://placehold.co/512x512/3b82f6/ffffff?text=D&quot;, &quot;sizes&quot;: &quot;512x512&quot;, &quot;type&quot;: &quot;image/png&quot; }
+        ]
+    }">
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1f2937; }
+        ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        .radio-label input:checked + .radio-custom {
+            border-color: #3b82f6;
+            background-color: #3b82f6;
+        }
+        .radio-label input:checked + .radio-custom .radio-dot {
+            transform: scale(1);
+        }
+        /* Animasi spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            border-left-color: #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white antialiased">
+
+    <div id="app" class="max-w-lg mx-auto min-h-screen bg-gray-900 flex flex-col">
+
+        <!-- Header -->
+        <header class="p-6 bg-gray-800 rounded-b-3xl shadow-lg sticky top-0 z-10">
+            <h1 class="text-xl font-bold text-blue-400">Dompet Digital</h1>
+            <p class="text-sm text-gray-400 mt-1">Saldo Anda saat ini (klik untuk atur):</p>
+            <p id="current-balance" class="text-4xl font-bold mt-2 tracking-tight cursor-pointer">Rp 0</p>
+        </header>
+
+        <!-- Ringkasan & Fitur AI -->
+        <div class="p-6">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="bg-green-600/20 border border-green-500/30 p-4 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-green-500 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></div>
+                        <p class="text-sm text-gray-300">Pemasukan</p>
+                    </div>
+                    <p id="total-income" class="text-xl font-semibold mt-2">Rp 0</p>
+                </div>
+                <div class="bg-red-600/20 border border-red-500/30 p-4 rounded-xl">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-red-500 p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></div>
+                        <p class="text-sm text-gray-300">Pengeluaran</p>
+                    </div>
+                    <p id="total-expense" class="text-xl font-semibold mt-2">Rp 0</p>
+                </div>
+            </div>
+            <!-- Tombol Analisis AI -->
+            <button id="analyze-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.3 0 .5.2.5.5v3c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-3c0-.3.2-.5.5-.5zM8.5 5.5c.3 0 .5.2.5.5v2c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-2c0-.3.2-.5.5-.5zM15.5 5.5c.3 0 .5.2.5.5v2c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-2c0-.3.2-.5.5-.5z"/><path d="M18 10c.3 0 .5.2.5.5v7c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-7c0-.3.2-.5.5-.5zM6 10c.3 0 .5.2.5.5v7c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-7c0-.3.2-.5.5-.5z"/><path d="M12 13c.3 0 .5.2.5.5v5c0 .3-.2.5-.5.5s-.5-.2-.5-.5v-5c0-.3.2-.5.5-.5z"/></svg>
+                ✨ Analisis Keuangan
+            </button>
+        </div>
+
+        <!-- Daftar Transaksi -->
+        <main class="flex-grow px-6 pb-24">
+            <h2 class="text-lg font-semibold text-gray-200 mb-4">Riwayat Transaksi</h2>
+            <ul id="transaction-list" class="space-y-3">
+                 <li id="empty-state" class="text-center py-10 text-gray-500">
+                    <svg class="mx-auto h-12 w-12 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14h6M9 8h6m-6 12h6m-6-6h6m-3-6v12a3 3 0 003-3V9a3 3 0 00-3-3H6a3 3 0 00-3 3v6a3 3 0 003 3h3z" /></svg>
+                    <h3 class="mt-2 text-sm font-semibold">Belum ada transaksi</h3>
+                    <p class="mt-1 text-sm">Coba tambahkan transaksi baru.</p>
+                </li>
+            </ul>
+        </main>
+
+        <!-- Tombol Tambah Transaksi (Floating Action Button) -->
+        <button id="add-transaction-btn" class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition-transform duration-200 active:scale-95 z-20">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        </button>
+    </div>
+
+    <!-- Modal/Form Tambah Transaksi -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-end justify-center z-30 hidden transition-opacity duration-300">
+        <div id="modal-content" class="bg-gray-800 w-full max-w-lg rounded-t-3xl p-6 shadow-2xl transform translate-y-full transition-transform duration-300">
+            <h2 class="text-xl font-bold mb-6">Tambah Transaksi Baru</h2>
+            <form id="transaction-form">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <label class="radio-label cursor-pointer"><input type="radio" name="type" value="income" class="sr-only" checked><div class="radio-custom flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-gray-600 transition"><span class="text-green-400">Pemasukan</span><div class="w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center"><div class="radio-dot w-2 h-2 bg-white rounded-full transform scale-0 transition-transform"></div></div></div></label>
+                    <label class="radio-label cursor-pointer"><input type="radio" name="type" value="expense" class="sr-only"><div class="radio-custom flex items-center justify-center gap-2 p-3 rounded-lg border-2 border-gray-600 transition"><span class="text-red-400">Pengeluaran</span><div class="w-4 h-4 rounded-full border-2 border-gray-400 flex items-center justify-center"><div class="radio-dot w-2 h-2 bg-white rounded-full transform scale-0 transition-transform"></div></div></div></label>
+                </div>
+                <div class="mb-4"><label for="amount" class="block text-sm font-medium text-gray-400 mb-1">Jumlah</label><div class="relative"><span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">Rp</span><input type="number" id="amount" name="amount" class="w-full bg-gray-700 border-gray-600 rounded-lg p-3 pl-9 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="0" required></div></div>
+                <div class="mb-4"><label for="description" class="block text-sm font-medium text-gray-400 mb-1">Deskripsi</label><input type="text" id="description" name="description" class="w-full bg-gray-700 border-gray-600 rounded-lg p-3 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: Beli Kopi" required></div>
+                <div class="mb-6"><label for="category" class="block text-sm font-medium text-gray-400 mb-1">Kategori</label><select id="category" name="category" class="w-full bg-gray-700 border-gray-600 rounded-lg p-3 text-white focus:ring-blue-500 focus:border-blue-500"></select></div>
+                <div class="grid grid-cols-2 gap-4"><button type="button" id="cancel-btn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition">Batal</button><button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">Simpan</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal untuk Analisis AI -->
+    <div id="analysis-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-40 hidden transition-opacity duration-300">
+        <div id="analysis-modal-content" class="bg-gray-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl transform scale-95 transition-transform duration-300">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-blue-400">✨ Analisis Keuangan AI</h2>
+                <button id="close-analysis-btn" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div id="analysis-result" class="text-gray-300 space-y-4 max-h-[60vh] overflow-y-auto"></div>
+        </div>
+    </div>
+
+    <!-- NEW: Modal untuk Atur Saldo -->
+    <div id="balance-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-40 hidden transition-opacity duration-300">
+        <div id="balance-modal-content" class="bg-gray-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl transform scale-95 transition-transform duration-300">
+            <h2 class="text-xl font-bold mb-6 text-center">Atur Saldo Total</h2>
+            <form id="balance-form">
+                <div class="mb-4">
+                    <label for="new-balance" class="block text-sm font-medium text-gray-400 mb-1">Saldo Total Anda Saat Ini</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">Rp</span>
+                        <input type="number" id="new-balance" name="new-balance" class="w-full bg-gray-700 border-gray-600 rounded-lg p-3 pl-9 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="0" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button type="button" id="cancel-balance-btn" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg transition">Batal</button>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 right-5 bg-green-500 text-white py-2 px-4 rounded-lg shadow-lg transform translate-x-[120%] transition-transform duration-300"></div>
+
+    <script type="module">
+        // ===================================================================================
+        // PWA SERVICE WORKER & DATABASE LOGIC
+        // ===================================================================================
+        if ('serviceWorker' in navigator) {
+            const swCode = `const CACHE_NAME = 'dompet-digital-cache-v1'; const urlsToCache = ['/', 'index.html']; self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(urlsToCache)))); self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))));`;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(swUrl).then(reg => console.log('SW registered'), err => console.log('SW reg failed', err));
+            });
+        }
+
+        const DB_NAME = 'DompetDigitalDB';
+        const DB_VERSION = 1;
+        let db;
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onerror = e => reject("Database error: " + e.target.errorCode);
+                request.onsuccess = e => { db = e.target.result; resolve(db); };
+                request.onupgradeneeded = e => {
+                    let db = e.target.result;
+                    if (!db.objectStoreNames.contains('transactions')) db.createObjectStore('transactions', { keyPath: 'id', autoIncrement: true });
+                    if (!db.objectStoreNames.contains('categories')) {
+                        const store = db.createObjectStore('categories', { keyPath: 'id', autoIncrement: true });
+                        ['Gaji', 'Makanan & Minuman', 'Transportasi', 'Tagihan', 'Belanja', 'Hiburan', 'Lainnya'].forEach(name => store.add({ name }));
+                    }
+                    if (!db.objectStoreNames.contains('settings')) {
+                        const store = db.createObjectStore('settings', { keyPath: 'key' });
+                        store.add({ key: 'initialBalance', value: 0 });
+                    }
+                };
+            });
+        }
+
+        function getStore(storeName, mode) { return db.transaction(storeName, mode).objectStore(storeName); }
+        function addTransaction(t) { return new Promise((res, rej) => { const r = getStore('transactions', 'readwrite').add(t); r.onsuccess = () => res(r.result); r.onerror = e => rej(e.target.error); }); }
+        function deleteTransaction(id) { return new Promise((res, rej) => { const r = getStore('transactions', 'readwrite').delete(id); r.onsuccess = () => res(); r.onerror = e => rej(e.target.error); }); }
+        function getAllTransactions() { return new Promise((res, rej) => { const r = getStore('transactions', 'readonly').getAll(); r.onsuccess = () => res(r.result); r.onerror = e => rej(e.target.error); }); }
+        function getAllCategories() { return new Promise((res, rej) => { const r = getStore('categories', 'readonly').getAll(); r.onsuccess = () => res(r.result); r.onerror = e => rej(e.target.error); }); }
+        function getSetting(key) { return new Promise((res, rej) => { const r = getStore('settings', 'readonly').get(key); r.onsuccess = () => res(r.result ? r.result.value : 0); r.onerror = e => rej(e.target.error); }); }
+        function updateSetting(key, value) { return new Promise((res, rej) => { const r = getStore('settings', 'readwrite').put({ key, value }); r.onsuccess = () => res(); r.onerror = e => rej(e.target.error); }); }
+
+        // ===================================================================================
+        // GEMINI API LOGIC
+        // ===================================================================================
+        async function getFinancialAnalysis(transactions) {
+            const apiKey = ""; // API Key akan di-handle oleh environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const prompt = `Anda adalah seorang penasihat keuangan yang ramah dan suportif. Analisis data transaksi berikut dalam 30 hari terakhir. Berikan wawasan dalam format ringkas dan mudah dimengerti. Struktur jawaban Anda harus sebagai berikut: 1. **Ringkasan Singkat:** Satu kalimat tentang kebiasaan belanja utama. 2. **Kategori Pengeluaran Terbesar:** Sebutkan nama kategori dan totalnya. 3. **Wawasan & Saran:** Berikan 2-3 poin saran praktis yang bisa dilakukan untuk menghemat uang berdasarkan data yang ada. Gunakan bullet points. 4. **Motivasi:** Berikan satu kalimat penyemangat di akhir. Gunakan Bahasa Indonesia. Berikut adalah data transaksinya (dalam format JSON): ${JSON.stringify(transactions)}`;
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7, topP: 1.0 } };
+            try {
+                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0) return result.candidates[0].content.parts[0].text;
+                return "Tidak bisa mendapatkan analisis saat ini. Coba lagi nanti.";
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return "Terjadi masalah saat menghubungi layanan analisis. Periksa koneksi internet Anda.";
+            }
+        }
+
+        // ===================================================================================
+        // APPLICATION LOGIC
+        // ===================================================================================
+        const balanceEl = document.getElementById('current-balance');
+        const incomeEl = document.getElementById('total-income');
+        const expenseEl = document.getElementById('total-expense');
+        const transactionListEl = document.getElementById('transaction-list');
+        const emptyStateEl = document.getElementById('empty-state');
+        const form = document.getElementById('transaction-form');
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modal-content');
+        const addTransactionBtn = document.getElementById('add-transaction-btn');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const categorySelect = document.getElementById('category');
+        const toastEl = document.getElementById('toast');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const analysisModal = document.getElementById('analysis-modal');
+        const analysisModalContent = document.getElementById('analysis-modal-content');
+        const closeAnalysisBtn = document.getElementById('close-analysis-btn');
+        const analysisResultEl = document.getElementById('analysis-result');
+        // NEW: Balance Modal Elements
+        const balanceModal = document.getElementById('balance-modal');
+        const balanceModalContent = document.getElementById('balance-modal-content');
+        const balanceForm = document.getElementById('balance-form');
+        const newBalanceInput = document.getElementById('new-balance');
+        const cancelBalanceBtn = document.getElementById('cancel-balance-btn');
+
+        const formatCurrency = (amount) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        const showToast = (message) => {
+            toastEl.textContent = message;
+            toastEl.classList.remove('translate-x-[120%]');
+            setTimeout(() => toastEl.classList.add('translate-x-[120%]'), 3000);
+        };
+        
+        function renderUI() {
+            Promise.all([getAllTransactions(), getAllCategories(), getSetting('initialBalance')])
+            .then(([transactions, categories, initialBalance]) => {
+                renderSummary(transactions, initialBalance);
+                renderTransactionList(transactions, categories);
+                renderCategoryOptions(categories);
+            });
+        }
+
+        function renderSummary(transactions, initialBalance) {
+            const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+            const totalExpense = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0);
+            const balance = initialBalance + totalIncome - totalExpense;
+            balanceEl.textContent = formatCurrency(balance);
+            incomeEl.textContent = formatCurrency(totalIncome);
+            expenseEl.textContent = formatCurrency(totalExpense);
+            balanceEl.classList.toggle('text-red-400', balance < 0);
+            balanceEl.classList.toggle('text-white', balance >= 0);
+        }
+
+        function renderTransactionList(transactions, categories) {
+            transactionListEl.innerHTML = '';
+            if (transactions.length === 0) {
+                transactionListEl.appendChild(emptyStateEl);
+                return;
+            }
+            const sorted = transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+            sorted.forEach(t => {
+                const category = categories.find(c => c.id == t.category_id);
+                const isIncome = t.type === 'income';
+                const li = document.createElement('li');
+                li.className = 'flex items-center justify-between bg-gray-800 p-4 rounded-lg shadow';
+                li.innerHTML = `<div class="flex items-center gap-4"><div class="p-2 rounded-full ${isIncome ? 'bg-green-500/20' : 'bg-red-500/20'}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${isIncome ? 'text-green-400' : 'text-red-400'}">${isIncome ? '<path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>' : '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>'}</svg></div><div><p class="font-semibold">${t.description}</p><p class="text-sm text-gray-400">${category ? category.name : 'Uncategorized'} &bull; ${new Date(t.date).toLocaleDateString('id-ID')}</p></div></div><div class="text-right"><p class="font-bold ${isIncome ? 'text-green-400' : 'text-red-400'}">${formatCurrency(t.amount)}</p><button data-id="${t.id}" class="delete-btn text-xs text-gray-500 hover:text-red-400 mt-1">Hapus</button></div>`;
+                transactionListEl.appendChild(li);
+            });
+        }
+
+        function renderCategoryOptions(categories) {
+            categorySelect.innerHTML = '';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = cat.name;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        function openModal() { modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); modalContent.classList.remove('translate-y-full'); }, 10); }
+        function closeModal() { modalContent.classList.add('translate-y-full'); modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); form.reset(); }, 300); }
+
+        function openAnalysisModal() { analysisModal.classList.remove('hidden'); setTimeout(() => { analysisModal.classList.remove('opacity-0'); analysisModalContent.classList.remove('scale-95'); }, 10); }
+        function closeAnalysisModal() { analysisModalContent.classList.add('scale-95'); analysisModal.classList.add('opacity-0'); setTimeout(() => analysisModal.classList.add('hidden'), 300); }
+        
+        // NEW: Balance Modal Functions
+        function openBalanceModal() { balanceModal.classList.remove('hidden'); setTimeout(() => { balanceModal.classList.remove('opacity-0'); balanceModalContent.classList.remove('scale-95'); }, 10); }
+        function closeBalanceModal() { balanceModalContent.classList.add('scale-95'); balanceModal.classList.add('opacity-0'); setTimeout(() => { balanceModal.classList.add('hidden'); balanceForm.reset(); }, 300); }
+
+
+        addTransactionBtn.addEventListener('click', openModal);
+        cancelBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            const data = new FormData(form);
+            const newTransaction = { type: data.get('type'), amount: parseFloat(data.get('amount')), description: data.get('description'), category_id: parseInt(data.get('category')), date: new Date().toISOString() };
+            if (isNaN(newTransaction.amount) || newTransaction.amount <= 0) { alert("Jumlah harus lebih besar dari 0."); return; }
+            addTransaction(newTransaction).then(() => { renderUI(); closeModal(); showToast('Transaksi berhasil disimpan!'); }).catch(err => alert('Gagal menyimpan transaksi.'));
+        });
+        
+        transactionListEl.addEventListener('click', e => {
+            if (e.target.classList.contains('delete-btn')) {
+                const id = parseInt(e.target.dataset.id);
+                // Ganti confirm dengan modal custom jika diinginkan
+                if (window.confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                    deleteTransaction(id).then(() => { renderUI(); showToast('Transaksi dihapus.'); }).catch(err => alert('Gagal menghapus transaksi.'));
+                }
+            }
+        });
+
+        // UPDATED: balanceEl click listener
+        balanceEl.addEventListener('click', () => {
+            Promise.all([getAllTransactions(), getSetting('initialBalance')]).then(([transactions, initialBalance]) => {
+                const netFromTransactions = transactions.reduce((acc, t) => acc + (t.type === 'income' ? t.amount : -t.amount), 0);
+                const currentTotalBalance = initialBalance + netFromTransactions;
+                newBalanceInput.value = currentTotalBalance;
+                openBalanceModal();
+            });
+        });
+        
+        // NEW: Balance Modal Listeners
+        cancelBalanceBtn.addEventListener('click', closeBalanceModal);
+        balanceModal.addEventListener('click', e => { if(e.target === balanceModal) closeBalanceModal(); });
+        balanceForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const newTotalBalanceStr = newBalanceInput.value;
+            const newTotalBalance = parseFloat(newTotalBalanceStr);
+
+            if (isNaN(newTotalBalance)) {
+                showToast("Harap masukkan angka yang valid.");
+                return;
+            }
+
+            Promise.all([getAllTransactions()]).then(([transactions]) => {
+                const netFromTransactions = transactions.reduce((acc, t) => acc + (t.type === 'income' ? t.amount : -t.amount), 0);
+                const newInitialBalance = newTotalBalance - netFromTransactions;
+                updateSetting('initialBalance', newInitialBalance).then(() => {
+                    renderUI();
+                    closeBalanceModal();
+                    showToast('Saldo total berhasil diperbarui!');
+                });
+            });
+        });
+
+
+        analyzeBtn.addEventListener('click', async () => {
+            openAnalysisModal();
+            analysisResultEl.innerHTML = '<div class="flex justify-center items-center p-8"><div class="spinner"></div></div>';
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const allTransactions = await getAllTransactions();
+            const recentTransactions = allTransactions.filter(t => new Date(t.date) >= thirtyDaysAgo);
+            if (recentTransactions.length < 3) {
+                analysisResultEl.innerHTML = '<p class="text-center">Perlu setidaknya 3 transaksi dalam 30 hari terakhir untuk mendapatkan analisis.</p>';
+                return;
+            }
+            const analysisText = await getFinancialAnalysis(recentTransactions);
+            analysisResultEl.innerHTML = analysisText.replace(/\n/g, '<br>').replace(/\*\s/g, '&bull; ');
+        });
+
+        closeAnalysisBtn.addEventListener('click', closeAnalysisModal);
+        analysisModal.addEventListener('click', e => { if (e.target === analysisModal) closeAnalysisModal(); });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDB().then(renderUI).catch(err => alert("Aplikasi tidak dapat memulai database. Coba muat ulang halaman."));
+        });
+    </script>
+</body>
+</html>

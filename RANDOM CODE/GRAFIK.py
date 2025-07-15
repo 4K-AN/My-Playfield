@@ -16,7 +16,7 @@ def compute_centroid(df, col_cluster):
         subset = df[df[col_cluster] == c]
         centroids[c] = (subset['x'].mean(), subset['y'].mean())
     return centroids
-
+#mantap
 # Iterasi 1
 centroids_0 = compute_centroid(data, 'Cluster_0')
 for c, (cx, cy) in centroids_0.items():

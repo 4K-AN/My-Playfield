@@ -6,7 +6,7 @@ data = pd.DataFrame({
     'x': [1, 0, 2, 3],
     'y': [0, 1, 1, 3]
 })
-
+# Inisialisasi cluster acak (Iterasi 0)
 # Inisialisasi cluster acak (Iterasi 0)
 data['Cluster_0'] = ['C1', 'C2', 'C1', 'C2']
 

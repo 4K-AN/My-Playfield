@@ -55,7 +55,7 @@ def main():
 
     pemain = dapatkan_info_pemain()
     jumlah_peluru = dapatkan_pengaturan_game()
-
+# Maksimal 11 agar permainan tidak langsung berakhir
     # Membuat "silinder" revolver (12 ruang)
     silinder = [1] * jumlah_peluru + [0] * (12 - jumlah_peluru)
     

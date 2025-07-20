@@ -30,9 +30,9 @@ def dapatkan_info_pemain():
                 print("Nama sudah digunakan. Gunakan nama lain.")
             else:
                 print("Nama tidak boleh kosong.")
-    return nama_pemain
+    return nama_pemain# Maksimal 11 agar permainan tidak langsung berakhir
 
-def dapatkan_pengaturan_game():
+def dapatkan_pengaturan_game():# Maksimal 11 agar permainan tidak langsung berakhir
     """Meminta dealer memasukkan jumlah peluru."""
     print("\n--- Pengaturan oleh Dealer ---")
     while True:

@@ -68,7 +68,7 @@ def main():
 
     pemain_aktif = list(pemain)
     giliran_index = 0
-    ronde = 1
+    ronde = 1# Maksimal 11 agar permainan tidak langsung berakhir
 
     # Loop utama permainan
     while len(pemain_aktif) > 1 and len(silinder) > 0:

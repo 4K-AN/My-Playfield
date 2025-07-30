@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_1edc9e940d158b1c8d62cc750805aba3 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div style="position: fixed; 
+                top: 10px; right: 10px; width: 300px; height: auto; 
+                background-color: rgba(255,255,255,0.9); border:2px solid red; z-index:9999; 
+                font-size:12px; padding: 10px; border-radius: 5px;
+                ">
+    <h4 style="color: red; margin: 0;">⚠️ DISCLAIMER</h4>
+    <p><b>Pelacakan nomor mobile memiliki keterbatasan:</b></p>
+    <ul>
+        <li>Tidak bisa menunjukkan lokasi real-time</li>
+        <li>Hanya estimasi coverage area operator</li>
+        <li>Akurasi tergantung database publik</li>
+        <li>Untuk edukasi, bukan surveillance</li>
+    </ul>
+    <p><b>Operator:</b> Telkomsel</p>
+    </div>
+    
+    
+            <div class="folium-map" id="map_1edc9e940d158b1c8d62cc750805aba3" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_1edc9e940d158b1c8d62cc750805aba3 = L.map(
+                "map_1edc9e940d158b1c8d62cc750805aba3",
+                {
+                    center: [-2.5489, 118.0149],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 5,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_876464d4bd5abc39fd7ca39606508dbb = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_876464d4bd5abc39fd7ca39606508dbb.addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var marker_df4a4fd3bedb1898796e0110bd6a3882 = L.marker(
+                [-6.2088, 106.8456],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_6c0385856fd7b885d3ae4512cd40679b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_080992a57772c2d93931cd8a7381c941 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_e09728bd75677972969a6584bbc84c0a = $(`<div id="html_e09728bd75677972969a6584bbc84c0a" style="width: 100.0%; height: 100.0%;">         <b>Jakarta</b><br>         Koordinat: -6.2088, 106.8456<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_080992a57772c2d93931cd8a7381c941.setContent(html_e09728bd75677972969a6584bbc84c0a);
+            
+        
+
+        marker_df4a4fd3bedb1898796e0110bd6a3882.bindPopup(popup_080992a57772c2d93931cd8a7381c941)
+        ;
+
+        
+    
+    
+            marker_df4a4fd3bedb1898796e0110bd6a3882.bindTooltip(
+                `<div>
+                     Jakarta
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_df4a4fd3bedb1898796e0110bd6a3882.setIcon(icon_6c0385856fd7b885d3ae4512cd40679b);
+            
+    
+            var marker_8b90df98a5cdf2d3c6a28f5e56370ef8 = L.marker(
+                [-7.2575, 112.7521],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_188dbbe9e6db52fdeda137577500f68e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_cf8e977beb29d99c0f6b9d68329c901f = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_51157fbe46589aceaaafc58f98454fd6 = $(`<div id="html_51157fbe46589aceaaafc58f98454fd6" style="width: 100.0%; height: 100.0%;">         <b>Surabaya</b><br>         Koordinat: -7.2575, 112.7521<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_cf8e977beb29d99c0f6b9d68329c901f.setContent(html_51157fbe46589aceaaafc58f98454fd6);
+            
+        
+
+        marker_8b90df98a5cdf2d3c6a28f5e56370ef8.bindPopup(popup_cf8e977beb29d99c0f6b9d68329c901f)
+        ;
+
+        
+    
+    
+            marker_8b90df98a5cdf2d3c6a28f5e56370ef8.bindTooltip(
+                `<div>
+                     Surabaya
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8b90df98a5cdf2d3c6a28f5e56370ef8.setIcon(icon_188dbbe9e6db52fdeda137577500f68e);
+            
+    
+            var marker_d6588f54a747b64726247367791ae5a1 = L.marker(
+                [-6.9175, 107.6191],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_4c026cf81ea9366bcb7cb6ac9cf05588 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_630f0095895a12f85d85dc77be57ec6f = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_54fc3de5d6d1f8c8fd44bdb5b3f3fb58 = $(`<div id="html_54fc3de5d6d1f8c8fd44bdb5b3f3fb58" style="width: 100.0%; height: 100.0%;">         <b>Bandung</b><br>         Koordinat: -6.9175, 107.6191<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_630f0095895a12f85d85dc77be57ec6f.setContent(html_54fc3de5d6d1f8c8fd44bdb5b3f3fb58);
+            
+        
+
+        marker_d6588f54a747b64726247367791ae5a1.bindPopup(popup_630f0095895a12f85d85dc77be57ec6f)
+        ;
+
+        
+    
+    
+            marker_d6588f54a747b64726247367791ae5a1.bindTooltip(
+                `<div>
+                     Bandung
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d6588f54a747b64726247367791ae5a1.setIcon(icon_4c026cf81ea9366bcb7cb6ac9cf05588);
+            
+    
+            var marker_d88980b2ac3a133927d959b8b592a7e8 = L.marker(
+                [3.5952, 98.6722],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_49fe40fbeca3379b41d71bb1c051f644 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_eaf2022764dbaa637259b5a7591c1970 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f5d5e50d6a1f36ba53c34585a6d9f395 = $(`<div id="html_f5d5e50d6a1f36ba53c34585a6d9f395" style="width: 100.0%; height: 100.0%;">         <b>Medan</b><br>         Koordinat: 3.5952, 98.6722<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_eaf2022764dbaa637259b5a7591c1970.setContent(html_f5d5e50d6a1f36ba53c34585a6d9f395);
+            
+        
+
+        marker_d88980b2ac3a133927d959b8b592a7e8.bindPopup(popup_eaf2022764dbaa637259b5a7591c1970)
+        ;
+
+        
+    
+    
+            marker_d88980b2ac3a133927d959b8b592a7e8.bindTooltip(
+                `<div>
+                     Medan
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d88980b2ac3a133927d959b8b592a7e8.setIcon(icon_49fe40fbeca3379b41d71bb1c051f644);
+            
+    
+            var marker_e48738697a794df3fa87a6180d8c6440 = L.marker(
+                [-6.9932, 110.4203],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_fa43141935ca1c35671e2de7e785ac55 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f636e5b15ae6de5e211172f1f4f26fa8 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_7e52a3192b67852e21a647c3d68e6dfb = $(`<div id="html_7e52a3192b67852e21a647c3d68e6dfb" style="width: 100.0%; height: 100.0%;">         <b>Semarang</b><br>         Koordinat: -6.9932, 110.4203<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_f636e5b15ae6de5e211172f1f4f26fa8.setContent(html_7e52a3192b67852e21a647c3d68e6dfb);
+            
+        
+
+        marker_e48738697a794df3fa87a6180d8c6440.bindPopup(popup_f636e5b15ae6de5e211172f1f4f26fa8)
+        ;
+
+        
+    
+    
+            marker_e48738697a794df3fa87a6180d8c6440.bindTooltip(
+                `<div>
+                     Semarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e48738697a794df3fa87a6180d8c6440.setIcon(icon_fa43141935ca1c35671e2de7e785ac55);
+            
+    
+            var marker_f93a538ca6c35f3007138efc1faeba4d = L.marker(
+                [-5.1477, 119.4327],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_c2013aae46defe4ca73d319cde185c5b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7e08d1be0d07f97464ba8ae616b53def = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_836d2e24d9c4422b5a9541a697ccea58 = $(`<div id="html_836d2e24d9c4422b5a9541a697ccea58" style="width: 100.0%; height: 100.0%;">         <b>Makassar</b><br>         Koordinat: -5.1477, 119.4327<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_7e08d1be0d07f97464ba8ae616b53def.setContent(html_836d2e24d9c4422b5a9541a697ccea58);
+            
+        
+
+        marker_f93a538ca6c35f3007138efc1faeba4d.bindPopup(popup_7e08d1be0d07f97464ba8ae616b53def)
+        ;
+
+        
+    
+    
+            marker_f93a538ca6c35f3007138efc1faeba4d.bindTooltip(
+                `<div>
+                     Makassar
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f93a538ca6c35f3007138efc1faeba4d.setIcon(icon_c2013aae46defe4ca73d319cde185c5b);
+            
+    
+            var marker_6688120bef8f3f2abb1890a64427b4a9 = L.marker(
+                [-2.9761, 104.7754],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_94f907e4ae2aa6323b57d9ed3dcdd544 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d33e2058da93a93ae34203c73f9d3e94 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f8bee2b207a3d6167934190c4de068ae = $(`<div id="html_f8bee2b207a3d6167934190c4de068ae" style="width: 100.0%; height: 100.0%;">         <b>Palembang</b><br>         Koordinat: -2.9761, 104.7754<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_d33e2058da93a93ae34203c73f9d3e94.setContent(html_f8bee2b207a3d6167934190c4de068ae);
+            
+        
+
+        marker_6688120bef8f3f2abb1890a64427b4a9.bindPopup(popup_d33e2058da93a93ae34203c73f9d3e94)
+        ;
+
+        
+    
+    
+            marker_6688120bef8f3f2abb1890a64427b4a9.bindTooltip(
+                `<div>
+                     Palembang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6688120bef8f3f2abb1890a64427b4a9.setIcon(icon_94f907e4ae2aa6323b57d9ed3dcdd544);
+            
+    
+            var marker_ee4817acf12b498f877392447326b54a = L.marker(
+                [-6.1783, 106.6319],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_f31ecabdb4dc21fed3e202b1d8736ae5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a439f671bb74dab3c3152a492921d700 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_f56978f63b4c2a551bc18aaeadd5fbd6 = $(`<div id="html_f56978f63b4c2a551bc18aaeadd5fbd6" style="width: 100.0%; height: 100.0%;">         <b>Tangerang</b><br>         Koordinat: -6.1783, 106.6319<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_a439f671bb74dab3c3152a492921d700.setContent(html_f56978f63b4c2a551bc18aaeadd5fbd6);
+            
+        
+
+        marker_ee4817acf12b498f877392447326b54a.bindPopup(popup_a439f671bb74dab3c3152a492921d700)
+        ;
+
+        
+    
+    
+            marker_ee4817acf12b498f877392447326b54a.bindTooltip(
+                `<div>
+                     Tangerang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ee4817acf12b498f877392447326b54a.setIcon(icon_f31ecabdb4dc21fed3e202b1d8736ae5);
+            
+    
+            var marker_f6e252bf91dd2b016a1b7c08dacc6f59 = L.marker(
+                [-6.4025, 106.7942],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_2c3881132348f78dad3d9716711ca4e0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ee193a6c369d0064315a469e9ebfdd81 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b9035e521d36af4435c1ddd7e9a8f8f5 = $(`<div id="html_b9035e521d36af4435c1ddd7e9a8f8f5" style="width: 100.0%; height: 100.0%;">         <b>Depok</b><br>         Koordinat: -6.4025, 106.7942<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_ee193a6c369d0064315a469e9ebfdd81.setContent(html_b9035e521d36af4435c1ddd7e9a8f8f5);
+            
+        
+
+        marker_f6e252bf91dd2b016a1b7c08dacc6f59.bindPopup(popup_ee193a6c369d0064315a469e9ebfdd81)
+        ;
+
+        
+    
+    
+            marker_f6e252bf91dd2b016a1b7c08dacc6f59.bindTooltip(
+                `<div>
+                     Depok
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f6e252bf91dd2b016a1b7c08dacc6f59.setIcon(icon_2c3881132348f78dad3d9716711ca4e0);
+            
+    
+            var marker_14cf2ad513b5467ac8370767b0ed43c0 = L.marker(
+                [-6.2383, 106.9756],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_c4600d6db7d2c62be63a9c72acfa3c80 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4e7298a568d57b27926aa79f1c0772b9 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_b786560f372bd49658f0c0e1512e3e58 = $(`<div id="html_b786560f372bd49658f0c0e1512e3e58" style="width: 100.0%; height: 100.0%;">         <b>Bekasi</b><br>         Koordinat: -6.2383, 106.9756<br>         Kota Besar Indonesia         </div>`)[0];
+                popup_4e7298a568d57b27926aa79f1c0772b9.setContent(html_b786560f372bd49658f0c0e1512e3e58);
+            
+        
+
+        marker_14cf2ad513b5467ac8370767b0ed43c0.bindPopup(popup_4e7298a568d57b27926aa79f1c0772b9)
+        ;
+
+        
+    
+    
+            marker_14cf2ad513b5467ac8370767b0ed43c0.bindTooltip(
+                `<div>
+                     Bekasi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_14cf2ad513b5467ac8370767b0ed43c0.setIcon(icon_c4600d6db7d2c62be63a9c72acfa3c80);
+            
+    
+            var marker_2869d0104e1fc5a56d21ef63396f79f9 = L.marker(
+                [-7.7956, 110.3695],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_5d485e5658fe465903a50c4359f20578 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "home",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_6f891ba54c0c12c3ad4ea79495f72d08 = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_5b30d2726649d7c9e41f8aa1232fdd7d = $(`<div id="html_5b30d2726649d7c9e41f8aa1232fdd7d" style="width: 100.0%; height: 100.0%;">         <b>Yogyakarta</b><br>         Koordinat: -7.7956, 110.3695<br>         <b>LOKASI ANDA</b>         </div>`)[0];
+                popup_6f891ba54c0c12c3ad4ea79495f72d08.setContent(html_5b30d2726649d7c9e41f8aa1232fdd7d);
+            
+        
+
+        marker_2869d0104e1fc5a56d21ef63396f79f9.bindPopup(popup_6f891ba54c0c12c3ad4ea79495f72d08)
+        ;
+
+        
+    
+    
+            marker_2869d0104e1fc5a56d21ef63396f79f9.bindTooltip(
+                `<div>
+                     Yogyakarta
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_2869d0104e1fc5a56d21ef63396f79f9.setIcon(icon_5d485e5658fe465903a50c4359f20578);
+            
+    
+            var marker_83a6a6a109efd6f10071403343320bb8 = L.marker(
+                [-7.8879, 110.3281],
+                {
+}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+            var icon_2eacb915e5053453fd3e31657f5407c8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "home",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e63bd3e641e1dc4255c3692db71b2f2e = L.popup({
+  "maxWidth": 200,
+});
+
+        
+            
+                var html_66abda9f358cc60d6d007b936266c3a5 = $(`<div id="html_66abda9f358cc60d6d007b936266c3a5" style="width: 100.0%; height: 100.0%;">         <b>Bantul</b><br>         Koordinat: -7.8879, 110.3281<br>         <b>LOKASI ANDA</b>         </div>`)[0];
+                popup_e63bd3e641e1dc4255c3692db71b2f2e.setContent(html_66abda9f358cc60d6d007b936266c3a5);
+            
+        
+
+        marker_83a6a6a109efd6f10071403343320bb8.bindPopup(popup_e63bd3e641e1dc4255c3692db71b2f2e)
+        ;
+
+        
+    
+    
+            marker_83a6a6a109efd6f10071403343320bb8.bindTooltip(
+                `<div>
+                     Bantul
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_83a6a6a109efd6f10071403343320bb8.setIcon(icon_2eacb915e5053453fd3e31657f5407c8);
+            
+    
+            var circle_5b504a5d1ece2a614c13cba1d0c0feb3 = L.circle(
+                [-7.7956, 110.3695],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 50000, "stroke": true, "weight": 2}
+            ).addTo(map_1edc9e940d158b1c8d62cc750805aba3);
+        
+    
+        var popup_1ffeca5ba4f96a9764b028331a80639c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_be5899270085d821e91b896c439dfcf6 = $(`<div id="html_be5899270085d821e91b896c439dfcf6" style="width: 100.0%; height: 100.0%;">Area Yogyakarta - Kemungkinan coverage area</div>`)[0];
+                popup_1ffeca5ba4f96a9764b028331a80639c.setContent(html_be5899270085d821e91b896c439dfcf6);
+            
+        
+
+        circle_5b504a5d1ece2a614c13cba1d0c0feb3.bindPopup(popup_1ffeca5ba4f96a9764b028331a80639c)
+        ;
+
+        
+    
+</script>
+</html>

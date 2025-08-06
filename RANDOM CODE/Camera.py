@@ -22,7 +22,7 @@ analysis_in_progress = False
 analysis_thread = None 
 
 print("Mencoba membuka kamera...")
-
+#camera dendogram
 backends = [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY] 
 cap = None
 for backend_api in backends:

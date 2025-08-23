@@ -8,7 +8,7 @@ linkage = np.array([
     [4, 1, 1.732, 3],   # Merge cluster(0,3) with point 2 (index 1)
     [5, 2, 3.000, 4]    # Merge cluster above with point 3 (index 2)
 ])
-
+#fwgwgsgwg
 # Plot dendrogram
 dendrogram(linkage, labels=["1", "2", "3", "4"])
 plt.title("Dendrogram - Single Linkage")

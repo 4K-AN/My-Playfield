@@ -3,7 +3,7 @@ import numpy as np
 
 # Data Nilai Kalkulus
 data = np.array([86, 85, 81, 81, 81, 90, 89, 86, -20, 84, 85, 80, 84, 86, 89])
-
+ #Data Nilai Kalkulus
 # Membuat Boxplot
 plt.style.use('seaborn-v0_8-whitegrid')
 fig, ax = plt.subplots(figsize=(8, 6))

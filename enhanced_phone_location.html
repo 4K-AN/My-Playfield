@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_c8f7df965f895b326658c38f409ee642 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div style="position: fixed; 
+                bottom: 50px; left: 50px; width: 200px; height: auto; 
+                background-color: white; border:2px solid grey; z-index:9999; 
+                font-size:14px; padding: 10px
+                ">
+    <p><b>Location Methods:</b></p>
+    <p><i class="fa fa-map-marker" style="color:red"></i> PhoneNumbers Library</p><p><i class="fa fa-map-marker" style="color:blue"></i> Country Based</p><p><i class="fa fa-map-marker" style="color:green"></i> Area Code Based</p></div>
+    
+            <div class="folium-map" id="map_c8f7df965f895b326658c38f409ee642" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_c8f7df965f895b326658c38f409ee642 = L.map(
+                "map_c8f7df965f895b326658c38f409ee642",
+                {
+                    center: [-2.4833826, 117.8902853],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_f097341ea88688ab2f65742abf57b023 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_f097341ea88688ab2f65742abf57b023.addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+            var marker_bfef705af35b700897ec9d6e23ec179f = L.marker(
+                [-2.4833826, 117.8902853],
+                {
+}
+            ).addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+            var icon_d67688982d68612395b6917fb98d4a7d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "phone",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_813b07e98aa03b08804637e1143f16bf = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_a9bd73248edbe008e3702986584910e4 = $(`<div id="html_a9bd73248edbe008e3702986584910e4" style="width: 100.0%; height: 100.0%;">         <b>Method:</b> PhoneNumbers Library<br>         <b>Location:</b> Indonesia<br>         <b>Coordinates:</b> -2.483383, 117.890285<br>         <b>Confidence:</b> 1/10<br>         <b>Phone:</b> +6282242209080         </div>`)[0];
+                popup_813b07e98aa03b08804637e1143f16bf.setContent(html_a9bd73248edbe008e3702986584910e4);
+            
+        
+
+        marker_bfef705af35b700897ec9d6e23ec179f.bindPopup(popup_813b07e98aa03b08804637e1143f16bf)
+        ;
+
+        
+    
+    
+            marker_bfef705af35b700897ec9d6e23ec179f.bindTooltip(
+                `<div>
+                     PhoneNumbers Library: Indonesia
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_bfef705af35b700897ec9d6e23ec179f.setIcon(icon_d67688982d68612395b6917fb98d4a7d);
+            
+    
+            var circle_10dd4ce3fece4317e79d8047edd96a2c = L.circle(
+                [-2.4833826, 117.8902853],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "red", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5000, "stroke": true, "weight": 2}
+            ).addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+        var popup_35ad269ca23f3b94219d925914a1a955 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d1b8ce97de7b34fa36cb0e4448e4953b = $(`<div id="html_d1b8ce97de7b34fa36cb0e4448e4953b" style="width: 100.0%; height: 100.0%;">Estimated area - PhoneNumbers Library</div>`)[0];
+                popup_35ad269ca23f3b94219d925914a1a955.setContent(html_d1b8ce97de7b34fa36cb0e4448e4953b);
+            
+        
+
+        circle_10dd4ce3fece4317e79d8047edd96a2c.bindPopup(popup_35ad269ca23f3b94219d925914a1a955)
+        ;
+
+        
+    
+    
+            var marker_1b0c6411d0e2e95bb4c1d2f8470849e7 = L.marker(
+                [-2.4833826, 117.8902853],
+                {
+}
+            ).addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+            var icon_225d9cd2db9daf48204af652fafcbd1a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "phone",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_33854bcbae9b4070f41c67b798d34688 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_14f97500bae552ca471ee6d370d4cd5b = $(`<div id="html_14f97500bae552ca471ee6d370d4cd5b" style="width: 100.0%; height: 100.0%;">         <b>Method:</b> Country Based<br>         <b>Location:</b> Indonesia<br>         <b>Coordinates:</b> -2.483383, 117.890285<br>         <b>Confidence:</b> 1/10<br>         <b>Phone:</b> +6282242209080         </div>`)[0];
+                popup_33854bcbae9b4070f41c67b798d34688.setContent(html_14f97500bae552ca471ee6d370d4cd5b);
+            
+        
+
+        marker_1b0c6411d0e2e95bb4c1d2f8470849e7.bindPopup(popup_33854bcbae9b4070f41c67b798d34688)
+        ;
+
+        
+    
+    
+            marker_1b0c6411d0e2e95bb4c1d2f8470849e7.bindTooltip(
+                `<div>
+                     Country Based: Indonesia
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1b0c6411d0e2e95bb4c1d2f8470849e7.setIcon(icon_225d9cd2db9daf48204af652fafcbd1a);
+            
+    
+            var circle_a9e4edfd1c4ca126bda13b2f04a5f69e = L.circle(
+                [-2.4833826, 117.8902853],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "blue", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5000, "stroke": true, "weight": 2}
+            ).addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+        var popup_a8fa5134fda35184132aedbc8ddd9fb1 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_97df310bac2aeb238e5f0b0fef66bbd2 = $(`<div id="html_97df310bac2aeb238e5f0b0fef66bbd2" style="width: 100.0%; height: 100.0%;">Estimated area - Country Based</div>`)[0];
+                popup_a8fa5134fda35184132aedbc8ddd9fb1.setContent(html_97df310bac2aeb238e5f0b0fef66bbd2);
+            
+        
+
+        circle_a9e4edfd1c4ca126bda13b2f04a5f69e.bindPopup(popup_a8fa5134fda35184132aedbc8ddd9fb1)
+        ;
+
+        
+    
+    
+            var marker_3fe2d9af884adff919cae776a1b2dd2a = L.marker(
+                [-2.4833826, 117.8902853],
+                {
+}
+            ).addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+            var icon_6b4f9e22ed4a19f71e6a149e60ebd734 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "phone",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d499f5bbda7a995e704b95e9cbbc21c2 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_247cd3bef50d1ee58db1bacc30324688 = $(`<div id="html_247cd3bef50d1ee58db1bacc30324688" style="width: 100.0%; height: 100.0%;">         <b>Method:</b> Area Code Based<br>         <b>Location:</b> Indonesia<br>         <b>Coordinates:</b> -2.483383, 117.890285<br>         <b>Confidence:</b> 1/10<br>         <b>Phone:</b> +6282242209080         </div>`)[0];
+                popup_d499f5bbda7a995e704b95e9cbbc21c2.setContent(html_247cd3bef50d1ee58db1bacc30324688);
+            
+        
+
+        marker_3fe2d9af884adff919cae776a1b2dd2a.bindPopup(popup_d499f5bbda7a995e704b95e9cbbc21c2)
+        ;
+
+        
+    
+    
+            marker_3fe2d9af884adff919cae776a1b2dd2a.bindTooltip(
+                `<div>
+                     Area Code Based: Indonesia
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_3fe2d9af884adff919cae776a1b2dd2a.setIcon(icon_6b4f9e22ed4a19f71e6a149e60ebd734);
+            
+    
+            var circle_3b22c92fc0589564fa14256dbf3b0696 = L.circle(
+                [-2.4833826, 117.8902853],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "green", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5000, "stroke": true, "weight": 2}
+            ).addTo(map_c8f7df965f895b326658c38f409ee642);
+        
+    
+        var popup_7f535b57fb908c8cf7f3b87e8229bc43 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7ff8413cb3aefb49a4910e7f3d31f1ad = $(`<div id="html_7ff8413cb3aefb49a4910e7f3d31f1ad" style="width: 100.0%; height: 100.0%;">Estimated area - Area Code Based</div>`)[0];
+                popup_7f535b57fb908c8cf7f3b87e8229bc43.setContent(html_7ff8413cb3aefb49a4910e7f3d31f1ad);
+            
+        
+
+        circle_3b22c92fc0589564fa14256dbf3b0696.bindPopup(popup_7f535b57fb908c8cf7f3b87e8229bc43)
+        ;
+
+        
+    
+</script>
+</html>

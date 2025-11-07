@@ -44,7 +44,7 @@ def tampilkan_tangan(pemain, tangan_pemain, dealer, tangan_dealer, sembunyikan_k
 
 
 # --- FUNGSI UNTUK TARUHAN DAN PERMAINAN ---
-
+# --- FUNGSI UNTUK TARUHAN DAN PERMAINAN ---
 def dapatkan_taruhan(uang_maksimal):
     """Meminta pemain memasukkan jumlah taruhan yang valid."""
     while True:

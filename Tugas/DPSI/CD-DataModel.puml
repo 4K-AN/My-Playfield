@@ -1,0 +1,170 @@
+@startuml CD-DataModel
+title CD - Pemodelan Data (Entitas & Relasi)
+
+' Visual settings
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+skinparam packageStyle rectangle
+
+' ------------------
+' ENTITAS / TABEL
+' ------------------
+class Kampus {
+  + id_kampus : INT [PK]
+  + nama_kampus : VARCHAR(255) NOT NULL
+  + akreditasi : VARCHAR(10)
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Jurusan {
+  + id_jurusan : INT [PK]
+  + nama_jurusan : VARCHAR(255) NOT NULL
+  + jenjang : VARCHAR(10)
+  + deskripsi : TEXT
+  + id_kampus : INT [FK -> Kampus.id_kampus]
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Profesi {
+  + id_profesi : INT [PK]
+  + nama_profesi : VARCHAR(255) NOT NULL
+  + deskripsi_profesi : TEXT
+  + estimasi_gaji : INT
+  + id_jurusan : INT [FK -> Jurusan.id_jurusan]
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Pengguna {
+  + id_pengguna : INT [PK]
+  + email : VARCHAR(255) NOT NULL UNIQUE
+  + password_hash : VARCHAR(255) NOT NULL
+  + nama_depan : VARCHAR(100) NOT NULL
+  + nama_belakang : VARCHAR(100)
+  + display_name : VARCHAR(150)
+  + jurusan_sma : VARCHAR(50)
+  + deskripsi_minat_pribadi : TEXT
+  + id_jurusan : INT [FK -> Jurusan.id_jurusan]  -- nullable
+  + role : VARCHAR(50) NOT NULL
+  + is_active : BOOLEAN
+  + is_email_verified : BOOLEAN
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Administrator {
+  + id_admin : INT [PK]
+  + email : VARCHAR(255) NOT NULL UNIQUE
+  + password_hash : VARCHAR(255) NOT NULL
+  + fname : VARCHAR(100)
+  + lname : VARCHAR(100)
+  + is_active : BOOLEAN
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Paket_Soal {
+  + id_paket : INT [PK]
+  + nama_paket : VARCHAR(255) NOT NULL
+  + deskripsi : TEXT
+  + durasi_menit : INT
+  + jenis_ujian : VARCHAR(20)  -- ENUM(SNBT,Mandiri)
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Soal {
+  + id_soal : INT [PK]
+  + id_paket : INT [FK -> Paket_Soal.id_paket]
+  + pertanyaan : TEXT NOT NULL
+  + opsi_jawaban : TEXT  -- JSON/text
+  + jawaban_benar : VARCHAR(10) NOT NULL
+  + pembahasan : TEXT
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Tryout {
+  + id_tryout : INT [PK]
+  + nama_tryout : VARCHAR(255) NOT NULL
+  + penyelenggara : VARCHAR(255)
+  + jadwal_mulai : DATETIME
+  + jadwal_selesai : DATETIME
+  + biaya : INT
+  + link_pendaftaran : VARCHAR(255)
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Beasiswa {
+  + id_beasiswa : INT [PK]
+  + nama_beasiswa : VARCHAR(255) NOT NULL
+  + penyelenggara : VARCHAR(255)
+  + deskripsi : TEXT
+  + link_resmi : VARCHAR(255)
+  + tanggal_buka : DATE
+  + tanggal_tutup : DATE
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Artikel {
+  + id_artikel : INT [PK]
+  + judul : VARCHAR(255) NOT NULL
+  + isi_artikel : TEXT NOT NULL
+  + kategori : VARCHAR(100)
+  + tanggal_publikasi : DATETIME
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class Nilai {
+  + id_nilai : INT [PK]
+  + id_pengguna : INT [FK -> Pengguna.id_pengguna]
+  + id_tryout : INT [FK -> Tryout.id_tryout]  -- nullable
+  + id_paket : INT [FK -> Paket_Soal.id_paket] -- nullable
+  + semester : INT NOT NULL
+  + mata_pelajaran : VARCHAR(100) NOT NULL
+  + nilai : DECIMAL(5,2) NOT NULL
+  + tipe_nilai : VARCHAR(20)  -- ENUM(rapor,latihan,ujian)
+  + created_at : DATETIME
+  + updated_at : DATETIME
+}
+
+class HasilLatihan {
+  + id_hasil : INT [PK]
+  + id_pengguna : INT [FK -> Pengguna.id_pengguna]
+  + id_tryout : INT [FK -> Tryout.id_tryout]  -- nullable
+  + session_id : VARCHAR(64)  -- nullable, unique
+  + total_soal : INT NOT NULL
+  + benar : INT NOT NULL
+  + salah : INT NOT NULL
+  + skor : DECIMAL(5,2) NOT NULL
+  + pembahasan : TEXT
+  + created_at : DATETIME
+}
+
+' ------------------
+' RELASI / KARDINALITAS
+' ------------------
+Kampus "1" -- "0..*" Jurusan : has >
+Jurusan "1" -- "0..*" Profesi : provides >
+Jurusan "1" -- "0..*" Pengguna : chosenBy >
+Pengguna "1" -- "0..*" Nilai : owns >
+Pengguna "1" -- "0..*" HasilLatihan : owns >
+Paket_Soal "1" -- "0..*" Soal : contains >
+Tryout "1" -- "0..*" Paket_Soal : offers >
+Tryout "1" -- "0..*" HasilLatihan : produces >
+Tryout "1" -- "0..*" Nilai : relatedValues >
+Soal "0..*" -- "0..*" Nilai : referencedBy >
+
+' Note: many-to-many (per-soal attempt) should use junction table e.g. SoalAttempt
+note bottom
+  PK = Primary Key; FK = Foreign Key.
+  Use CHECK constraints & indices at DB level where supported.
+end note
+
+@enduml

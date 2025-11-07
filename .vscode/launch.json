@@ -4,13 +4,90 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-    {
-        "name": "Launch Chrome",
-        "request": "launch",
-        "type": "chrome",
-        "url": "http://localhost:8080",
-        "webRoot": "${workspaceFolder}"
-    },
+        {
+            "type": "java",
+            "name": "CircularDoubleLinkedListNoJumlah",
+            "request": "launch",
+            "mainClass": "CircularDoubleLinkedListNoJumlah",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "SkibidiLinkedList",
+            "request": "launch",
+            "mainClass": "SkibidiLinkedList",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "CircularDoubleLinkedList",
+            "request": "launch",
+            "mainClass": "CircularDoubleLinkedList",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "SkibidiLinkedList",
+            "request": "launch",
+            "mainClass": "Tugas.ASD.Matkul.SkibidiLinkedList",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "PengolahanArray",
+            "request": "launch",
+            "mainClass": "Tugas.ASD.Matkul.PengolahanArray",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "FilkomExpress",
+            "request": "launch",
+            "mainClass": "Tugas.ASD.Matkul.FilkomExpress",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "PengolahanArray",
+            "request": "launch",
+            "mainClass": "PengolahanArray",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "FilkomExpress",
+            "request": "launch",
+            "mainClass": "FilkomExpress",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Tugas.ASD.Modul5.Main",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "stack_array",
+            "request": "launch",
+            "mainClass": "Tugas.ASD.Modul7.stack_array",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "My-Playfield_865ab8dc"
+        },
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        },
         {
             "type": "R-Debugger",
             "name": "Launch R-Workspace",

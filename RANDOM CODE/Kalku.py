@@ -36,6 +36,7 @@ t4a = np.linspace(9, 10.99, 100)    # [9, 11) - sebelum asimtot
 t4b = np.linspace(11.01, 15, 200)   # (11, 15] - setelah asimtot
 
 # Menghitung nilai fungsi untuk setiap interval
+# Menghitung nilai fungsi untuk setiap intervald
 f1 = 2 * t1
 f2 = 1 / (5 * t2 - 10) + 2
 f3 = (t3 - 7)**2 + 2

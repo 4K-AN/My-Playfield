@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_e9c083d05982a304985ae9dffb8b1e4c {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+                <div style="position: fixed; 
+                            bottom: 50px; left: 50px; width: 250px; height: auto; 
+                            background-color: rgba(255,255,255,0.95); 
+                            border:2px solid #333; z-index:9999; 
+                            font-size:12px; padding: 15px; border-radius: 8px;
+                            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+                            ">
+                <h4 style="margin-top: 0; color: #333;">📱 Yogyakarta Phone Analysis</h4>
+                <p><b>Phone:</b> +6281328694137</p>
+                <p><b>Results Found:</b> 2</p>
+                <p style="margin: 2px 0;">🔴 BTS Triangulation: 78.1%</p><p style="margin: 2px 0;">🔵 OpenCage Geocoding: 70.0%</p>
+                <hr style="margin: 10px 0;">
+                <p style="font-size: 10px; color: #666; margin-bottom: 0;">
+                🛡️ Bulletproof tracker - Educational purpose only<br>
+                🏛️ Special Region of Yogyakarta, Indonesia
+                </p>
+                </div>
+                
+    
+            <div class="folium-map" id="map_e9c083d05982a304985ae9dffb8b1e4c" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_e9c083d05982a304985ae9dffb8b1e4c = L.map(
+                "map_e9c083d05982a304985ae9dffb8b1e4c",
+                {
+                    center: [-7.7705417725820345, 110.36281328537318],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_dcb82016fb319e369e383a2a8dd5fe48 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_dcb82016fb319e369e383a2a8dd5fe48.addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var marker_1a15b0e3168f61febaa3f53912e9f43a = L.marker(
+                [-7.7705417725820345, 110.36281328537318],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_71c461c0743d22816ad5f8999bccd419 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "phone",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f2d094a009da464d5f4d2bda74e32750 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_adea4166f091dd76dcb1902aaa7ac287 = $(`<div id="html_adea4166f091dd76dcb1902aaa7ac287" style="width: 100.0%; height: 100.0%;">                         <div style="width: 200px;">                             <h4>BTS Triangulation</h4>                             <b>Phone:</b> +6281328694137<br>                             <b>Location:</b> -7.7705, 110.3628<br>                             <b>Confidence:</b> 78.1%<br>                             <b>Operator:</b> telkomsel                         </div>                         </div>`)[0];
+                popup_f2d094a009da464d5f4d2bda74e32750.setContent(html_adea4166f091dd76dcb1902aaa7ac287);
+            
+        
+
+        marker_1a15b0e3168f61febaa3f53912e9f43a.bindPopup(popup_f2d094a009da464d5f4d2bda74e32750)
+        ;
+
+        
+    
+    
+            marker_1a15b0e3168f61febaa3f53912e9f43a.bindTooltip(
+                `<div>
+                     BTS Triangulation: 78.1%
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1a15b0e3168f61febaa3f53912e9f43a.setIcon(icon_71c461c0743d22816ad5f8999bccd419);
+            
+    
+            var circle_3762193af01f9b66cd331d7d4519c6df = L.circle(
+                [-7.7705417725820345, 110.36281328537318],
+                {"bubblingMouseEvents": true, "color": "red", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.15, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 500, "stroke": true, "weight": 2}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+        var popup_0eecc1acda88f15074d8adfa3edd3b17 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0b114ec4bcce00c6702d871c5dd316f0 = $(`<div id="html_0b114ec4bcce00c6702d871c5dd316f0" style="width: 100.0%; height: 100.0%;">Uncertainty area - BTS Triangulation</div>`)[0];
+                popup_0eecc1acda88f15074d8adfa3edd3b17.setContent(html_0b114ec4bcce00c6702d871c5dd316f0);
+            
+        
+
+        circle_3762193af01f9b66cd331d7d4519c6df.bindPopup(popup_0eecc1acda88f15074d8adfa3edd3b17)
+        ;
+
+        
+    
+    
+            var marker_2a84346cd7fb0a1b298e465c8deaa53c = L.marker(
+                [-7.8012646, 110.3646857],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_5a999c4f2cf21e98a9cd6cb805389b43 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "phone",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_dcb4f2b89001b6858943e2edfb036ae7 = L.popup({
+  "maxWidth": 250,
+});
+
+        
+            
+                var html_09bd8e55f866ff9de22655c0319d5cef = $(`<div id="html_09bd8e55f866ff9de22655c0319d5cef" style="width: 100.0%; height: 100.0%;">                         <div style="width: 200px;">                             <h4>OpenCage Geocoding</h4>                             <b>Phone:</b> +6281328694137<br>                             <b>Location:</b> -7.8013, 110.3647<br>                             <b>Confidence:</b> 70.0%<br>                             <b>Operator:</b> N/A                         </div>                         </div>`)[0];
+                popup_dcb4f2b89001b6858943e2edfb036ae7.setContent(html_09bd8e55f866ff9de22655c0319d5cef);
+            
+        
+
+        marker_2a84346cd7fb0a1b298e465c8deaa53c.bindPopup(popup_dcb4f2b89001b6858943e2edfb036ae7)
+        ;
+
+        
+    
+    
+            marker_2a84346cd7fb0a1b298e465c8deaa53c.bindTooltip(
+                `<div>
+                     OpenCage Geocoding: 70.0%
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_2a84346cd7fb0a1b298e465c8deaa53c.setIcon(icon_5a999c4f2cf21e98a9cd6cb805389b43);
+            
+    
+            var circle_6c9fd5153a79f3d6178132bd82ce89f0 = L.circle(
+                [-7.8012646, 110.3646857],
+                {"bubblingMouseEvents": true, "color": "blue", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "blue", "fillOpacity": 0.15, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 600.0000000000001, "stroke": true, "weight": 2}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+        var popup_69278c68e7b14a367da22efae0e29bf4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0615b14864e1fc6d59c86b609e365a03 = $(`<div id="html_0615b14864e1fc6d59c86b609e365a03" style="width: 100.0%; height: 100.0%;">Uncertainty area - OpenCage Geocoding</div>`)[0];
+                popup_69278c68e7b14a367da22efae0e29bf4.setContent(html_0615b14864e1fc6d59c86b609e365a03);
+            
+        
+
+        circle_6c9fd5153a79f3d6178132bd82ce89f0.bindPopup(popup_69278c68e7b14a367da22efae0e29bf4)
+        ;
+
+        
+    
+    
+            var marker_8e8b6605c417011e00496d843b774258 = L.marker(
+                [-7.7956, 110.3695],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_0aa0651d281de7b1f7f1b4f77f2ae20a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d66440a7bbfb2d2047222c5a1e94c248 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_dc5808efc82730c52e7d543f487eed6e = $(`<div id="html_dc5808efc82730c52e7d543f487eed6e" style="width: 100.0%; height: 100.0%;"><b>Kota Yogyakarta</b></div>`)[0];
+                popup_d66440a7bbfb2d2047222c5a1e94c248.setContent(html_dc5808efc82730c52e7d543f487eed6e);
+            
+        
+
+        marker_8e8b6605c417011e00496d843b774258.bindPopup(popup_d66440a7bbfb2d2047222c5a1e94c248)
+        ;
+
+        
+    
+    
+            marker_8e8b6605c417011e00496d843b774258.bindTooltip(
+                `<div>
+                     Kota Yogyakarta
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8e8b6605c417011e00496d843b774258.setIcon(icon_0aa0651d281de7b1f7f1b4f77f2ae20a);
+            
+    
+            var marker_26438c71b6e956366835b58152c23fec = L.marker(
+                [-7.7326, 110.3553],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_21aa5a8a970fde6fed7977f99758ae2c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8d26d85e8f49c6c973409fe1739d156e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_3e29b9c5bdbdca7a3e27a140dca777d9 = $(`<div id="html_3e29b9c5bdbdca7a3e27a140dca777d9" style="width: 100.0%; height: 100.0%;"><b>Sleman</b></div>`)[0];
+                popup_8d26d85e8f49c6c973409fe1739d156e.setContent(html_3e29b9c5bdbdca7a3e27a140dca777d9);
+            
+        
+
+        marker_26438c71b6e956366835b58152c23fec.bindPopup(popup_8d26d85e8f49c6c973409fe1739d156e)
+        ;
+
+        
+    
+    
+            marker_26438c71b6e956366835b58152c23fec.bindTooltip(
+                `<div>
+                     Sleman
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_26438c71b6e956366835b58152c23fec.setIcon(icon_21aa5a8a970fde6fed7977f99758ae2c);
+            
+    
+            var marker_0f4eca5ed9516c5766deedbbd65823e5 = L.marker(
+                [-7.8879, 110.3281],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_4f5626ae1c9fb22b9f7bf0b08c7340fd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_fac9ac693d7b05de0446228a60801fd9 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_693250f1f7fe85bb6e12db1c76c4fa27 = $(`<div id="html_693250f1f7fe85bb6e12db1c76c4fa27" style="width: 100.0%; height: 100.0%;"><b>Bantul</b></div>`)[0];
+                popup_fac9ac693d7b05de0446228a60801fd9.setContent(html_693250f1f7fe85bb6e12db1c76c4fa27);
+            
+        
+
+        marker_0f4eca5ed9516c5766deedbbd65823e5.bindPopup(popup_fac9ac693d7b05de0446228a60801fd9)
+        ;
+
+        
+    
+    
+            marker_0f4eca5ed9516c5766deedbbd65823e5.bindTooltip(
+                `<div>
+                     Bantul
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0f4eca5ed9516c5766deedbbd65823e5.setIcon(icon_4f5626ae1c9fb22b9f7bf0b08c7340fd);
+            
+    
+            var marker_347d31d7278ae4a678ee387940eb5d23 = L.marker(
+                [-7.8271, 110.1553],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_5235836d370b704c09f0a5c49bdc19f5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_573abd1cde30c7a3850e56225fc0ec7f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ca330ea17ae529703be1c954df50b040 = $(`<div id="html_ca330ea17ae529703be1c954df50b040" style="width: 100.0%; height: 100.0%;"><b>Kulon Progo</b></div>`)[0];
+                popup_573abd1cde30c7a3850e56225fc0ec7f.setContent(html_ca330ea17ae529703be1c954df50b040);
+            
+        
+
+        marker_347d31d7278ae4a678ee387940eb5d23.bindPopup(popup_573abd1cde30c7a3850e56225fc0ec7f)
+        ;
+
+        
+    
+    
+            marker_347d31d7278ae4a678ee387940eb5d23.bindTooltip(
+                `<div>
+                     Kulon Progo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_347d31d7278ae4a678ee387940eb5d23.setIcon(icon_5235836d370b704c09f0a5c49bdc19f5);
+            
+    
+            var marker_421a4dbf7b17783f0dc81d7f690b69e2 = L.marker(
+                [-7.9553, 110.5942],
+                {
+}
+            ).addTo(map_e9c083d05982a304985ae9dffb8b1e4c);
+        
+    
+            var icon_ade9c0bdefd55e38215a8430bbd7f3e5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "building",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_fdd2d3b31983d26c65626d8795ecea6b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_69f14a617c3bd8b435eac7b3510b2765 = $(`<div id="html_69f14a617c3bd8b435eac7b3510b2765" style="width: 100.0%; height: 100.0%;"><b>Gunungkidul</b></div>`)[0];
+                popup_fdd2d3b31983d26c65626d8795ecea6b.setContent(html_69f14a617c3bd8b435eac7b3510b2765);
+            
+        
+
+        marker_421a4dbf7b17783f0dc81d7f690b69e2.bindPopup(popup_fdd2d3b31983d26c65626d8795ecea6b)
+        ;
+
+        
+    
+    
+            marker_421a4dbf7b17783f0dc81d7f690b69e2.bindTooltip(
+                `<div>
+                     Gunungkidul
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_421a4dbf7b17783f0dc81d7f690b69e2.setIcon(icon_ade9c0bdefd55e38215a8430bbd7f3e5);
+            
+</script>
+</html>

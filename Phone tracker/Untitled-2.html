@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Representasi BPMN dengan HTML & CSS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 20px;
+        }
+
+        .bpmn-container {
+            max-width: 1000px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a253c;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        /* Flex container untuk menampung semua 'Lanes' */
+        .bpmn-flow {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* Styling untuk setiap 'Lane' (Aktor) */
+        .bpmn-lane {
+            flex: 1;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .bpmn-lane h2 {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* Styling untuk setiap 'Task' (kotak aktivitas) */
+        .bpmn-task, .bpmn-event, .bpmn-gateway {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border-left: 5px solid;
+            position: relative;
+        }
+
+        /* Panah ke bawah setelah setiap task */
+        .bpmn-task::after, .bpmn-event::after {
+            content: '▼';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #adb5bd;
+            font-size: 14px;
+        }
+        
+        .bpmn-task:last-child::after, .bpmn-event:last-child::after {
+            content: ''; /* Hapus panah untuk elemen terakhir */
+        }
+
+
+        /* Warna spesifik untuk setiap aktor */
+        .task-pengguna { border-color: #007bff; background-color: #e7f3ff; }
+        .task-sistem { border-color: #6f42c1; background-color: #f1edff; }
+        .task-admin { border-color: #28a745; background-color: #eaf6ec; }
+
+        /* Styling untuk Start/End Events */
+        .bpmn-event {
+            font-weight: 600;
+            text-align: center;
+        }
+        .event-start { border-color: #28a745; background-color: #eaf6ec; }
+        .event-end { border-color: #dc3545; background-color: #fbebee; }
+        .event-end::after { content: ''; }
+
+        /* Styling untuk Gateway (Keputusan) */
+        .bpmn-gateway {
+            border-color: #fd7e14;
+            background-color: #fff8e1;
+        }
+
+        .bpmn-gateway .path {
+            display: block;
+            margin-top: 8px;
+            font-style: italic;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bpmn-container">
+        <h1>Alur Proses: Kalender Akademik Seleksi Nasional</h1>
+
+        <div class="bpmn-flow">
+
+            <div class="bpmn-lane">
+                <h2>👤 Pengguna</h2>
+                <div class="bpmn-event event-start task-pengguna">Membuka Halaman Utama</div>
+                <div class="bpmn-task task-pengguna">Melihat Widget Kalender</div>
+                <div class="bpmn-task task-pengguna">Mengklik Tanggal yang Ditandai</div>
+                <div class="bpmn-task task-pengguna">Menerima Notifikasi Pengingat</div>
+                <div class="bpmn-event event-end task-pengguna">Mendapatkan Informasi</div>
+            </div>
+
+            <div class="bpmn-lane">
+                <h2>⚙️ Sistem</h2>
+                <div class="bpmn-task task-sistem">Mengambil Data Jadwal dari Database</div>
+                <div class="bpmn-task task-sistem">Menampilkan Kalender & Menandai Tanggal</div>
+                <div class="bpmn-task task-sistem">Menampilkan Pop-up Detail Acara</div>
+                <div class="bpmn-task task-sistem">Proses Otomatis Harian: Cek Jadwal Mendekat & Kirim Notifikasi</div>
+                 <div class="bpmn-gateway task-sistem">
+                    Keputusan: Data valid?
+                    <span class="path"><strong>Path Ya:</strong> Simpan data.</span>
+                    <span class="path"><strong>Path Tidak:</strong> Tampilkan error.</span>
+                </div>
+            </div>
+
+            <div class="bpmn-lane">
+                <h2>🛠️ Administrator</h2>
+                <div class="bpmn-event event-start task-admin">Login ke Panel Admin</div>
+                <div class="bpmn-task task-admin">Mengelola Data Jadwal (Tambah/Ubah/Hapus)</div>
+                <div class="bpmn-task task-admin">Menyimpan Perubahan</div>
+                <div class="bpmn-event event-end task-admin">Data Berhasil Diperbarui</div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

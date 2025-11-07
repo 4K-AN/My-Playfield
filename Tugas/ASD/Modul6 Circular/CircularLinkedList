@@ -1,0 +1,113 @@
+import java.util.*;
+
+class Node {
+    int data;
+    Node next;
+    
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+class CircularLinkedList {
+    Node head;
+    
+    void add(int data) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            head = newNode;
+            newNode.next = head; // Circular ke diri sendiri
+        } else {
+            Node temp = head;
+            while (temp.next != head) {
+                temp = temp.next;
+            }
+            temp.next = newNode;
+            newNode.next = head; // Circular ke head
+        }
+    }
+    
+    List<Integer> toList() {
+        List<Integer> list = new ArrayList<>();
+        if (head == null) return list;
+        
+        Node temp = head;
+        do {
+            list.add(temp.data);
+            temp = temp.next;
+        } while (temp != head);
+        
+        return list;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        int n = sc.nextInt();
+        
+        // Validasi jumlah petugas
+        if (n < 1 || n > 50) {
+            System.out.println("Error: jumlah petugas harus antara 1 hingga 50");
+            sc.close();
+            return;
+        }
+        
+        CircularLinkedList cll = new CircularLinkedList();
+        int sum = 0;
+        int max = Integer.MIN_VALUE;
+        int min = Integer.MAX_VALUE;
+        
+        // Input dan validasi data sampah
+        for (int i = 0; i < n; i++) {
+            int sampah = sc.nextInt();
+            
+            // Validasi jumlah sampah
+            if (sampah <= 0 || sampah > 100) {
+                System.out.println("Error: jumlah sampah tidak valid");
+                sc.close();
+                return;
+            }
+            
+            cll.add(sampah);
+            sum += sampah;
+            max = Math.max(max, sampah);
+            min = Math.min(min, sampah);
+        }
+        
+        // Hitung rata-rata
+        double avg = (double) sum / n;
+        
+        // Ambil semua data dari circular linked list
+        List<Integer> allData = cll.toList();
+        
+        // Filter data lebih dari rata-rata dan sort
+        List<Integer> aboveAvg = new ArrayList<>();
+        for (int val : allData) {
+            if (val > avg) {
+                aboveAvg.add(val);
+            }
+        }
+        Collections.sort(aboveAvg);
+        
+        // Filter data genap
+        List<Integer> evenNumbers = new ArrayList<>();
+        for (int val : allData) {
+            if (val % 2 == 0) {
+                evenNumbers.add(val);
+            }
+        }
+        
+        // Output hasil
+        System.out.printf("Rata-rata sampah: %.2f%n", avg);
+        System.out.println("Jumlah maksimum: " + max);
+        System.out.println("Jumlah minimum: " + min);
+        System.out.println("Lebih dari rata-rata: " + aboveAvg);
+        System.out.println("Jumlah genap: " + evenNumbers);
+        System.out.println("Urutan petugas: " + allData);
+        
+        sc.close();
+    }
+}

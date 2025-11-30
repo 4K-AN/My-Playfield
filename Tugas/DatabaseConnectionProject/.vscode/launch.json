@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "main",
+            "request": "launch",
+            "mainClass": "main",
+            "projectName": "database-connection-project"
+        },
+        {
+            "type": "java",
+            "name": "main",
+            "request": "launch",
+            "mainClass": "main",
+            "projectName": "DatabaseConnectionProject",
+            "preLaunchTask": "java: build",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

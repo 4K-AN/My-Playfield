@@ -2,6 +2,16 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "java: clean",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Remove-Item target\\classes\\*.class -Force -ErrorAction SilentlyContinue; Remove-Item bin\\*.class -Force -ErrorAction SilentlyContinue"
+            ],
+            "problemMatcher": []
+        },
+        {
             "label": "java: build",
             "type": "shell",
             "command": "javac",
@@ -11,14 +21,15 @@
                 "-cp",
                 "mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar",
                 "-d",
-                "bin",
+                "target/classes",
                 "src/main.java"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$javac"]
+            "problemMatcher": ["$javac"],
+            "dependsOn": "java: clean"
         },
         {
             "label": "java: run",
@@ -26,7 +37,7 @@
             "command": "java",
             "args": [
                 "-cp",
-                "bin;mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar",
+                "target/classes;mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar",
                 "main"
             ],
             "dependsOn": ["java: build"],

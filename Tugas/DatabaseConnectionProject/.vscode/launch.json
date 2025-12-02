@@ -10,12 +10,21 @@
         },
         {
             "type": "java",
-            "name": "main",
+            "name": "main (with pre-compile)",
             "request": "launch",
             "mainClass": "main",
             "projectName": "DatabaseConnectionProject",
             "preLaunchTask": "java: build",
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "java",
+            "name": "main (direct)",
+            "request": "launch",
+            "mainClass": "main",
+            "projectName": "DatabaseConnectionProject",
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "-cp target/classes;mysql-connector-j-9.5.0/mysql-connector-j-9.5.0.jar"
         }
     ]
 }

@@ -17,5 +17,10 @@
     ],
     "java.configuration.maven.compiler.source": "17",
     "java.configuration.maven.compiler.target": "17",
-    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m"
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m",
+    "java.autobuild.enabled": false,
+    "files.exclude": {
+        "**/bin/**": false,
+        "**/target/classes/**": false
+    }
 }

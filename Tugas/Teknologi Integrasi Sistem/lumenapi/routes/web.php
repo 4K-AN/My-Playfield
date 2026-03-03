@@ -19,6 +19,10 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->get('/home', function () use ($router) {
+    return view('home', ['version' => $router->app->version()]);
+});
+
 $router->get('/key', function () {
     return Str::random(32);
 });

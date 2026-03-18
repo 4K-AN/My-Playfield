@@ -10,24 +10,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
-fun Halamanutama() {
+fun ContactUsScreen() {
     val context = LocalContext.current
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 32.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        ProfilMahasiswa()
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-
+        Text(text = "Halaman Bantuan", fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            val url = "https://wa.me/6281234567890"
+            val url = "https://wa.me/6281234567890" 
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             context.startActivity(intent)
         }) {

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
-class HomeController extends Controller
+class DashboardController extends Controller
 {
     public function index()
     {
-        return "Welcome to Todo API Starter Project!";
+        return "Ini adalah halaman Dashboard!";
     }
 }

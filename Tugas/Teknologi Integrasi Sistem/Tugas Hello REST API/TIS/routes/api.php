@@ -15,7 +15,7 @@ Route::get('/info', function () {
         "developer" => "Teknologi Informasi"
     ]);
 });
-
+    
 // b. Route User
 Route::get('/user/{name}', function ($name) {
     return response()->json([
@@ -44,3 +44,10 @@ Route::get('/calc/{a}/{b}/{op}', function ($a, $b, $op) {
         "result" => $result
     ]);
 });
+
+// d. Route Student CRUD
+Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
+Route::get('/students', [App\Http\Controllers\StudentController::class, 'index']);
+Route::post('/students', [App\Http\Controllers\StudentController::class, 'store']);
+Route::put('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
+Route::delete('/students/{nim}', [App\Http\Controllers\StudentController::class, 'destroy']);

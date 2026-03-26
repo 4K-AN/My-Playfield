@@ -131,7 +131,7 @@ class StudentController extends Controller
             $match = false;
             
            
-            if ($nim && $student['nim'] === $nim) {
+            if ($nim && $student['nim'] == $nim) {
                 $match = true;
             }
     

@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    /**
-     * Display a listing of students (READ)
-     */
+    
     public function index()
     {
         $students = [
@@ -34,9 +32,7 @@ class StudentController extends Controller
         return response()->json($students);
     }
 
-    /**
-     * Store a newly created student (CREATE)
-     */
+    
     public function store(Request $request)
     {
         try {
@@ -46,7 +42,6 @@ class StudentController extends Controller
                 'mataKuliah' => 'required|array',
                 'mataKuliah.*.kode' => 'required|regex:/^[A-Z]{3}[0-9]{5}$/',
                 'mataKuliah.*.nama' => 'required|string|max:50',
-                'mataKuliah.*.sks' => 'required|numeric|min:1|max:6',
                 'mataKuliah.*.sks' => 'required|numeric|min:1|max:6',
             ]);
         } catch (\Illuminate\Validation\ValidationException $th) {
@@ -62,9 +57,7 @@ class StudentController extends Controller
         ], 201);
     }
 
-    /**
-     * Update the specified student (UPDATE)
-     */
+    
     public function update(Request $request, $nim)
     {
         try {
@@ -88,9 +81,7 @@ class StudentController extends Controller
         ]);
     }
 
-    /**
-     * Delete the specified student (DELETE)
-     */
+    
     public function destroy($nim)
     {
         return response()->json([
@@ -98,24 +89,21 @@ class StudentController extends Controller
         ]);
     }
 
-    /**
-     * Search students by NIM, Nama, or Kode MK (SEARCH)
-     */
     public function search(Request $request)
     {
-        // Mengambil parameter dari URL
+    
         $nim = $request->query('nim');
         $nama = $request->query('nama');
         $kode_mk = $request->query('kode_mk');
 
-        // Jika tidak ada satupun parameter yang dikirim, kembalikan pesan error
+       
         if (!$nim && !$nama && !$kode_mk) {
             return response()->json([
                 "error" => "Parameter tidak ditemukan. Harap masukkan nim, nama, atau kode_mk."
             ], 400);
         }
 
-        // Array JSON Dummy Mahasiswa
+    
         $students = [
             [
                 "nim" => "245150707111012",
@@ -138,19 +126,19 @@ class StudentController extends Controller
 
         $results = [];
 
-        // Logika filter pencarian
+      
         foreach ($students as $student) {
             $match = false;
             
-            // Pengecekan berdasarkan NIM (harus sama persis)
+           
             if ($nim && $student['nim'] === $nim) {
                 $match = true;
             }
-            // Pengecekan berdasarkan Nama (mengandung kata kunci / case-insensitive)
+    
             elseif ($nama && stripos($student['nama'], $nama) !== false) {
                 $match = true;
             }
-            // Pengecekan berdasarkan Kode MK yang diambil
+          
             elseif ($kode_mk) {
                 foreach ($student['mataKuliah'] as $mk) {
                     if ($mk['kode'] === $kode_mk) {
@@ -160,7 +148,7 @@ class StudentController extends Controller
                 }
             }
 
-            // Jika mahasiswa memenuhi kriteria pencarian, simpan ke array results
+        
             if ($match) {
                 $results[] = $student;
             }

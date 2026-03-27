@@ -20,8 +20,10 @@ class MainActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Column(modifier = Modifier.padding(innerPadding)) {
                         
-                        LazyColumnExample()
+                        // LazyColumnExample()
                         // EagerLayoutExample()
+                        // LazyGridExample()
+                        StaggeredGalleryExample()
                         
                     }
                 }

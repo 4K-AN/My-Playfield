@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,12 +27,12 @@ fun EagerLayoutExample() {
     ) {
 
         menuMakanan.forEach { menu ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "${menu.nama} - ${menu.harga}",
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+            Text(
+                text = "${menu.nama} - ${menu.harga}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
         }
     }
 }

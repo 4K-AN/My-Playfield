@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -24,12 +23,12 @@ fun LazyColumnExample() {
     ) {
 
         items(menuMakanan) { menu ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "${menu.nama} - ${menu.harga}",
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+            Text(
+                text = "${menu.nama} - ${menu.harga}",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
         }
     }
 }

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,11 +27,11 @@ fun LazyGridExample() {
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(menuMakanan) { menu ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = menu.nama, fontWeight = FontWeight.Bold)
-                    Text(text = menu.harga)
-                }
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)) {
+                Text(text = menu.nama, fontWeight = FontWeight.Bold)
+                Text(text = menu.harga)
             }
         }
     }

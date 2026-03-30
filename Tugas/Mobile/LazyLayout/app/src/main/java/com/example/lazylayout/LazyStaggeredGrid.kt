@@ -17,13 +17,12 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.lazylayout.ui.theme.LazyLayoutTheme
 
-// Kita minta 30 gambar dari internet dengan ukuran bervariasi
 val fotoGaleri = List(30) { "https://picsum.photos/300/${(250..550).random()}" }
 
 @Composable
 fun StaggeredGalleryExample() {
     LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(2), // 2 kolom sejajar
+        columns = StaggeredGridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         verticalItemSpacing = 12.dp,

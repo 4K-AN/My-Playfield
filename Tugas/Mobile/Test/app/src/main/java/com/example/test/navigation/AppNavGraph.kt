@@ -1,16 +1,13 @@
 package com.example.test.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.test.DetailsScreen
 import com.example.test.HomeScreen
-
-object Routes {
-    const val home = "home"
-    const val details = "details"
-}
 
 @Composable
 fun NavigationDemoApp() {
@@ -22,12 +19,23 @@ fun NavigationDemoApp() {
     ) {
         composable(Routes.home) {
             HomeScreen(
-                onNavigateToDetails = { navController.navigate(Routes.details) }
+                onOpenDetail = { id -> 
+                    navController.navigate("${Routes.detailBase}/$id") 
+                }
             )
         }
-        composable(Routes.details) {
+        
+        composable(
+            route = Routes.detail,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getInt("id") ?: 0
             DetailsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                itemId = id,
+                onBack = { navController.popBackStack() }
+
+                
+                
             )
         }
     }

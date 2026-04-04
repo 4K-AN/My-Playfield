@@ -28,30 +28,30 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(onNavigateToDetails: () -> Unit) {
+fun HomeScreen(onOpenDetail: (Int) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Home Screen")
-        Button(onClick = onNavigateToDetails) {
-            Text(text = "Go to Details")
+        Button(onClick = { onOpenDetail(123) }) {
+            Text(text = "Go to Details with ID 123")
         }
     }
 }
 
 @Composable
-fun DetailsScreen(onNavigateBack: () -> Unit) {
+fun DetailsScreen(itemId: Int, onBack: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Details Screen")
-        Button(onClick = onNavigateBack) {
+        Text(text = "Item ID: $itemId")
+        Button(onClick = onBack) {
             Text(text = "Back")
         }
     }
 }
-

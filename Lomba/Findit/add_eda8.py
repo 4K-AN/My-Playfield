@@ -1,0 +1,255 @@
+import json
+
+with open("e:/GIT/My-Playfield/Lomba/Findit/dac_find_it_2026.ipynb", "r", encoding="utf-8") as f:
+    nb = json.load(f)
+
+def src(*lines):
+    result = [line + '\n' for line in lines]
+    if result:
+        result[-1] = result[-1].rstrip('\n')
+    return result
+
+eda8_cells = [
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "## EDA 8 (Final): Class Imbalance & Keputusan Preprocessing\n",
+            "\n",
+            "**Ini adalah EDA terakhir.** Tujuannya:\n",
+            "1. Analisis class imbalance secara kuantitatif\n",
+            "2. Merangkum semua keputusan preprocessing dari EDA 1-7\n",
+            "3. Menghasilkan konfigurasi training final yang siap dijalankan\n",
+            "\n",
+            "| EDA | Temuan Kunci | Keputusan |\n",
+            "|-----|-------------|----------|\n",
+            "| EDA 1 | Ukuran & aspect ratio sangat bervariasi | **PadToSquare** sebelum resize |\n",
+            "| EDA 3 | Visual artifacts berbeda per kelas | Augmentasi tekstur (blur, noise) |\n",
+            "| EDA 4 | 16 file < 10KB, 15 dari fake_mannequin | **Cek threshold filesize** |\n",
+            "| EDA 5 | fake_screen paling gelap, ColorJitter penting | **ColorJitter** tetap dipakai |\n",
+            "| EDA 6 | Pola FFT berbeda per kelas | EfficientNet cukup, tidak perlu custom FFT |\n",
+            "| EDA 7 | fake_unknown paling blur, fake_mannequin & mask mirip | **WeightedSampler** krusial |"
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": src(
+            "import os, json",
+            "import numpy as np",
+            "import pandas as pd",
+            "import matplotlib.pyplot as plt",
+            "import matplotlib.gridspec as gridspec",
+            "",
+            "train_path = './dataset/train'",
+            "test_path  = './dataset/test'",
+            "classes    = sorted(os.listdir(train_path))",
+            "",
+            "# Hitung jumlah per kelas",
+            "counts = {}",
+            "for cls in classes:",
+            "    files = [f for f in os.listdir(os.path.join(train_path, cls))",
+            "             if f.lower().endswith(('.jpg','.jpeg','.png'))]",
+            "    counts[cls] = len(files)",
+            "",
+            "total = sum(counts.values())",
+            "print('=== DISTRIBUSI KELAS ===')",
+            "for cls, cnt in sorted(counts.items(), key=lambda x: -x[1]):",
+            "    bar = '█' * int(cnt / total * 50)",
+            "    pct = cnt / total * 100",
+            "    print(f'  {cls:20s}: {cnt:4d} ({pct:5.1f}%) {bar}')",
+            "print(f'  {\"TOTAL\":20s}: {total:4d}')",
+            "",
+            "# Imbalance ratio",
+            "max_cnt = max(counts.values())",
+            "min_cnt = min(counts.values())",
+            "print(f'\\nImbalance ratio (max/min): {max_cnt/min_cnt:.2f}x')",
+            "print(f'Kelas terbanyak : {max(counts, key=counts.get)} ({max_cnt})')",
+            "print(f'Kelas tersedikit: {min(counts, key=counts.get)} ({min_cnt})')"
+        )
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": src(
+            "# ── VISUALISASI CLASS IMBALANCE ──────────────────────────────────────────────",
+            "fig = plt.figure(figsize=(16, 10))",
+            "gs  = gridspec.GridSpec(2, 2, figure=fig, hspace=0.4, wspace=0.35)",
+            "",
+            "palette = ['#4CAF50','#FF5722','#2196F3','#9C27B0','#FF9800','#607D8B']",
+            "cls_list = sorted(counts.keys())",
+            "cnt_list = [counts[c] for c in cls_list]",
+            "short    = [c.replace('fake_','f_') for c in cls_list]",
+            "",
+            "# Kiri atas: Bar chart jumlah",
+            "ax1 = fig.add_subplot(gs[0, 0])",
+            "bars = ax1.bar(short, cnt_list, color=palette, edgecolor='white', linewidth=0.8)",
+            "for bar, cnt in zip(bars, cnt_list):",
+            "    ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 5,",
+            "             str(cnt), ha='center', va='bottom', fontsize=9, fontweight='bold')",
+            "ax1.set_title('Jumlah Gambar per Kelas', fontweight='bold')",
+            "ax1.set_ylabel('Jumlah Gambar')",
+            "ax1.tick_params(axis='x', rotation=25)",
+            "ax1.axhline(total/len(cls_list), color='red', linestyle='--', linewidth=1.5, label='Rata-rata')",
+            "ax1.legend(fontsize=9)",
+            "",
+            "# Kanan atas: Pie chart",
+            "ax2 = fig.add_subplot(gs[0, 1])",
+            "wedges, texts, autotexts = ax2.pie(",
+            "    cnt_list, labels=short, colors=palette, autopct='%1.1f%%',",
+            "    startangle=140, pctdistance=0.82)",
+            "for at in autotexts:",
+            "    at.set_fontsize(9)",
+            "ax2.set_title('Proporsi Kelas', fontweight='bold')",
+            "",
+            "# Kiri bawah: Weight yang akan dipakai WeightedSampler",
+            "ax3 = fig.add_subplot(gs[1, 0])",
+            "weights = [total / (len(cls_list) * counts[c]) for c in cls_list]",
+            "bars3 = ax3.bar(short, weights, color=palette, edgecolor='white', linewidth=0.8, alpha=0.85)",
+            "for bar, w in zip(bars3, weights):",
+            "    ax3.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.005,",
+            "             f'{w:.2f}', ha='center', va='bottom', fontsize=9, fontweight='bold')",
+            "ax3.set_title('Class Weight untuk CrossEntropyLoss\\n(semakin tinggi = semakin diprioritaskan)', fontweight='bold')",
+            "ax3.set_ylabel('Class Weight')",
+            "ax3.tick_params(axis='x', rotation=25)",
+            "",
+            "# Kanan bawah: Ringkasan keputusan teks",
+            "ax4 = fig.add_subplot(gs[1, 1])",
+            "ax4.axis('off')",
+            "decisions = [",
+            "    ('Resize Strategy',    'PadToSquare → Resize(224)',  '✓ EDA 1'),",
+            "    ('Low-quality Filter', 'Buang file < 10KB',          '✓ EDA 4'),",
+            "    ('Brightness Robust',  'ColorJitter (0.3)',           '✓ EDA 5'),",
+            "    ('Imbalance Handling', 'WeightedRandomSampler',      '✓ EDA 7'),",
+            "    ('Loss Function',      'CrossEntropyLoss + weights',  '✓ EDA 7'),",
+            "    ('Color Channel',      'Pertahankan RGB (no gray)',   '✓ EDA 5'),",
+            "    ('Backbone',           'EfficientNet-B0 (baseline)',  '✓ EDA 6'),",
+            "]",
+            "table = ax4.table(",
+            "    cellText=decisions,",
+            "    colLabels=['Keputusan', 'Implementasi', 'Sumber'],",
+            "    cellLoc='left', loc='center', bbox=[0, 0, 1, 1]",
+            ")",
+            "table.auto_set_font_size(False)",
+            "table.set_fontsize(9)",
+            "table.auto_set_column_width([0, 1, 2])",
+            "ax4.set_title('Ringkasan Keputusan Preprocessing', fontweight='bold', pad=10)",
+            "",
+            "plt.suptitle('EDA 8 – Class Imbalance & Final Preprocessing Decisions',",
+            "             fontsize=14, fontweight='bold')",
+            "plt.savefig('eda8_class_imbalance_final.png', dpi=120, bbox_inches='tight')",
+            "plt.show()",
+            "print('Plot disimpan sebagai eda8_class_imbalance_final.png')"
+        )
+    },
+    {
+        "cell_type": "markdown",
+        "metadata": {},
+        "source": [
+            "### Konfigurasi Training Final\n",
+            "Berikut adalah konfigurasi yang sudah di-validasi oleh seluruh EDA 1-8 dan siap dijalankan."
+        ]
+    },
+    {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": src(
+            "import os",
+            "import torchvision.transforms.functional as TF",
+            "from torchvision import transforms",
+            "from torch.utils.data import Dataset",
+            "from PIL import Image",
+            "import pandas as pd",
+            "",
+            "# ════════════════════════════════════════════════════════════════════",
+            "# KONFIGURASI FINAL (hasil validasi EDA 1-8)",
+            "# ════════════════════════════════════════════════════════════════════",
+            "TRAIN_PATH  = './dataset/train'",
+            "TEST_PATH   = './dataset/test'",
+            "IMG_SIZE    = 224",
+            "BATCH_SIZE  = 32",
+            "EPOCHS      = 15",
+            "LR          = 1e-4",
+            "N_FOLDS     = 5",
+            "MIN_FILE_KB = 10   # EDA 4: buang file < 10KB",
+            "",
+            "# ── Bangun DataFrame bersih ──────────────────────────────────────────",
+            "data = []",
+            "for label in os.listdir(TRAIN_PATH):",
+            "    folder = os.path.join(TRAIN_PATH, label)",
+            "    if not os.path.isdir(folder):",
+            "        continue",
+            "    for fname in os.listdir(folder):",
+            "        if not fname.lower().endswith(('.jpg','.jpeg','.png')):",
+            "            continue",
+            "        fpath   = os.path.join(folder, fname)",
+            "        fsize   = os.path.getsize(fpath) / 1024",
+            "        if fsize < MIN_FILE_KB:   # ← EDA 4: filter low-quality",
+            "            continue",
+            "        data.append({'path': fpath, 'label': label})",
+            "",
+            "df_final = pd.DataFrame(data)",
+            "label2idx = {l: i for i, l in enumerate(sorted(df_final['label'].unique()))}",
+            "idx2label = {i: l for l, i in label2idx.items()}",
+            "df_final['label_idx'] = df_final['label'].map(label2idx)",
+            "",
+            "print('=== DATASET FINAL (setelah filter) ===')",
+            "print(df_final['label'].value_counts())",
+            "print(f'\\nTotal: {len(df_final)} gambar')",
+            "",
+            "# ── Transform Final ──────────────────────────────────────────────────",
+            "class PadToSquare:",
+            "    def __call__(self, img):",
+            "        w, h = img.size",
+            "        m = max(w, h)",
+            "        pl = (m-w)//2; pr = m-w-pl",
+            "        pt = (m-h)//2; pb = m-h-pt",
+            "        return TF.pad(img, (pl, pt, pr, pb), 0, 'constant')",
+            "",
+            "TRAIN_TRANSFORM = transforms.Compose([",
+            "    PadToSquare(),                          # EDA 1: jaga aspect ratio",
+            "    transforms.Resize((IMG_SIZE, IMG_SIZE)),",
+            "    transforms.RandomHorizontalFlip(),",
+            "    transforms.RandomRotation(15),",
+            "    transforms.ColorJitter(                 # EDA 5: brightness bervariasi",
+            "        brightness=0.4, contrast=0.4, saturation=0.3, hue=0.1),",
+            "    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),",
+            "    transforms.RandomGrayscale(p=0.05),     # Kecil saja, sinyal warna penting (EDA 5)",
+            "    transforms.ToTensor(),",
+            "    transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225]),",
+            "    transforms.RandomErasing(p=0.3),",
+            "])",
+            "",
+            "VAL_TRANSFORM = transforms.Compose([",
+            "    PadToSquare(),",
+            "    transforms.Resize((IMG_SIZE, IMG_SIZE)),",
+            "    transforms.ToTensor(),",
+            "    transforms.Normalize([0.485,0.456,0.406],[0.229,0.224,0.225]),",
+            "])",
+            "",
+            "print('\\nKonfigurasi final siap! Lanjut ke Training.')"
+        )
+    }
+]
+
+# Sisipkan sebelum cell training
+insert_idx = len(nb["cells"])
+for i, cell in enumerate(nb["cells"]):
+    src_text = "".join(cell.get("source", []))
+    if "train_one_fold" in src_text or ("StratifiedKFold" in src_text and "for fold" in src_text):
+        insert_idx = i
+        break
+
+for j, cell in enumerate(eda8_cells):
+    nb["cells"].insert(insert_idx + j, cell)
+
+with open("e:/GIT/My-Playfield/Lomba/Findit/dac_find_it_2026.ipynb", "w", encoding="utf-8") as f:
+    json.dump(nb, f, indent=2, ensure_ascii=False)
+
+print(f"EDA 8 ditambahkan di posisi {insert_idx}. Total cells: {len(nb['cells'])}")

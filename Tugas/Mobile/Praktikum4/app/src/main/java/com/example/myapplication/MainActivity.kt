@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Menggunakan rememberSaveable agar kebal dari rotasi layar (Configuration Change)
+
                     var number by rememberSaveable { mutableStateOf(1) }
 
                     CounterScreen(

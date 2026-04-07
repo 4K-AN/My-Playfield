@@ -32,12 +32,12 @@ class MainActivity : ComponentActivity() {
                 val snackbarHostState = remember { SnackbarHostState() }
                 var number by remember { mutableStateOf(1) }
 
-                // LaunchedEffect(Unit) hanya dijalankan sekali saat pertama kali masuk ke komposisi
+
                 LaunchedEffect(Unit) {
                     number = Repo.getData()
                 }
 
-                // LaunchedEffect(number) dijalankan ulang setiap kali nilai 'number' berubah
+
                 LaunchedEffect(number) {
                     snackbarHostState.showSnackbar("Number $number is shown!")
                 }
@@ -60,7 +60,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// Komponen Anak tetap Stateless
 @Composable
 fun CounterScreen(modifier: Modifier, number: Int, label: String, onButtonClick: () -> Unit) {
     Column(modifier) {

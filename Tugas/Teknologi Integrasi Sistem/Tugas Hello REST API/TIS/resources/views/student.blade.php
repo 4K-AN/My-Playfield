@@ -230,14 +230,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>📚 Manajemen Data Mahasiswa</h1>
+        <h1>Manajemen Data Mahasiswa</h1>
         <p class="subtitle">REST API Client - Interaksi dengan Backend Laravel</p>
 
-        <!-- Error & Success Messages -->
         <div id="error-message" class="error"></div>
         <div id="success-message" class="success"></div>
 
-        <!-- Form Section -->
         <div class="form-section">
             <div class="form-group">
                 <input type="text" id="nim" placeholder="NIM (15 digit) - Contoh: 245150707111012">
@@ -250,14 +248,13 @@
             </div>
 
             <div class="button-group">
-                <button id="btn-get" onclick="getStudents()">📋 Tampilkan Semua</button>
-                <button id="btn-post" onclick="saveStudent()">💾 Simpan Mahasiswa</button>
-                <button id="btn-patch" onclick="updateStudentName()">✏️ Ubah Nama (PATCH)</button>
-                <button id="btn-delete" onclick="deleteStudent()">🗑️ Hapus Mahasiswa</button>
+                <button id="btn-get" onclick="getStudents()">Tampilkan Semua</button>
+                <button id="btn-post" onclick="saveStudent()">Simpan Mahasiswa</button>
+                <button id="btn-patch" onclick="updateStudentName()">Ubah Nama (PATCH)</button>
+                <button id="btn-delete" onclick="deleteStudent()">Hapus Mahasiswa</button>
             </div>
         </div>
 
-        <!-- Output Section -->
         <div class="output-section">
             <h2>Daftar Mahasiswa</h2>
             <div id="output-list"></div>

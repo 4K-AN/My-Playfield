@@ -7,6 +7,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        return "Welcome to Todo API Starter Project!";
+        // Serve the student management interface
+        return view('student');
     }
 }

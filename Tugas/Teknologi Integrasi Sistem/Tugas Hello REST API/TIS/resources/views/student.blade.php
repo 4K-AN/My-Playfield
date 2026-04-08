@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Client - Mahasiswa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .form-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        
+        .form-group input::placeholder {
+            color: #999;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #btn-get {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        #btn-get:hover {
+            background-color: #218838;
+        }
+        
+        #btn-post {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        #btn-post:hover {
+            background-color: #0056b3;
+        }
+        
+        #btn-patch {
+            background-color: #ffc107;
+            color: black;
+        }
+        
+        #btn-patch:hover {
+            background-color: #e0a800;
+        }
+        
+        #btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        #btn-delete:hover {
+            background-color: #c82333;
+        }
+        
+        .error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+        
+        .success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .success.show {
+            display: block;
+        }
+        
+        .output-section {
+            margin-top: 30px;
+        }
+        
+        .output-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        #output-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .student-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .student-card:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .student-card strong {
+            color: #007bff;
+            display: block;
+            margin-top: 8px;
+        }
+        
+        .student-card strong:first-child {
+            margin-top: 0;
+        }
+        
+        .student-card ul {
+            margin: 10px 0 0 20px;
+            padding-left: 0;
+        }
+        
+        .student-card li {
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Manajemen Data Mahasiswa</h1>
+        <p class="subtitle">REST API Client - Interaksi dengan Backend Laravel</p>
+
+        <!-- Error & Success Messages -->
+        <div id="error-message" class="error"></div>
+        <div id="success-message" class="success"></div>
+
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="form-group">
+                <input type="text" id="nim" placeholder="NIM (15 digit) - Contoh: 245150707111012">
+                <input type="text" id="nama" placeholder="Nama Mahasiswa - Contoh: Akhmad Syafiul Anam">
+            </div>
+            <div class="form-group">
+                <input type="text" id="kode" placeholder="Kode MK (Contoh: CIE61205)">
+                <input type="text" id="nama_mk" placeholder="Nama Mata Kuliah - Contoh: PemWeb">
+                <input type="number" id="sks" placeholder="SKS (1-6)" min="1" max="6">
+            </div>
+
+            <div class="button-group">
+                <button id="btn-get" onclick="getStudents()">📋 Tampilkan Semua</button>
+                <button id="btn-post" onclick="saveStudent()">💾 Simpan Mahasiswa</button>
+                <button id="btn-patch" onclick="updateStudentName()">✏️ Ubah Nama (PATCH)</button>
+                <button id="btn-delete" onclick="deleteStudent()">🗑️ Hapus Mahasiswa</button>
+            </div>
+        </div>
+
+        <!-- Output Section -->
+        <div class="output-section">
+            <h2>Daftar Mahasiswa</h2>
+            <div id="output-list"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ asset('app.js') }}"></script>
+</body>
+</html>

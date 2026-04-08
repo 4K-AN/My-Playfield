@@ -1,4 +1,4 @@
-// Konfigurasi dasar Axios
+
 const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/api',
     headers: { 'Content-Type': 'application/json' }
@@ -8,19 +8,19 @@ const outputList = document.getElementById('output-list');
 const errorDiv = document.getElementById('error-message');
 const successDiv = document.getElementById('success-message');
 
-// Fungsi untuk membersihkan error sebelumnya
+
 function clearError() { 
     errorDiv.innerHTML = '';
     errorDiv.classList.remove('show');
 }
 
-// Fungsi untuk membersihkan success message sebelumnya
+
 function clearSuccess() {
     successDiv.innerHTML = '';
     successDiv.classList.remove('show');
 }
 
-// Fungsi untuk menampilkan success message
+
 function showSuccess(message) {
     successDiv.innerHTML = `<strong>Berhasil:</strong> ${message}`;
     successDiv.classList.add('show');
@@ -29,7 +29,7 @@ function showSuccess(message) {
     }, 3000);
 }
 
-// Fungsi untuk merender data JSON menjadi list elemen HTML
+
 function renderList(students) {
     outputList.innerHTML = '';
     if (students.length === 0) {
@@ -58,11 +58,11 @@ function renderList(students) {
     });
 }
 
-// Fungsi untuk menangkap dan menampilkan error validasi ke layar
+
 function showError(error) {
     clearSuccess();
     if (error.response && error.response.data) {
-        // Menggabungkan pesan error dari backend Laravel
+      
         if (error.response.data.errors) {
             let errMessages = Object.values(error.response.data.errors).flat().join('<br>');
             errorDiv.innerHTML = `<strong>Error Validasi:</strong><br>${errMessages}`;
@@ -79,9 +79,6 @@ function showError(error) {
     errorDiv.classList.add('show');
 }
 
-// --- FUNGSI CRUD MENGGUNAKAN AXIOS ---
-
-// 1. READ (Ambil semua data)
 function getStudents() {
     clearError();
     clearSuccess();
@@ -96,7 +93,7 @@ function getStudents() {
         });
 }
 
-// 2. CREATE (Simpan data baru)
+
 function saveStudent() {
     clearError();
     clearSuccess();
@@ -106,7 +103,7 @@ function saveStudent() {
     const nama_mk = document.getElementById('nama_mk').value;
     const sks = document.getElementById('sks').value;
 
-    // Validasi input di frontend
+  
     if (!nim || !nama || !kode || !nama_mk || !sks) {
         showError({
             response: {
@@ -133,13 +130,13 @@ function saveStudent() {
     api.post('/students', data)
         .then(response => {
             showSuccess('Mahasiswa berhasil disimpan!');
-            // Clear form
+        
             document.getElementById('nim').value = '';
             document.getElementById('nama').value = '';
             document.getElementById('kode').value = '';
             document.getElementById('nama_mk').value = '';
             document.getElementById('sks').value = '';
-            // Refresh tabel setelah simpan
+        
             getStudents();
         })
         .catch(error => {
@@ -148,7 +145,6 @@ function saveStudent() {
         });
 }
 
-// 3. UPDATE PATCH (Ubah nama berdasarkan NIM)
 function updateStudentName() {
     clearError();
     clearSuccess();
@@ -192,7 +188,7 @@ function updateStudentName() {
         });
 }
 
-// 4. DELETE (Hapus data berdasarkan NIM)
+
 function deleteStudent() {
     clearError();
     clearSuccess();

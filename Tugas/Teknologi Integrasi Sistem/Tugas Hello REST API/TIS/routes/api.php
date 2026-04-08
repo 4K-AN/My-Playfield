@@ -50,4 +50,5 @@ Route::get('/students/search', [App\Http\Controllers\StudentController::class, '
 Route::get('/students', [App\Http\Controllers\StudentController::class, 'index']);
 Route::post('/students', [App\Http\Controllers\StudentController::class, 'store']);
 Route::put('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
+Route::patch('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
 Route::delete('/students/{nim}', [App\Http\Controllers\StudentController::class, 'destroy']);

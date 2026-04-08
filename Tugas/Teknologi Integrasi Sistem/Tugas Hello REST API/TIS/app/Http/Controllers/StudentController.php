@@ -1,37 +1,43 @@
-// NIM 245150707111012 , NAMA : AKHMAD SYAFIUL ANAM
-
 <?php
+// NIM 245150707111012 , NAMA : AKHMAD SYAFIUL ANAM
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+// Static data storage (dalam production gunakan database)
 class StudentController extends Controller
 {
-    
+    private static $students = [];
+
     public function index()
     {
-        $students = [
-            [
-                "nim" => "245150707111012",
-                "nama" => "Citra Dewi",
-                "mataKuliah" => [
-                    ["kode" => "CIE61205", "nama" => "PemWeb", "sks" => 3],
-                    ["kode" => "COM60015", "nama" => "MatDis", "sks" => 2]
+        // Return stored data atau default data jika kosong
+        $stored = session('students', []);
+        if (empty($stored)) {
+            $stored = [
+                [
+                    "nim" => "245150707111012",
+                    "nama" => "Citra Dewi",
+                    "mataKuliah" => [
+                        ["kode" => "CIE61205", "nama" => "PemWeb", "sks" => 3],
+                        ["kode" => "COM60015", "nama" => "MatDis", "sks" => 2]
+                    ]
+                ],
+                [
+                    "nim" => "245150707111013",
+                    "nama" => "Andy Lau",
+                    "mataKuliah" => [
+                        ["kode" => "CIE61205", "nama" => "PemWeb", "sks" => 3],
+                        ["kode" => "CIE61206", "nama" => "JarKom", "sks" => 3],
+                        ["kode" => "CIE61208", "nama" => "BasDat", "sks" => 3],
+                    ]
                 ]
-            ],
-            [
-                "nim" => "245150707111012",
-                "nama" => "Andy Lau",
-                "mataKuliah" => [
-                    ["kode" => "CIE61205", "nama" => "PemWeb", "sks" => 3],
-                    ["kode" => "CIE61206", "nama" => "JarKom", "sks" => 3],
-                    ["kode" => "CIE61208", "nama" => "BasDat", "sks" => 3],
-                ]
-            ]
-        ];
+            ];
+            session(['students' => $stored]);
+        }
 
-        return response()->json($students);
+        return response()->json($stored);
     }
 
     

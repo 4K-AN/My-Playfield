@@ -8,6 +8,8 @@ const outputList = document.getElementById('output-list');
 const errorDiv = document.getElementById('error-message');
 const successDiv = document.getElementById('success-message');
 
+console.log('✅ app.js loaded successfully');
+
 // Fungsi untuk membersihkan error/success sebelumnya
 function clearMessages() {
     errorDiv.innerHTML = '';
@@ -16,11 +18,22 @@ function clearMessages() {
     successDiv.classList.remove('show');
 }
 
+// Fungsi untuk reset form
+function clearForm() {
+    console.log('🧹 Clearing form');
+    document.getElementById('nim').value = '';
+    document.getElementById('nama').value = '';
+    document.getElementById('kode').value = '';
+    document.getElementById('nama_mk').value = '';
+    document.getElementById('sks').value = '';
+}
+
 // Fungsi untuk menampilkan pesan sukses
 function showSuccess(message) {
     clearMessages();
     successDiv.innerHTML = `<strong>✓ Sukses:</strong> ${message}`;
     successDiv.classList.add('show');
+    console.log('✅ ' + message);
     setTimeout(() => {
         successDiv.classList.remove('show');
     }, 5000);
@@ -34,6 +47,8 @@ function renderList(students) {
         outputList.innerHTML = '<div class="no-data">📭 Belum ada data mahasiswa.</div>';
         return;
     }
+    
+    console.log('📋 Rendering ' + students.length + ' students');
     
     students.forEach((std, index) => {
         let mkHtml = '<ul>';
@@ -60,7 +75,11 @@ function renderList(students) {
 function showError(error) {
     clearMessages();
     
+    console.error('❌ Error occurred:', error);
+    
     if (error.response && error.response.data) {
+        console.error('Response data:', error.response.data);
+        
         // Jika ada response dari server
         if (error.response.data.errors) {
             // Menggabungkan pesan error dari backend Laravel
@@ -92,12 +111,15 @@ function getStudents() {
     clearMessages();
     outputList.innerHTML = '<div class="loading">⏳ Mengambil data...</div>';
     
+    console.log('🔍 Fetching students...');
     api.get('/students')
         .then(response => {
+            console.log('✅ Fetched successfully:', response.data);
             renderList(response.data);
             showSuccess('Data mahasiswa berhasil dimuat');
         })
         .catch(error => {
+            console.error('❌ Fetch failed:', error);
             showError(error);
             outputList.innerHTML = '<div class="no-data">📭 Gagal mengambil data</div>';
         });
@@ -113,10 +135,13 @@ function saveStudent() {
     const nama_mk = document.getElementById('nama_mk').value.trim();
     const sks = document.getElementById('sks').value;
     
+    console.log('📝 Save attempt - NIM:', nim, 'Nama:', nama, 'Kode:', kode, 'Nama MK:', nama_mk, 'SKS:', sks);
+    
     // Validasi di client-side
     if (!nim || !nama || !kode || !nama_mk || !sks) {
-        errorDiv.innerHTML = `<strong>❌ Error Validasi:</strong><br>
-            Semua field harus diisi!`;
+        const msg = 'Semua field harus diisi!';
+        console.warn('⚠️ Validation failed:', msg);
+        errorDiv.innerHTML = `<strong>❌ Error Validasi:</strong><br>${msg}`;
         errorDiv.classList.add('show');
         return;
     }
@@ -131,21 +156,28 @@ function saveStudent() {
         }]
     };
 
+    console.log('📤 Sending POST request:', data);
     outputList.innerHTML = '<div class="loading">⏳ Menyimpan data...</div>';
 
     api.post('/students', data)
         .then(response => {
+            console.log('✅ POST Success:', response);
+            clearForm();
             showSuccess('Mahasiswa berhasil disimpan!');
-            // Clear form
-            document.getElementById('nim').value = '';
-            document.getElementById('nama').value = '';
-            document.getElementById('kode').value = '';
-            document.getElementById('nama_mk').value = '';
-            document.getElementById('sks').value = '';
-            // Refresh data
-            setTimeout(() => getStudents(), 500);
+            // Refresh data dengan delay lebih lama
+            setTimeout(() => {
+                console.log('🔄 Refreshing list after create...');
+                getStudents();
+            }, 800);
         })
-        .catch(error => showError(error));
+        .catch(error => {
+            console.error('❌ POST Failed:', error);
+            if (error.response) {
+                console.error('Response status:', error.response.status);
+                console.error('Response data:', error.response.data);
+            }
+            showError(error);
+        });
 }
 
 // 3. UPDATE PATCH (Ubah nama berdasarkan NIM)
@@ -155,29 +187,41 @@ function updateStudentName() {
     const nim = document.getElementById('nim').value.trim();
     const namaBaru = document.getElementById('nama').value.trim();
 
+    console.log('✏️ Update attempt - NIM:', nim, 'New Name:', namaBaru);
+
     if(!nim) {
-        errorDiv.innerHTML = `<strong>❌ Error:</strong><br>
-            Harap isi kolom NIM sebagai target perubahan!`;
+        const msg = 'Harap isi kolom NIM sebagai target perubahan!';
+        console.warn('⚠️ ' + msg);
+        errorDiv.innerHTML = `<strong>❌ Error:</strong><br>${msg}`;
         errorDiv.classList.add('show');
         return;
     }
     
     if(!namaBaru) {
-        errorDiv.innerHTML = `<strong>❌ Error:</strong><br>
-            Harap isi kolom Nama dengan nama baru!`;
+        const msg = 'Harap isi kolom Nama dengan nama baru!';
+        console.warn('⚠️ ' + msg);
+        errorDiv.innerHTML = `<strong>❌ Error:</strong><br>${msg}`;
         errorDiv.classList.add('show');
         return;
     }
 
     outputList.innerHTML = '<div class="loading">⏳ Mengubah nama...</div>';
 
+    console.log('📤 Sending PATCH request to /students/' + nim);
     api.patch(`/students/${nim}`, { nama: namaBaru })
         .then(response => {
+            console.log('✅ PATCH Success:', response);
+            clearForm();
             showSuccess(`Nama mahasiswa (NIM: ${nim}) berhasil diperbarui!`);
-            document.getElementById('nama').value = '';
-            setTimeout(() => getStudents(), 500);
+            setTimeout(() => {
+                console.log('🔄 Refreshing list after update...');
+                getStudents();
+            }, 800);
         })
-        .catch(error => showError(error));
+        .catch(error => {
+            console.error('❌ PATCH Failed:', error);
+            showError(error);
+        });
 }
 
 // 4. DELETE (Hapus data berdasarkan NIM)
@@ -186,29 +230,42 @@ function deleteStudent() {
     
     const nim = document.getElementById('nim').value.trim();
 
+    console.log('🗑️  Delete attempt - NIM:', nim);
+
     if(!nim) {
-        errorDiv.innerHTML = `<strong>❌ Error:</strong><br>
-            Harap isi kolom NIM yang akan dihapus!`;
+        const msg = 'Harap isi kolom NIM yang akan dihapus!';
+        console.warn('⚠️ ' + msg);
+        errorDiv.innerHTML = `<strong>❌ Error:</strong><br>${msg}`;
         errorDiv.classList.add('show');
         return;
     }
 
     if(!confirm(`Apakah Anda yakin ingin menghapus mahasiswa dengan NIM: ${nim}?`)) {
+        console.log('⚠️ Delete cancelled by user');
         return;
     }
 
     outputList.innerHTML = '<div class="loading">⏳ Menghapus data...</div>';
 
+    console.log('📤 Sending DELETE request to /students/' + nim);
     api.delete(`/students/${nim}`)
         .then(response => {
+            console.log('✅ DELETE Success:', response);
+            clearForm();
             showSuccess(`Mahasiswa dengan NIM ${nim} berhasil dihapus!`);
-            document.getElementById('nim').value = '';
-            setTimeout(() => getStudents(), 500);
+            setTimeout(() => {
+                console.log('🔄 Refreshing list after delete...');
+                getStudents();
+            }, 800);
         })
-        .catch(error => showError(error));
+        .catch(error => {
+            console.error('❌ DELETE Failed:', error);
+            showError(error);
+        });
 }
 
 // Load data saat halaman pertama kali dibuka
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - fetching initial data');
     getStudents();
 });

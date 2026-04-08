@@ -1,4 +1,4 @@
-// Konfigurasi dasar Axios
+
 const api = axios.create({
     baseURL: 'http://127.0.0.1:8000/api',
     headers: { 'Content-Type': 'application/json' }
@@ -10,7 +10,7 @@ const successDiv = document.getElementById('success-message');
 
 console.log('✅ app.js loaded successfully');
 
-// Fungsi untuk membersihkan error/success sebelumnya
+
 function clearMessages() {
     errorDiv.innerHTML = '';
     errorDiv.classList.remove('show');
@@ -18,7 +18,7 @@ function clearMessages() {
     successDiv.classList.remove('show');
 }
 
-// Fungsi untuk reset form
+
 function clearForm() {
     console.log('🧹 Clearing form');
     document.getElementById('nim').value = '';
@@ -28,7 +28,7 @@ function clearForm() {
     document.getElementById('sks').value = '';
 }
 
-// Fungsi untuk menampilkan pesan sukses
+
 function showSuccess(message) {
     clearMessages();
     successDiv.innerHTML = `<strong>✓ Sukses:</strong> ${message}`;
@@ -39,7 +39,7 @@ function showSuccess(message) {
     }, 5000);
 }
 
-// Fungsi untuk merender data JSON menjadi list elemen HTML
+
 function renderList(students) {
     outputList.innerHTML = '';
     
@@ -71,7 +71,7 @@ function renderList(students) {
     });
 }
 
-// Fungsi untuk menangkap dan menampilkan error validasi ke layar
+
 function showError(error) {
     clearMessages();
     
@@ -80,9 +80,9 @@ function showError(error) {
     if (error.response && error.response.data) {
         console.error('Response data:', error.response.data);
         
-        // Jika ada response dari server
+  
         if (error.response.data.errors) {
-            // Menggabungkan pesan error dari backend Laravel
+     
             let errMessages = Object.entries(error.response.data.errors)
                 .map(([field, messages]) => {
                     const msgs = Array.isArray(messages) ? messages : [messages];
@@ -104,9 +104,7 @@ function showError(error) {
     errorDiv.classList.add('show');
 }
 
-// --- FUNGSI CRUD MENGGUNAKAN AXIOS ---
 
-// 1. READ (Ambil semua data)
 function getStudents() {
     clearMessages();
     outputList.innerHTML = '<div class="loading">⏳ Mengambil data...</div>';
@@ -125,7 +123,7 @@ function getStudents() {
         });
 }
 
-// 2. CREATE (Simpan data baru)
+
 function saveStudent() {
     clearMessages();
     
@@ -137,7 +135,7 @@ function saveStudent() {
     
     console.log('📝 Save attempt - NIM:', nim, 'Nama:', nama, 'Kode:', kode, 'Nama MK:', nama_mk, 'SKS:', sks);
     
-    // Validasi di client-side
+   
     if (!nim || !nama || !kode || !nama_mk || !sks) {
         const msg = 'Semua field harus diisi!';
         console.warn('⚠️ Validation failed:', msg);
@@ -164,7 +162,7 @@ function saveStudent() {
             console.log('✅ POST Success:', response);
             clearForm();
             showSuccess('Mahasiswa berhasil disimpan!');
-            // Refresh data dengan delay lebih lama
+         
             setTimeout(() => {
                 console.log('🔄 Refreshing list after create...');
                 getStudents();
@@ -180,7 +178,7 @@ function saveStudent() {
         });
 }
 
-// 3. UPDATE PATCH (Ubah nama berdasarkan NIM)
+
 function updateStudentName() {
     clearMessages();
     
@@ -224,7 +222,7 @@ function updateStudentName() {
         });
 }
 
-// 4. DELETE (Hapus data berdasarkan NIM)
+
 function deleteStudent() {
     clearMessages();
     
@@ -264,7 +262,7 @@ function deleteStudent() {
         });
 }
 
-// Load data saat halaman pertama kali dibuka
+
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM Content Loaded - fetching initial data');
     getStudents();

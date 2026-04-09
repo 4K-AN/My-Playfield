@@ -29,17 +29,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Memanggil fungsi GadgetGrid untuk tampilan Grid
+
                     GadgetGrid(
                         gadgets = gadgets,
                         modifier = Modifier.padding(innerPadding)
                     )
 
-                    // Untuk mencoba LazyColumn kembali, hapus komentar di bawah dan beri komentar pada GadgetGrid di atas
-                    // GadgetListColumn(
-                    //     gadgets = gadgets,
-                    //     modifier = Modifier.padding(innerPadding)
-                    // )
+
+                    /* GadgetListColumn(
+                    gadgets = gadgets,
+                    modifier = Modifier.padding(innerPadding)
+                     ) */
                 }
             }
         }

@@ -7,6 +7,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -35,7 +38,8 @@ fun GadgetItem(gadget: Gadget) {
     }
 }
 
-/* @Composable
+// Fungsi LazyColumn
+@Composable
 fun GadgetListColumn(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     LazyColumn(
         contentPadding = PaddingValues(bottom = 16.dp),
@@ -45,12 +49,27 @@ fun GadgetListColumn(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
             GadgetItem(gadget)
         }
     }
-} */
+}
 
+// Fungsi LazyRow
 @Composable
 fun GadgetListRow(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     LazyRow(
         contentPadding = PaddingValues(end = 16.dp),
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(gadgets) { gadget ->
+            GadgetItem(gadget)
+        }
+    }
+}
+
+// Fungsi LazyVerticalGrid
+@Composable
+fun GadgetGrid(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 150.dp),
+        contentPadding = PaddingValues(8.dp),
         modifier = modifier.fillMaxSize()
     ) {
         items(gadgets) { gadget ->

@@ -27,17 +27,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Gunakan GadgetListColumn untuk tampilan vertikal
-                    GadgetListColumn(
+
+                   /* GadgetListColumn(
                         gadgets = gadgets,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) */
                     
-                    // Untuk mencoba LazyRow, hapus komentar di bawah dan beri komentar pada GadgetListColumn di atas
-                    // GadgetListRow(
-                    //     gadgets = gadgets,
-                    //     modifier = Modifier.padding(innerPadding)
-                    // )
+
+                     GadgetListRow(
+                         gadgets = gadgets,
+                         modifier = Modifier.padding(innerPadding)
+                     )
                 }
             }
         }

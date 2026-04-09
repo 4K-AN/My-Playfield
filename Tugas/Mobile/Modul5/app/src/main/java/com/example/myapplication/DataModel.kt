@@ -35,7 +35,7 @@ fun GadgetItem(gadget: Gadget) {
     }
 }
 
-@Composable
+/* @Composable
 fun GadgetListColumn(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     LazyColumn(
         contentPadding = PaddingValues(bottom = 16.dp),
@@ -45,7 +45,7 @@ fun GadgetListColumn(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
             GadgetItem(gadget)
         }
     }
-}
+} */
 
 @Composable
 fun GadgetListRow(gadgets: List<Gadget>, modifier: Modifier = Modifier) {

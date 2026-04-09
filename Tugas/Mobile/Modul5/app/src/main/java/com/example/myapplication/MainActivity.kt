@@ -29,17 +29,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Memanggil fungsi GadgetGridFixed untuk mencoba Grid dengan kolom tetap (2)
+
                     GadgetGridFixed(
                         gadgets = gadgets,
                         modifier = Modifier.padding(innerPadding)
                     )
 
-                    // Untuk mencoba GadgetGrid (Adaptive), hapus komentar di bawah dan beri komentar pada GadgetGridFixed di atas
-                    // GadgetGrid(
-                    //     gadgets = gadgets,
-                    //     modifier = Modifier.padding(innerPadding)
-                    // )
+                    /*
+                    GadgetGrid(
+                    gadgets = gadgets,
+                    modifier = Modifier.padding(innerPadding)
+                    ) */
                 }
             }
         }

@@ -64,7 +64,7 @@ fun GadgetListRow(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     }
 }
 
-// Fungsi LazyVerticalGrid (Adaptive)
+
 @Composable
 fun GadgetGrid(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(
@@ -78,7 +78,7 @@ fun GadgetGrid(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     }
 }
 
-// Fungsi LazyVerticalGrid (Fixed)
+
 @Composable
 fun GadgetGridFixed(gadgets: List<Gadget>, modifier: Modifier = Modifier) {
     LazyVerticalGrid(

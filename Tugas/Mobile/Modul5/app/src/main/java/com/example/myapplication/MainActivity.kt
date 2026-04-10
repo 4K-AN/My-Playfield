@@ -30,16 +30,16 @@ class MainActivity : ComponentActivity() {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    GadgetGridFixed(
+                    /* GadgetGridFixed(
                         gadgets = gadgets,
                         modifier = Modifier.padding(innerPadding)
-                    )
+                    ) */
 
-                    /*
+
                     GadgetGrid(
                     gadgets = gadgets,
                     modifier = Modifier.padding(innerPadding)
-                    ) */
+                    )
                 }
             }
         }

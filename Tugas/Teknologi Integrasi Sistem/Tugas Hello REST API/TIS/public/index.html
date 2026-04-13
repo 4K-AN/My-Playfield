@@ -135,6 +135,24 @@
         #btn-delete:hover {
             background-color: #c82333;
         }
+
+        #btn-compound {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        #btn-compound:hover {
+            background-color: #138496;
+        }
+
+        #btn-nested {
+            background-color: #6f42c1;
+            color: white;
+        }
+        
+        #btn-nested:hover {
+            background-color: #5a32a3;
+        }
         
         .error {
             color: #721c24;
@@ -254,6 +272,11 @@
                 <button id="btn-post" onclick="saveStudent()"> Simpan Mahasiswa</button>
                 <button id="btn-patch" onclick="updateStudentName()"> Ubah Nama (PATCH)</button>
                 <button id="btn-delete" onclick="deleteStudent()"> Hapus Mahasiswa</button>
+            </div>
+
+            <div class="button-group">
+                <button id="btn-compound" onclick="viewStudentCompound()" style="background-color: #17a2b8; color: white;"> Lihat Data Mahasiswa (Compound Data)</button>
+                <button id="btn-nested" onclick="viewStudentCourses()" style="background-color: #6f42c1; color: white;"> Lihat Mata Kuliah (Nested Resource)</button>
             </div>
         </div>
 

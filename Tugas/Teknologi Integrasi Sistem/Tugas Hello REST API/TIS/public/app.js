@@ -110,8 +110,51 @@ function saveStudent() {
     const nama_mk = document.getElementById('nama_mk').value.trim();
     const sks = document.getElementById('sks').value;
     
+    // Validasi: Semua field harus diisi
     if (!nim || !nama || !kode || !nama_mk || !sks) {
         const msg = 'Semua field harus diisi!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: NIM harus 15 digit
+    if (nim.length !== 15 || isNaN(nim)) {
+        const msg = 'NIM harus terdiri dari 15 digit angka!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: Nama minimal 3 karakter (sesuai backend)
+    if (nama.length < 3) {
+        const msg = 'Nama harus minimal 3 karakter!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: Nama maksimal 50 karakter
+    if (nama.length > 50) {
+        const msg = 'Nama maksimal 50 karakter!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: Format kode mata kuliah (3 huruf + 5 angka)
+    const kodeRegex = /^[A-Z]{3}[0-9]{5}$/;
+    if (!kodeRegex.test(kode)) {
+        const msg = 'Kode mata kuliah harus format 3 huruf kapital + 5 angka (contoh: CIE61205)!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: SKS antara 1-6
+    const sksNum = parseInt(sks);
+    if (isNaN(sksNum) || sksNum < 1 || sksNum > 6) {
+        const msg = 'SKS harus antara 1-6!';
         errorDiv.innerHTML = 'Error Validasi: ' + msg;
         errorDiv.classList.add('show');
         return;
@@ -123,7 +166,7 @@ function saveStudent() {
         mataKuliah: [{
             kode: kode,
             nama: nama_mk,
-            sks: parseInt(sks)
+            sks: sksNum
         }]
     };
 
@@ -154,10 +197,34 @@ function updateStudentName() {
         errorDiv.classList.add('show');
         return;
     }
+
+    // Validasi: NIM harus 15 digit
+    if (nim.length !== 15 || isNaN(nim)) {
+        const msg = 'NIM harus terdiri dari 15 digit angka!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
     
     if(!namaBaru) {
         const msg = 'Harap isi kolom Nama dengan nama baru!';
         errorDiv.innerHTML = 'Error: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: Nama minimal 3 karakter (sesuai backend)
+    if (namaBaru.length < 3) {
+        const msg = 'Nama baru harus minimal 3 karakter!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: Nama maksimal 50 karakter
+    if (namaBaru.length > 50) {
+        const msg = 'Nama maksimal 50 karakter!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
         errorDiv.classList.add('show');
         return;
     }
@@ -205,6 +272,98 @@ function deleteStudent() {
         })
         .catch(function(error) {
             showError(error);
+        });
+}
+
+// ========== NEW FUNCTIONS FOR COMPOUND DATA & NESTED RESOURCE ==========
+
+function viewStudentCompound() {
+    clearMessages();
+    
+    const nim = document.getElementById('nim').value.trim();
+
+    if(!nim) {
+        const msg = 'Harap isi kolom NIM untuk melihat data!';
+        errorDiv.innerHTML = 'Error: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: NIM harus 15 digit
+    if (nim.length !== 15 || isNaN(nim)) {
+        const msg = 'NIM harus terdiri dari 15 digit angka!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    outputList.innerHTML = '<div class="loading">Mengambil data mahasiswa...</div>';
+
+    // Endpoint Compound Data: GET /api/students/{nim}
+    api.get('/students/' + nim)
+        .then(function(response) {
+            const data = response.data.data || response.data;
+            renderList([data]); // Render single student
+            showSuccess('Data mahasiswa berhasil dimuat (Compound Data)');
+        })
+        .catch(function(error) {
+            showError(error);
+            outputList.innerHTML = '<div class="no-data">Gagal mengambil data mahasiswa</div>';
+        });
+}
+
+function viewStudentCourses() {
+    clearMessages();
+    
+    const nim = document.getElementById('nim').value.trim();
+
+    if(!nim) {
+        const msg = 'Harap isi kolom NIM untuk melihat mata kuliah!';
+        errorDiv.innerHTML = 'Error: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    // Validasi: NIM harus 15 digit
+    if (nim.length !== 15 || isNaN(nim)) {
+        const msg = 'NIM harus terdiri dari 15 digit angka!';
+        errorDiv.innerHTML = 'Error Validasi: ' + msg;
+        errorDiv.classList.add('show');
+        return;
+    }
+
+    outputList.innerHTML = '<div class="loading">Mengambil daftar mata kuliah...</div>';
+
+    // Endpoint Nested Resource: GET /api/students/{nim}/mata-kuliah
+    api.get('/students/' + nim + '/mata-kuliah')
+        .then(function(response) {
+            const courses = response.data.data || [];
+            const studentNim = response.data.student_nim || nim;
+            
+            outputList.innerHTML = '';
+            
+            if (!courses || courses.length === 0) {
+                outputList.innerHTML = '<div class="no-data">Tidak ada mata kuliah untuk NIM ' + studentNim + '</div>';
+                showSuccess('Data mata kuliah berhasil dimuat (Nested Resource)');
+                return;
+            }
+            
+            let mkHtml = '<div class="student-card">';
+            mkHtml += '<div><strong>NIM:</strong> ' + studentNim + '</div>';
+            mkHtml += '<div><strong>Daftar Mata Kuliah (Nested Resource):</strong><ul>';
+            
+            courses.forEach(function(mk) {
+                mkHtml += '<li><strong>' + mk.kode + '</strong> - ' + mk.nama + ' (' + mk.sks + ' SKS)</li>';
+            });
+            
+            mkHtml += '</ul></div></div>';
+            
+            outputList.innerHTML = mkHtml;
+            showSuccess('Data mata kuliah berhasil dimuat (Nested Resource)');
+        })
+        .catch(function(error) {
+            showError(error);
+            outputList.innerHTML = '<div class="no-data">Gagal mengambil daftar mata kuliah</div>';
         });
 }
 

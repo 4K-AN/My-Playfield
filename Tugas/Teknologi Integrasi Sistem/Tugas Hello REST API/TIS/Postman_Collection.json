@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "student-rest-api-latihan-1",
+		"name": "Student REST API - Latihan 1",
+		"description": "REST API Testing Collection with Validation & Nested Resources",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Skenario 1 - Create Data Valid (201 Created)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nim\": \"245150707111014\",\n    \"nama\": \"Muhammad Rizki\",\n    \"mataKuliah\": [\n        {\n            \"kode\": \"CIE61205\",\n            \"nama\": \"Pemrograman Web\",\n            \"sks\": 3\n        },\n        {\n            \"kode\": \"COM60015\",\n            \"nama\": \"Matematika Diskrit\",\n            \"sks\": 2\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/students",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students"]
+				},
+				"description": "Skenario 1: Create mahasiswa baru dengan data valid\n- Nama: 14 karakter (valid, > 3)\n- Mata Kuliah: 2 items (valid, >= 1)\nExpected Status: 201 Created"
+			},
+			"response": []
+		},
+		{
+			"name": "2A. Skenario 2A - Create Invalid (Nama 2 huruf)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nim\": \"245150707111015\",\n    \"nama\": \"AB\",\n    \"mataKuliah\": [\n        {\n            \"kode\": \"CIE61205\",\n            \"nama\": \"Pemrograman Web\",\n            \"sks\": 3\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/students",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students"]
+				},
+				"description": "Skenario 2A: Create mahasiswa dengan nama terlalu pendek\n- Nama: 2 karakter (invalid, < 3)\nExpected Status: 422 Unprocessable Entity"
+			},
+			"response": []
+		},
+		{
+			"name": "2B. Skenario 2B - Create Invalid (Mata Kuliah Kosong)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nim\": \"245150707111015\",\n    \"nama\": \"Budi Santoso\",\n    \"mataKuliah\": []\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/students",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students"]
+				},
+				"description": "Skenario 2B: Create mahasiswa dengan mata kuliah kosong\n- Mata Kuliah: array kosong (invalid, < 1)\nExpected Status: 422 Unprocessable Entity"
+			},
+			"response": []
+		},
+		{
+			"name": "2C. Skenario 2C - Create Invalid (Kode MK Format Salah)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nim\": \"245150707111015\",\n    \"nama\": \"Sri Rahayu\",\n    \"mataKuliah\": [\n        {\n            \"kode\": \"CIE6120\",\n            \"nama\": \"Pemrograman Web\",\n            \"sks\": 3\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/students",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students"]
+				},
+				"description": "Skenario 2C: Create mahasiswa dengan kode MK format salah\n- Kode MK: CIE6120 (invalid, seharusnya CIE61205)\nExpected Status: 422 Unprocessable Entity"
+			},
+			"response": []
+		},
+		{
+			"name": "3. Skenario 3 - Update Data Valid (200 OK)",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"nama\": \"Muhammad Rizki Prabowo\",\n    \"mataKuliah\": [\n        {\n            \"kode\": \"CIE61205\",\n            \"nama\": \"Pemrograman Web\",\n            \"sks\": 3\n        },\n        {\n            \"kode\": \"COM60015\",\n            \"nama\": \"Matematika Diskrit\",\n            \"sks\": 2\n        },\n        {\n            \"kode\": \"CIE61206\",\n            \"nama\": \"Jaringan Komputer\",\n            \"sks\": 3\n        }\n    ]\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/students/245150707111014",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students", "245150707111014"]
+				},
+				"description": "Skenario 3: Update mahasiswa dengan data valid\n- Nama: 24 karakter (valid, > 3)\n- Mata Kuliah: 3 items (valid, >= 1)\nExpected Status: 200 OK"
+			},
+			"response": []
+		},
+		{
+			"name": "4. Skenario 4 - GET Compound Data (dengan mata kuliah)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/students/245150707111012",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students", "245150707111012"]
+				},
+				"description": "Skenario 4: GET satu data mahasiswa (Compound Data)\n- Endpoint: /api/students/{nim}\n- Response: Mahasiswa + Mata Kuliah dalam 1 paket\nExpected Status: 200 OK"
+			},
+			"response": []
+		},
+		{
+			"name": "5. Skenario 5 - GET Nested Resource (hanya mata kuliah)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/students/245150707111012/mata-kuliah",
+					"host": ["{{base_url}}"],
+					"path": ["api", "students", "245150707111012", "mata-kuliah"]
+				},
+				"description": "Skenario 5: GET nested resource - daftar mata kuliah berdasarkan NIM\n- Endpoint: /api/students/{nim}/mata-kuliah\n- Response: HANYA array mata kuliah (nested)\nExpected Status: 200 OK"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

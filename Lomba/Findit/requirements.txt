@@ -1,0 +1,18 @@
+# Dependensi library untuk project DAC FindIT! 2026 - Tim: @Meta AI buatkan nama tim
+
+# Deep Learning & Visual Vision
+torch          # Framework untuk pembuatan model dan penanganan proses komputasi GPU
+torchvision    # Untuk melakukan load dataset dari direktori dan memberikan augmentasi gambar bawaan
+timm           # Library ini khusus dipakai memuat arsitektur pre-trained model luar (EfficientNet-B0 dan ConvNeXt-Tiny)
+
+# Analisis & Pengolahan Data
+pandas         # Untuk membaca data training format .csv, manipulasi tabel, serta mengekspor format akhir hasil submission ke csv
+numpy          # Dipakai untuk mengelola matriks operasi matematika dasar dan mengkalkulasi skema hashing (algoritma MD5)
+scikit-learn   # Utamanya kita pakai library ini waktu nge-split model validasi (memakai Stratified K-Fold) dan nyetak skor Macro F1.
+
+# I/O Gambar (Image Handling)
+Pillow         # Berfungsi hanya untuk membaca gambar mentah dari folder PC sebelum diteruskan dan diparalel ke script PyTorch
+
+# Visualisasi
+matplotlib     # Membantu membuat plot diagram sederhana semacam garis metrik (loss/accuracy progress) pada log training
+seaborn        # Modul khusus untuk memunculkan heatmap grafik Confusion Matrix supaya tampilannya rapi dan bisa dianalisis dengan mudah

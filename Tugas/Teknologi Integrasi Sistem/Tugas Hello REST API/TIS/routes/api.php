@@ -49,6 +49,8 @@ Route::get('/calc/{a}/{b}/{op}', function ($a, $b, $op) {
 Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
 Route::get('/students', [App\Http\Controllers\StudentController::class, 'index']);
 Route::post('/students', [App\Http\Controllers\StudentController::class, 'store']);
+Route::get('/students/{nim}', [App\Http\Controllers\StudentController::class, 'show']);
 Route::put('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
 Route::patch('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
 Route::delete('/students/{nim}', [App\Http\Controllers\StudentController::class, 'destroy']);
+Route::get('/students/{nim}/mata-kuliah', [App\Http\Controllers\StudentController::class, 'mataKuliahByStudent']);

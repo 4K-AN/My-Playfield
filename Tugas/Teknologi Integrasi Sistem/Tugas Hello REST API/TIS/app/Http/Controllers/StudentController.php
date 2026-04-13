@@ -56,8 +56,8 @@ class StudentController extends Controller
         try {
             $validated = $request->validate([
                 'nim' => 'required|digits:15',
-                'nama' => 'required|string|max:50',
-                'mataKuliah' => 'required|array',
+                'nama' => 'required|string|min:3|max:50',
+                'mataKuliah' => 'required|array|min:1',
                 'mataKuliah.*.kode' => 'required|regex:/^[A-Z]{3}[0-9]{5}$/',
                 'mataKuliah.*.nama' => 'required|string|max:50',
                 'mataKuliah.*.sks' => 'required|numeric|min:1|max:6',
@@ -102,8 +102,8 @@ class StudentController extends Controller
     {
         try {
             $validated = $request->validate([
-                'nama' => 'sometimes|required|string|max:50',
-                'mataKuliah' => 'sometimes|required|array',
+                'nama' => 'sometimes|required|string|min:3|max:50',
+                'mataKuliah' => 'sometimes|required|array|min:1',
                 'mataKuliah.*.kode' => 'sometimes|required|regex:/^[A-Z]{3}[0-9]{5}$/',
                 'mataKuliah.*.nama' => 'sometimes|required|string|max:50',
                 'mataKuliah.*.sks' => 'sometimes|required|numeric|min:1|max:6',
@@ -174,6 +174,45 @@ class StudentController extends Controller
             "message" => "Student {$nim} deleted successfully",
             "data" => $students
         ]);
+    }
+
+    public function show($nim)
+    {
+        $students = $this->loadStudents();
+        
+        foreach ($students as $student) {
+            if ($student['nim'] === $nim) {
+                return response()->json([
+                    "message" => "Student retrieved successfully",
+                    "data" => $student
+                ], 200);
+            }
+        }
+        
+        return response()->json([
+            "message" => "Student not found",
+            "error" => "NIM {$nim} tidak ditemukan"
+        ], 404);
+    }
+
+    public function mataKuliahByStudent($nim)
+    {
+        $students = $this->loadStudents();
+        
+        foreach ($students as $student) {
+            if ($student['nim'] === $nim) {
+                return response()->json([
+                    "message" => "Courses retrieved successfully",
+                    "student_nim" => $nim,
+                    "data" => $student['mataKuliah']
+                ], 200);
+            }
+        }
+        
+        return response()->json([
+            "message" => "Student not found",
+            "error" => "NIM {$nim} tidak ditemukan"
+        ], 404);
     }
 
     public function search(Request $request)

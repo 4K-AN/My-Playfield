@@ -7,11 +7,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.navigation.Details
+import com.example.myapplication.navigation.Home
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.view.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +24,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    AppNavHost(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -31,17 +32,24 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
+fun AppNavHost(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = Home,
         modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyApplicationTheme {
-        Greeting("Android")
+    ) {
+        composable<Home> {
+            HomeScreen(onNavigateToDetails = { id, name, premiumStatus ->
+                navController.navigate(
+                    // Menambahkan argumen isPremium ke dalam objek rute
+                    route = Details(locationId = id, locationName = name, isPremium = premiumStatus)
+                )
+            })
+        }
+        // Layar detail bisa ditambahkan di sini pada soal berikutnya
+        composable<Details> {
+            // UI untuk DetailsScreen
+        }
     }
 }

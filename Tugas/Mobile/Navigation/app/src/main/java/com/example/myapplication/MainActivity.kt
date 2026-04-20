@@ -42,14 +42,14 @@ fun AppNavHost(modifier: Modifier = Modifier) {
         composable<Home> {
             HomeScreen(onNavigateToDetails = { id, name, premiumStatus ->
                 navController.navigate(
-                    // Menambahkan argumen isPremium ke dalam objek rute
+
                     route = Details(locationId = id, locationName = name, isPremium = premiumStatus)
                 )
             })
         }
-        // Layar detail bisa ditambahkan di sini pada soal berikutnya
+
         composable<Details> {
-            // UI untuk DetailsScreen
+
         }
     }
 }

@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreen(onNavigateToDetails: (Int, String, Boolean) -> Unit) { // Ubah parameter fungsi
+fun HomeScreen(onNavigateToDetails: (Int, String, Boolean) -> Unit) {
     val locations = listOf("Paris", "Tokyo", "New York", "London")
-    // State untuk Switch
+
     var isPremium by remember { mutableStateOf(false) }
 
     Column(
@@ -21,7 +21,7 @@ fun HomeScreen(onNavigateToDetails: (Int, String, Boolean) -> Unit) { // Ubah pa
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Penambahan Komponen Switch
+
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Premium User")
             Spacer(modifier = Modifier.width(8.dp))
@@ -34,7 +34,7 @@ fun HomeScreen(onNavigateToDetails: (Int, String, Boolean) -> Unit) { // Ubah pa
         Spacer(modifier = Modifier.height(16.dp))
         locations.forEachIndexed { index, name ->
             Button(
-                // Mengirimkan isPremium ke dalam fungsi callback
+
                 onClick = { onNavigateToDetails(index, name, isPremium) },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
             ) { Text(text = "Visit $name") }

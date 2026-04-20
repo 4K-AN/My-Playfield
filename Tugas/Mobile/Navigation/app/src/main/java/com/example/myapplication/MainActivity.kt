@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.myapplication.navigation.Details
 import com.example.myapplication.navigation.Home
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.view.DetailsScreen
 import com.example.myapplication.view.HomeScreen
 
 class MainActivity : ComponentActivity() {
@@ -42,14 +44,18 @@ fun AppNavHost(modifier: Modifier = Modifier) {
         composable<Home> {
             HomeScreen(onNavigateToDetails = { id, name, premiumStatus ->
                 navController.navigate(
-
                     route = Details(locationId = id, locationName = name, isPremium = premiumStatus)
                 )
             })
         }
-
-        composable<Details> {
-
+        composable<Details> { backStackEntry ->
+            // Mengambil argumen dari rute Details secara type-safe
+            val details: Details = backStackEntry.toRoute()
+            DetailsScreen(
+                locationId = details.locationId,
+                locationName = details.locationName,
+                isPremium = details.isPremium
+            )
         }
     }
 }

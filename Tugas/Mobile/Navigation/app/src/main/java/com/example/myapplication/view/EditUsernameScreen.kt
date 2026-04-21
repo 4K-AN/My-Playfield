@@ -7,18 +7,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import com.example.myapplication.navigation.UserConfig
 
 @Composable
-fun EditUsernameScreen(navController: NavController) {
+fun EditUsernameScreen(
+    onSave: (String, String) -> Unit,
+    onCancel: () -> Unit
+) {
     var newName by remember { mutableStateOf("") }
+    var newDob by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Edit Username", style = MaterialTheme.typography.headlineMedium)
+        Text(text = "Edit Profile", style = MaterialTheme.typography.headlineMedium)
         
         Spacer(modifier = Modifier.height(16.dp))
         
@@ -28,28 +32,27 @@ fun EditUsernameScreen(navController: NavController) {
             label = { Text("New Username") },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = newDob,
+            onValueChange = { newDob = it },
+            label = { Text("Birth Date (DD-MM-YYYY)") },
+            modifier = Modifier.fillMaxWidth()
+        )
         
         Spacer(modifier = Modifier.height(16.dp))
         
         Button(
-            onClick = {
-                // Mengirimkan data kembali ke ProfileScreen via SavedStateHandle
-                navController.previousBackStackEntry
-                    ?.savedStateHandle
-                    ?.set("new_name", newName)
-                navController.popBackStack()
-            },
+            onClick = { onSave(newName, newDob) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Save")
         }
         
-        // Tombol Cancel sesuai Soal No. 5
         Button(
-            onClick = { 
-                // Hanya kembali tanpa menyimpan data
-                navController.popBackStack() 
-            },
+            onClick = onCancel,
             colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         ) { 

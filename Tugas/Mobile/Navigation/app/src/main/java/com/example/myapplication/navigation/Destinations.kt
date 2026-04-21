@@ -1,5 +1,7 @@
 package com.example.myapplication.navigation
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -17,3 +19,10 @@ object Profile
 
 @Serializable
 object EditUsername
+
+@Parcelize
+@Serializable
+data class UserConfig(
+    val username: String,
+    val birthDate: String
+) : Parcelable

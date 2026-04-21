@@ -23,6 +23,7 @@ import com.example.myapplication.navigation.Details
 import com.example.myapplication.navigation.EditUsername
 import com.example.myapplication.navigation.Home
 import com.example.myapplication.navigation.Profile
+import com.example.myapplication.navigation.UserConfig
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.view.AboutScreen
 import com.example.myapplication.view.AboutScreenDynamic
@@ -86,7 +87,18 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable<EditUsername> {
-                            EditUsernameScreen(navController = navController)
+                            EditUsernameScreen(
+                                onSave = { newName, newDob ->
+                                    val updatedData = UserConfig(username = newName, birthDate = newDob)
+                                    navController.previousBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("user_config_data", updatedData)
+                                    navController.popBackStack()
+                                },
+                                onCancel = {
+                                    navController.popBackStack()
+                                }
+                            )
                         }
 
                         composable("about_screen") {

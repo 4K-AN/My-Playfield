@@ -20,12 +20,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.myapplication.navigation.Details
+import com.example.myapplication.navigation.EditUsername
 import com.example.myapplication.navigation.Home
+import com.example.myapplication.navigation.Profile
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.view.AboutScreen
 import com.example.myapplication.view.AboutScreenDynamic
 import com.example.myapplication.view.DetailsScreen
+import com.example.myapplication.view.EditUsernameScreen
 import com.example.myapplication.view.HomeScreen
+import com.example.myapplication.view.ProfileScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,22 +45,20 @@ class MainActivity : ComponentActivity() {
                             Button(onClick = { navController.navigate(Home) }) {
                                 Text("Home")
                             }
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Button(onClick = { navController.navigate(Profile) }) {
+                                Text("Profile")
+                            }
+                            Spacer(modifier = Modifier.width(4.dp))
                             Button(onClick = { navController.navigate("about_screen") }) {
                                 Text("About")
-                            }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Button(onClick = { 
-                                navController.navigate("about_screen/Akhmad Syafiul Anam/245150707111012") 
-                            }) {
-                                Text("About (Dyn)")
                             }
                         }
                     }
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Home,
+                        startDestination = Profile, // Diubah menjadi Profile sesuai Soal No. 4
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable<Home> {
@@ -76,12 +78,21 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         
-                        // Soal No. 5a: Rute String Statis
+                        composable<Profile> {
+                            ProfileScreen(
+                                navController = navController,
+                                onEditClick = { navController.navigate(EditUsername) }
+                            )
+                        }
+
+                        composable<EditUsername> {
+                            EditUsernameScreen(navController = navController)
+                        }
+
                         composable("about_screen") {
                             AboutScreen()
                         }
 
-                        // Soal No. 5b: Rute String Dinamis
                         composable(route = "about_screen/{studentName}/{studentNim}") { backStackEntry ->
                             val name = backStackEntry.arguments?.getString("studentName") ?: "Unknown"
                             val nim = backStackEntry.arguments?.getString("studentNim") ?: "Unknown"

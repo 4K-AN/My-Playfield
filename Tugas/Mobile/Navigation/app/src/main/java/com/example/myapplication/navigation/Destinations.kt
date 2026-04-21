@@ -11,3 +11,9 @@ data class Details(
     val locationName: String,
     val isPremium: Boolean = false
 )
+
+@Serializable
+object Profile
+
+@Serializable
+object EditUsername

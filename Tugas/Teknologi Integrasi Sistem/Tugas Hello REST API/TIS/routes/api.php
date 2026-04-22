@@ -44,7 +44,7 @@ Route::get('/calc/{a}/{b}/{op}', function ($a, $b, $op) {
         "result" => $result
     ]);
 });
-
+// Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
 // d. Route Student CRUD
 Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
 Route::get('/students', [App\Http\Controllers\StudentController::class, 'index']);

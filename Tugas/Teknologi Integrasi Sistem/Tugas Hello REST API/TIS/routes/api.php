@@ -46,7 +46,7 @@ Route::get('/calc/{a}/{b}/{op}', function ($a, $b, $op) {
 });
 // Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
 // d. Route Student CRUD
-Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
+// Route::get('/students/search', [App\Http\Controllers\StudentController::class, 'search']);
 Route::get('/students', [App\Http\Controllers\StudentController::class, 'index']);
 Route::post('/students', [App\Http\Controllers\StudentController::class, 'store']);
 Route::get('/students/{nim}', [App\Http\Controllers\StudentController::class, 'show']);

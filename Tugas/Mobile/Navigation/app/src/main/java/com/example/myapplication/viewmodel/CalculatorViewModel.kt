@@ -1,9 +1,12 @@
 package com.example.myapplication.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 data class User(
     val name: String = "Guest",
@@ -18,14 +21,20 @@ class CalculatorViewModel : ViewModel() {
     val user: StateFlow<User> = _user
 
     fun compute(number: Int) {
-        if (number > 100000) {
-            val percent = 0.2
-            _discount.update { (percent * number).toInt() }
-            setMemberName("Akhmad Syafiul")
-            setMemberStatus(true)
-        } else {
-            val percent = 0.1
-            _discount.update { (percent * number).toInt() }
+        // Menggunakan Coroutine (Background Thread) agar tidak memblokir UI
+        viewModelScope.launch(Dispatchers.Default) {
+            // Simulasi proses berat di latar belakang
+            Thread.sleep(10000) 
+
+            if (number > 100000) {
+                val percent = 0.2
+                _discount.update { (percent * number).toInt() }
+                setMemberName("Akhmad Syafiul")
+                setMemberStatus(true)
+            } else {
+                val percent = 0.1
+                _discount.update { (percent * number).toInt() }
+            }
         }
     }
 

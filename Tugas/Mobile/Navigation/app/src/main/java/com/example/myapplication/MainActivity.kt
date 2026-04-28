@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.myapplication.navigation.Calculator
 import com.example.myapplication.navigation.Details
 import com.example.myapplication.navigation.EditUsername
 import com.example.myapplication.navigation.Home
@@ -27,6 +28,7 @@ import com.example.myapplication.navigation.UserConfig
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.view.AboutScreen
 import com.example.myapplication.view.AboutScreenDynamic
+import com.example.myapplication.view.CalculatorScreen
 import com.example.myapplication.view.DetailsScreen
 import com.example.myapplication.view.EditUsernameScreen
 import com.example.myapplication.view.HomeScreen
@@ -47,19 +49,19 @@ class MainActivity : ComponentActivity() {
                                 Text("Home")
                             }
                             Spacer(modifier = Modifier.width(4.dp))
-                            Button(onClick = { navController.navigate(Profile) }) {
-                                Text("Profile")
+                            Button(onClick = { navController.navigate(Calculator) }) {
+                                Text("Calc")
                             }
                             Spacer(modifier = Modifier.width(4.dp))
-                            Button(onClick = { navController.navigate("about_screen") }) {
-                                Text("About")
+                            Button(onClick = { navController.navigate(Profile) }) {
+                                Text("Profile")
                             }
                         }
                     }
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Profile, // Diubah menjadi Profile sesuai Soal No. 4
+                        startDestination = Home,
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable<Home> {
@@ -69,6 +71,11 @@ class MainActivity : ComponentActivity() {
                                 )
                             })
                         }
+                        
+                        composable<Calculator> {
+                            CalculatorScreen()
+                        }
+
                         composable<Details> { backStackEntry ->
                             val args = backStackEntry.toRoute<Details>()
                             DetailsScreen(

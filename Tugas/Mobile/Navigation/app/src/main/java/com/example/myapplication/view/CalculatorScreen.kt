@@ -3,19 +3,53 @@ package com.example.myapplication.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.myapplication.viewmodel.CalculatorViewModel
+import com.example.myapplication.viewmodel.User
 
 @Composable
-fun CalculatorScreen(viewModel: CalculatorViewModel = viewModel()) {
-    var number by remember { mutableStateOf("") }
-    val discount by viewModel.discount.collectAsState()
+fun UserPanel(user: User) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = "Membership", style = MaterialTheme.typography.titleLarge)
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "User Name:", style = MaterialTheme.typography.bodyMedium)
+                Text(text = user.name, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "Status:", style = MaterialTheme.typography.bodyMedium)
+                Text(text = user.status, color = MaterialTheme.colorScheme.secondary)
+            }
+        }
+    }
+}
+
+@Composable
+fun CalculatorScreen(
+    modifier: Modifier = Modifier,
+    discount: Int = 0,
+    user: User,
+    onClick: (Int) -> Unit,
+    onReset: () -> Unit
+) {
+    var number by rememberSaveable { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,7 +79,7 @@ fun CalculatorScreen(viewModel: CalculatorViewModel = viewModel()) {
         Button(
             onClick = { 
                 val amount = number.toIntOrNull() ?: 0
-                viewModel.calculateDiscount(amount) 
+                onClick(amount) 
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -54,16 +88,18 @@ fun CalculatorScreen(viewModel: CalculatorViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Implementasi Soal 1: Reset memanggil ViewModel (SSoT)
         Button(
             onClick = { 
-                number = ""         // Reset state lokal UI
-                viewModel.reset()    // Reset state pusat di ViewModel
+                number = "0"
+                onReset()
             },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Reset")
         }
+
+        // Penambahan UserPanel di bagian bawah
+        UserPanel(user = user)
     }
 }

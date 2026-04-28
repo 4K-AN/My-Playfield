@@ -20,6 +20,9 @@ object Profile
 @Serializable
 object EditUsername
 
+@Serializable
+object Calculator
+
 @Parcelize
 @Serializable
 data class UserConfig(

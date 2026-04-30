@@ -1,22 +1,22 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+/** @var \Laravel\Lumen\Routing\Router $router */
 
-Route::get('/ping', function () {
+use App\Http\Controllers\Api\AuthController;
+
+$router->get('/ping', function () {
     return response()->json(['message' => 'pong']);
 });
 
 // JWT Authentication Routes
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+$router->post('/register', 'Api\AuthController@register');
+$router->post('/login', 'Api\AuthController@login');
 
 // Endpoint yang diproteksi oleh JWT
-Route::middleware(['dummy.jwt'])->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/profile', [AuthController::class, 'profile']);
+$router->group(['middleware' => 'dummy.jwt'], function () use ($router) {
+    $router->post('/logout', 'Api\AuthController@logout');
+    $router->get('/profile', 'Api\AuthController@profile');
     
     // Tugas 3: Menambahkan endpoint token-check
-    Route::get('/token-check', [AuthController::class, 'tokenCheck']);
+    $router->get('/token-check', 'Api\AuthController@tokenCheck');
 });

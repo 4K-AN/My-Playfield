@@ -22,7 +22,7 @@ class Mahasiswa {
         return String.format(Locale.US, "Mahasiswa{nim='%s', nama='%s', ipk=%.2f}", nim, nama, ipk);
     }
 }
-
+// Class Node dan DLL dari Latihan 1 disalin kembali di sini untuk kemudahan.
 // Class Node dan DLL dari Latihan 1 disalin kembali di sini untuk kemudahan.
 class Node<T> {
 

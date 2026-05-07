@@ -69,7 +69,7 @@ class DLL<T> {
         }
         size++;
     }
-
+// Class Node dan DLL dari Latihan 1 disalin kembali di sini untuk kemudahan.
     public void printForward() {
         if (isEmpty()) {
             System.out.println("List Kosong");

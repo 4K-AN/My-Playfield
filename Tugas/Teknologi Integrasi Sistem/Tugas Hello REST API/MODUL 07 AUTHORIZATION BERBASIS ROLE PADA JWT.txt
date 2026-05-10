@@ -1,0 +1,381 @@
+﻿MODUL 07 AUTHORIZATION BERBASIS ROLE PADA JWT
+
+
+A. TUJUAN PRAKTIKUM
+1. Memahami konsep authorization berbasis role pada REST API.
+2. Mampu menambahkan atribut role pada data user dummy.
+3. Mampu memasukkan informasi role ke dalam JWT payload saat login.
+4. Mampu menampilkan informasi role pada endpoint profile.
+5. Mampu membuat middleware role untuk membatasi akses endpoint berdasarkan role tertentu.
+6. Mampu menguji endpoint yang diproteksi role menggunakan token JWT melalui Postman.
+
+
+B. PRA-PRAKTIKUM
+BAGIAN 1: PERSIAPAN PROJECT
+1. Pastikan project Laravel dari modul sebelumnya masih dapat dijalankan dengan baik.
+2. Pastikan fitur JWT pada modul sebelumnya sudah berhasil, meliputi login, profile, logout, dan
+middleware dummy.jwt.
+3. Jalankan server Laravel:
+php artisan serve
+4. Pastikan autentikasi JWT dari modul sebelumnya telah aktif, karena modul ini merupakan
+kelanjutan dari autentikasi berbasis token yang sudah dibuat sebelumnya.
+BAGIAN 2: KONSEP AUTHORIZATION
+1. Pada modul sebelumnya, token JWT digunakan untuk mengenali siapa pengguna yang
+sedang login.
+2. Pada modul ini, token tidak hanya dipakai untuk identifikasi user, tetapi juga untuk menentukan
+hak akses user berdasarkan role.
+3. Authorization berarti proses menentukan apakah user yang sudah terautentikasi boleh atau
+tidak boleh mengakses resource tertentu.
+4. Dalam materi ini, terdapat dua role utama: admin dan user.
+5. Endpoint tertentu akan dibatasi dengan middleware role, misalnya dashboard admin hanya
+boleh diakses oleh role admin dan dashboard user hanya boleh diakses oleh role user.
+BAGIAN 3: PENAMBAHAN ROLE PADA AUTHCONTROLLER
+2.1. MENAMBAHKAN ROLE PADA DATA USER DUMMY
+1. Buka file berikut:
+app/Http/Controllers/Api/AuthController.php
+2. Tambahkan atribut role pada array $users sehingga menjadi seperti berikut:
+private $users = [
+[
+'id' => 1,
+'name' => 'User Cakep',
+
+
+'email' => 'user@example.com',
+'password' => 'password123',
+'role' => 'user'
+],
+[
+'id' => 2,
+'name' => 'Admin Hebat',
+'email' => 'admin@example.com',
+'password' => 'secret321',
+'role' => 'admin'
+],
+];
+Pada materi, penambahan role ini dilakukan agar setiap user dummy memiliki identitas peran yang
+nantinya dapat dibawa ke dalam token dan digunakan untuk pengecekan hak akses.
+2.2. MENAMBAHKAN ROLE KE DALAM TOKEN JWT
+1. Pada method login(), ubah bagian pembentukan token menjadi:
+$token = JWTAuth::claims([
+'email' => $user->email,
+'name' => $user->name,
+'role' => $userData['role']
+])->fromUser($user);
+2. Dengan perubahan ini, payload JWT tidak hanya berisi email dan nama, tetapi juga role user.
+2.3. MENAMPILKAN ROLE PADA PROFILE
+1. Ubah method profile() agar mengembalikan role dari payload token:
+public function profile(Request $request)
+{
+try {
+$payload = $request->jwt_payload;
+return response()->json([
+'user' => [
+'email' => $payload->get('email'),
+'name' => $payload->get('name'),
+'role' => $payload->get('role')
+]
+]);
+} catch (JWTException $e) {
+return response()->json([
+'message' => 'Token is invalid or expired'
+], 401);
+}
+}
+Dengan demikian, ketika endpoint /api/profile diakses, response akan memuat email, nama, dan
+role user.
+2.4. KODE LENGKAP AUTHCONTROLLER
+<?php
+namespace App\Http\Controllers\Api;
+
+
+use App\Http\Controllers\Controller;
+use App\Models\DummyUser;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Exceptions\JWTException;
+use Tymon\JWTAuth\Facades\JWTAuth;
+class AuthController extends Controller
+{
+private $users = [
+[
+'id' => 1,
+'name' => 'User Cakep',
+'email' => 'user@example.com',
+'password' => 'password123',
+'role' => 'user'
+],
+[
+'id' => 2,
+'name' => 'Admin Hebat',
+'email' => 'admin@example.com',
+'password' => 'secret321',
+'role' => 'admin'
+],
+];
+public function register(Request $request)
+{
+$validated = $request->validate([
+'name' => 'required|string|max:100',
+'email' => 'required|email',
+'password' => 'required|string|min:6|confirmed'
+]);
+$user = [
+'id' => rand(3, 1000),
+'name' => $validated['name'],
+'email' => $validated['email'],
+'password' => $validated['password'],
+];
+return response()->json([
+'message' => 'User registered successfully (dummy)',
+'user' => $user
+], 201);
+}
+public function login(Request $request)
+{
+$credentials = $request->validate([
+'email' => 'required|email',
+'password' => 'required|string'
+]);
+$userData = collect($this->users)->firstWhere('email', $credentials['email']);
+if (! $userData || $userData['password'] !== $credentials['password']) {
+
+
+return response()->json([
+'message' => 'Invalid email or password'
+], 401);
+}
+$user = new DummyUser($userData);
+$token = JWTAuth::claims([
+'email' => $user->email,
+'name' => $user->name,
+'role' => $userData['role']
+])->fromUser($user);
+return response()->json([
+'message' => 'Login successful (dummy)',
+'token' => $token
+]);
+}
+public function logout()
+{
+try {
+JWTAuth::invalidate(JWTAuth::getToken());
+return response()->json([
+'message' => 'User logged out successfully'
+]);
+} catch (JWTException $e) {
+return response()->json([
+'message' => 'Failed to logout, token invalid'
+], 500);
+}
+}
+public function profile(Request $request)
+{
+try {
+$payload = $request->jwt_payload;
+return response()->json([
+'user' => [
+'email' => $payload->get('email'),
+'name' => $payload->get('name'),
+'role' => $payload->get('role')
+]
+]);
+} catch (JWTException $e) {
+return response()->json([
+'message' => 'Token is invalid or expired'
+], 401);
+}
+}
+}
+
+
+BAGIAN 4: MEMBUAT ROLEMIDDLEWARE
+3.1. MEMBUAT MIDDLEWARE
+1. Buat middleware baru dengan perintah:
+php artisan make:middleware RoleMiddleware
+2. Buka file berikut:
+app/Http/Middleware/RoleMiddleware.php
+3. Ubah isinya menjadi:
+<?php
+namespace App\Http\Middleware;
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+class RoleMiddleware
+{
+public function handle(Request $request, Closure $next, ...$roles): Response
+{
+$payload = $request->jwt_payload ?? null;
+if (!$payload) {
+return response()->json([
+'message' => 'Missing token payload'
+], 401);
+}
+$userRole = $payload->get('role');
+if (!in_array($userRole, $roles)) {
+return response()->json([
+'message' => 'Access denied. You do not have the required role.'
+], 403);
+}
+return $next($request);
+}
+}
+4. Middleware ini membaca payload JWT yang sudah dimasukkan ke request oleh
+DummyJwtMiddleware, lalu membandingkan role user terhadap daftar role yang diizinkan pada
+route.
+5. Jika payload tidak ada, sistem mengembalikan 401 Unauthorized.
+6. Jika role user tidak termasuk dalam daftar role yang diizinkan, sistem mengembalikan 403
+Forbidden dengan pesan akses ditolak.
+3.2. MENDAFTARKAN MIDDLEWARE
+1. Buka file:
+
+
+bootstrap/app.php
+2. Tambahkan alias middleware role:
+->withMiddleware(function (Middleware $middleware): void {
+$middleware->alias([
+'dummy.jwt' => \App\Http\Middleware\DummyJwtMiddleware::class,
+'role' => \App\Http\Middleware\RoleMiddleware::class,
+]);
+})
+BAGIAN 5: MENAMBAHKAN ROUTE AUTHORIZATION
+4.1. ROUTE DENGAN ROLE PROTECTION
+1. Buka file:
+routes/api.php
+2. Tambahkan atau ubah route menjadi seperti berikut:
+<?php
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\StudentController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+Route::get('/user', function (Request $request) {
+return $request->user();
+})->middleware('auth:sanctum');
+Route::get('/ping', function() {
+return response()->json(['message' => 'pong']);
+});
+// CRUD Student
+Route::post('/students', [StudentController::class, 'store']);
+Route::get('/students', [StudentController::class, 'index']);
+Route::put('/students/{nim}', [StudentController::class, 'update']);
+Route::patch('/students/{nim}', [StudentController::class, 'update']);
+Route::delete('/students/{nim}', [StudentController::class, 'destroy']);
+// JWT
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::middleware(['dummy.jwt'])->group(function() {
+Route::get('/profile', [AuthController::class, 'profile']);
+Route::get('/admin/dashboard', function() {
+return response()->json([
+'message' => 'Welcome to Admin Dashboard'
+]);
+})->middleware('role:admin');
+Route::get('/user/dashboard', function() {
+return response()->json([
+
+
+'message' => 'Welcome to User Dashboard'
+]);
+})->middleware('role:user');
+Route::post('/logout', [AuthController::class, 'logout']);
+});
+Susunan ini penting karena dummy.jwt memastikan token valid dan payload tersedia, sedangkan
+role memastikan role user sesuai dengan syarat route.
+BAGIAN 6: UJI COBA DI POSTMAN
+5.1. LOGIN SEBAGAI USER BIASA
+1. Lakukan request:
+POST /api/login
+2. Body JSON:
+{
+"email": "user@example.com",
+"password": "password123"
+}
+3. Response yang diharapkan:
+{
+"message": "Login successful (dummy)",
+"token": "jwt-token-user"
+}
+5.2. AKSES ADMIN DASHBOARD DENGAN ROLE USER
+1. Lakukan request:
+GET /api/admin/dashboard
+2. Pada tab Headers, tambahkan:
+Authorization : Bearer <jwt-token-user>
+Accept : application/json
+3. Response yang diharapkan:
+{
+"message": "Access denied. You do not have the required role."
+}
+5.3. AKSES USER DASHBOARD DENGAN ROLE USER
+1. Lakukan request:
+GET /api/user/dashboard
+2. Pada tab Headers, tambahkan:
+Authorization : Bearer <jwt-token-user>
+Accept : application/json
+
+
+3. Response yang diharapkan:
+{
+"message": "Welcome to User Dashboard"
+}
+5.4. LOGIN SEBAGAI ADMIN
+1. Lakukan request:
+POST /api/login
+2. Body JSON:
+{
+"email": "admin@example.com",
+"password": "secret321"
+}
+3. Response yang diharapkan:
+{
+"message": "Login successful (dummy)",
+"token": "jwt-token-admin"
+}
+5.5. AKSES ADMIN DASHBOARD DENGAN ROLE ADMIN
+1. Lakukan request:
+GET /api/admin/dashboard
+2. Pada tab Headers, tambahkan:
+Authorization : Bearer <jwt-token-admin>
+Accept : application/json
+3. Response yang diharapkan:
+{
+"message": "Welcome to Admin Dashboard"
+}
+5.6. CEK PROFILE
+1. Lakukan request:
+GET /api/profile
+2. Pada tab Headers, tambahkan:
+Authorization : Bearer <jwt-token>
+Accept : application/json
+3. Response yang diharapkan:
+{
+"user": {
+"email": "user@example.com",
+"name": "User Cakep",
+
+
+"role": "user"
+}
+}
+BAGIAN 7: KODE FILE PENTING
+1. FILE app/Http/Controllers/Api/AuthController.php: gunakan kode lengkap pada Bagian 3.
+2. FILE app/Http/Middleware/RoleMiddleware.php: gunakan kode lengkap pada Bagian 4.
+3. FILE bootstrap/app.php: pastikan bagian middleware memuat alias dummy.jwt dan role.
+4. FILE routes/api.php: gunakan kode lengkap pada Bagian 5.
+
+
+C. TUGAS PRAKTIKUM
+1. Tambahkan satu role baru, misalnya manager, pada data user dummy.
+2. Tambahkan route baru GET /api/manager/dashboard.
+3. Route tersebut hanya dapat diakses oleh user dengan role manager.
+4. Tambahkan satu user dummy baru yang memiliki role manager.
+5. Lakukan pengujian minimal untuk lima skenario: user biasa login dan gagal mengakses admin
+dashboard; user biasa berhasil mengakses user dashboard; admin berhasil mengakses admin
+dashboard; admin gagal mengakses user dashboard jika route hanya untuk user; manager
+berhasil mengakses manager dashboard.
+6. Dokumentasikan status code dan response JSON yang diterima pada setiap pengujian.
+
+
+D. PERTANYAAN REFLEKSI
+1. Apa perbedaan utama antara authentication dan authorization?
+2. Mengapa informasi role perlu disimpan di dalam JWT payload?
+3. Mengapa endpoint tertentu perlu dibatasi hanya untuk role tertentu?
+4. Apa fungsi status code 403 Forbidden dalam mekanisme authorization?
+5. Mengapa middleware role diletakkan setelah middleware dummy.jwt?

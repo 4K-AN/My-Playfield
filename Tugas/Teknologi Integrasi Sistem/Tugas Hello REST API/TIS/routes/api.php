@@ -17,11 +17,11 @@ Route::get('/info', function () {
 });
     
 // b. Route User
-Route::get('/user/{name}', function ($name) {
-    return response()->json([
-        "message" => "Hello, " . $name . "!"
-    ]);
-});
+// Route::get('/user/{name}', function ($name) {
+//     return response()->json([
+//         "message" => "Hello, " . $name . "!"
+//     ]);
+// });
 
 // c. Route Calculator
 Route::get('/calc/{a}/{b}/{op}', function ($a, $b, $op) {
@@ -54,3 +54,31 @@ Route::put('/students/{nim}', [App\Http\Controllers\StudentController::class, 'u
 Route::patch('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
 Route::delete('/students/{nim}', [App\Http\Controllers\StudentController::class, 'destroy']);
 Route::get('/students/{nim}/mata-kuliah', [App\Http\Controllers\StudentController::class, 'mataKuliahByStudent']);
+
+// JWT Auth Routes
+Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);
+Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
+
+Route::middleware(['dummy.jwt'])->group(function() {
+    Route::get('/profile', [\App\Http\Controllers\Api\AuthController::class, 'profile']);
+    
+    Route::get('/admin/dashboard', function() {
+        return response()->json([
+            'message' => 'Welcome to Admin Dashboard'
+        ]);
+    })->middleware('role:admin');
+    
+    Route::get('/user/dashboard', function() {
+        return response()->json([
+            'message' => 'Welcome to User Dashboard'
+        ]);
+    })->middleware('role:user');
+    
+    Route::get('/manager/dashboard', function() {
+        return response()->json([
+            'message' => 'Welcome to Manager Dashboard'
+        ]);
+    })->middleware('role:manager');
+    
+    Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+});

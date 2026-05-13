@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "View Model + SQLite"
+rootProject.name = "ViewModelSQLite"
 include(":app")
- 

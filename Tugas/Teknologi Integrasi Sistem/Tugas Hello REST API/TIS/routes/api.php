@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\GatewayController;
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
@@ -69,7 +70,8 @@ Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'regi
 Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
 
 Route::middleware(['dummy.jwt'])->group(function () {
-    Route::get('/profile', [\App\Http\Controllers\Api\AuthController::class, 'profile']);
+    Route::get('/profile', [\App\Http\Controllers\Api\GatewayController::class, 'getProfile'])
+         ->middleware('role:admin,user,manager');
 
     Route::get('/admin/dashboard', function () {
         return response()->json([
@@ -90,4 +92,29 @@ Route::middleware(['dummy.jwt'])->group(function () {
     })->middleware('role:manager');
 
     Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
+});
+
+// API Gateway Routes
+Route::middleware(['dummy.jwt'])->prefix('gateway')->group(function () {
+    // Profile endpoint
+    Route::get('/profile', [GatewayController::class, 'getProfile'])
+        ->middleware('role:admin,user,manager');
+    
+    // Student CRUD endpoints
+    Route::get('/students', [GatewayController::class, 'getStudents'])
+        ->middleware('role:admin,user,manager');
+    Route::post('/students', [GatewayController::class, 'createStudent'])
+        ->middleware('role:admin');
+    Route::put('/students/{nim}', [GatewayController::class, 'updateStudent'])
+        ->middleware('role:admin');
+    Route::patch('/students/{nim}', [GatewayController::class, 'updateStudent'])
+        ->middleware('role:admin');
+    Route::delete('/students/{nim}', [GatewayController::class, 'deleteStudent'])
+        ->middleware('role:admin');
+    
+    // Dashboard endpoints
+    Route::get('/admin/dashboard', [GatewayController::class, 'getAdminDashboard'])
+        ->middleware('role:admin');
+    Route::get('/user/dashboard', [GatewayController::class, 'getUserDashboard'])
+        ->middleware('role:user,manager');
 });

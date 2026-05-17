@@ -1,0 +1,378 @@
+MODUL 09
+
+INTEGRASI DATABASE DENGAN ORM PADA REST API
+
+A. TUJUAN PRAKTIKUM
+1. Memahami konsep dasar Object Relational Mapping pada Laravel.
+2. Mampu membuat model dan migration untuk data yang sebelumnya masih hardcode.
+3. Mampu menghubungkan REST API yang sudah dibuat dengan database menggunakan Eloquent ORM.
+4. Mampu melakukan operasi CRUD data Student menggunakan database.
+5. Mampu mendefinisikan dan menggunakan relasi tabel untuk Student dan Mata Kuliah.
+6. Mampu menyesuaikan endpoint API, JWT, role, dan gateway agar bekerja pada data yang tersimpan di
+database.
+B. PRA-PRAKTIKUM
+BAGIAN 1: LATAR BELAKANG PERUBAHAN
+1. Pada modul-modul sebelumnya, data Student dan Mata Kuliah masih disimpan dalam bentuk array
+hardcode di dalam controller.
+2. Pendekatan tersebut cukup untuk simulasi awal, tetapi belum merepresentasikan sistem nyata karena data
+tidak persisten, tidak benar-benar tersimpan, dan tidak dapat dikelola dengan baik jika aplikasi
+berkembang.
+3. Pada modul ini, seluruh proses CRUD akan dipindahkan ke database menggunakan Eloquent ORM.
+4. ORM adalah teknik pemrograman yang menghubungkan database relasional dengan kode program
+berorientasi objek, sehingga pengembang tidak perlu menulis SQL manual untuk operasi dasar. Pada
+Laravel, ORM yang digunakan adalah Eloquent.
+BAGIAN 2: PERSIAPAN DATABASE
+1. Pastikan project Laravel dari modul sebelumnya masih dapat dijalankan dengan baik.
+2. Siapkan database baru, misalnya dengan nama integrasi_sistem_db.
+3. Buka file .env dan sesuaikan konfigurasi database.
+4. Simpan perubahan, lalu jalankan pengecekan koneksi menggunakan php artisan migrate:status.
+5. Jika tidak ada error koneksi, berarti Laravel sudah terhubung dengan database.
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=integrasi_sistem_db
+DB_USERNAME=root
+DB_PASSWORD=
+BAGIAN 3: MEMBUAT MODEL DAN MIGRATION
+2.1. MEMBUAT MODEL STUDENT
+1. Buat model dan migration untuk Student dengan perintah php artisan make:model Student -m
+2. Buka file migration Student di folder database/migrations.
+3. Ubah isi method up() agar membentuk tabel students dengan kolom nim, nama, program_studi,
+angkatan, dan timestamps.
+public function up(): void
+{
+Schema::create('students', function (Blueprint $table) {
+$table->id();
+
+$table->string('nim', 15)->unique();
+$table->string('nama', 100);
+$table->string('program_studi', 100)->nullable();
+$table->integer('angkatan')->nullable();
+$table->timestamps();
+});
+}
+Migration merupakan blueprint struktur basis data yang mendefinisikan nama tabel, kolom, tipe data,
+dan berfungsi sebagai version control basis data.
+2.2. MEMBUAT MODEL COURSE
+1. Buat model dan migration untuk Mata Kuliah dengan perintah php artisan make:model Course -m.
+2. Buka file migration Course, lalu ubah method up() seperti berikut.
+public function up(): void
+{
+Schema::create('courses', function (Blueprint $table) {
+$table->id();
+$table->string('kode', 20)->unique();
+$table->string('nama', 100);
+$table->integer('sks');
+$table->timestamps();
+});
+}
+2.3. MEMBUAT TABEL RELASI
+1. Karena satu student dapat mengambil banyak course dan satu course dapat diambil oleh banyak student,
+maka gunakan relasi many-to-many.
+2. Buat tabel pivot untuk Student dan Course dengan perintah php artisan make:migration
+create_course_student_table.
+3. Ubah isi migration pivot seperti berikut.
+public function up(): void
+{
+Schema::create('course_student', function (Blueprint $table) {
+$table->id();
+$table->foreignId('student_id')->constrained()->onDelete('cascade');
+$table->foreignId('course_id')->constrained()->onDelete('cascade');
+$table->timestamps();
+});
+}
+2.4. MENJALANKAN MIGRATION
+1. Jalankan seluruh migration dengan perintah php artisan migrate.
+BAGIAN 4: MENYIAPKAN MODEL ELOQUENT
+3.1. MODEL STUDENT
+1. Buka file app/Models/Student.php.
+2. Ubah model Student seperti berikut.
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Student extends Model
+
+{
+protected $fillable = [
+'nim',
+'nama',
+'program_studi',
+'angkatan'
+];
+public function courses()
+{
+return $this->belongsToMany(Course::class);
+}
+}
+Model adalah representasi tabel dalam bentuk class PHP, sedangkan kolom tabel dipetakan menjadi
+atribut objek. Kolom fillable perlu didefinisikan agar data dapat diisi secara mass assignment dengan aman.
+3.2. MODEL COURSE
+1. Buka file app/Models/Course.php.
+2. Ubah model Course seperti berikut.
+<?php
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+class Course extends Model
+{
+protected $fillable = [
+'kode',
+'nama',
+'sks'
+];
+public function students()
+{
+return $this->belongsToMany(Student::class);
+}
+}
+BAGIAN 5: MENGUBAH STUDENTCONTROLLER DARI HARDCODE MENJADI
+DATABASE
+4.1. MENGHAPUS ARRAY DUMMY
+1. Buka file app/Http/Controllers/Api/StudentController.php.
+2. Hapus property $students yang sebelumnya berisi data hardcode.
+3. Tambahkan import model Student, Course, Request, dan ValidationException.
+use App\Models\Student;
+use App\Models\Course;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+4.2. METHOD INDEX
+public function index()
+{
+$students = Student::with('courses')->get();
+
+return response()->json([
+'message' => 'Students retrieved successfully',
+'data' => $students
+], 200);
+}
+Method ini menggunakan eager loading with(courses) agar data student dan relasi course diambil
+sekaligus.
+4.3. METHOD SHOW
+public function show($nim)
+{
+$student = Student::with('courses')->where('nim', $nim)->first();
+if (!$student) {
+return response()->json([
+'message' => 'Student not found'
+], 404);
+}
+return response()->json([
+'message' => 'Student retrieved successfully',
+'data' => $student
+], 200);
+}
+4.4. METHOD STORE
+public function store(Request $request)
+{
+try {
+$validated = $request->validate([
+'nim' => 'required|digits:15|unique:students,nim',
+'nama' => 'required|string|max:100',
+'program_studi' => 'nullable|string|max:100',
+'angkatan' => 'nullable|integer',
+'mataKuliah' => 'required|array|min:1',
+'mataKuliah.*.kode' => 'required|string',
+'mataKuliah.*.nama' => 'required|string|max:100',
+'mataKuliah.*.sks' => 'required|integer|min:1|max:6',
+]);
+} catch (ValidationException $e) {
+return response()->json([
+'message' => 'Validation failed',
+'errors' => $e->errors()
+], 422);
+}
+$student = Student::create([
+'nim' => $validated['nim'],
+'nama' => $validated['nama'],
+'program_studi' => $validated['program_studi'] ?? null,
+'angkatan' => $validated['angkatan'] ?? null,
+]);
+$courseIds = [];
+foreach ($validated['mataKuliah'] as $mk) {
+$course = Course::firstOrCreate(
+['kode' => $mk['kode']],
+
+[
+'nama' => $mk['nama'],
+'sks' => $mk['sks']
+]
+);
+$courseIds[] = $course->id;
+}
+$student->courses()->sync($courseIds);
+$student->load('courses');
+return response()->json([
+'message' => 'Student created successfully',
+'data' => $student
+], 201);
+}
+4.5. METHOD UPDATE
+public function update(Request $request, $nim)
+{
+$student = Student::where('nim', $nim)->first();
+if (!$student) {
+return response()->json([
+'message' => 'Student not found'
+], 404);
+}
+try {
+$validated = $request->validate([
+'nama' => 'sometimes|required|string|max:100',
+'program_studi' => 'sometimes|nullable|string|max:100',
+'angkatan' => 'sometimes|nullable|integer',
+'mataKuliah' => 'sometimes|required|array|min:1',
+'mataKuliah.*.kode' => 'required_with:mataKuliah|string',
+'mataKuliah.*.nama' => 'required_with:mataKuliah|string|max:100',
+'mataKuliah.*.sks' => 'required_with:mataKuliah|integer|min:1|max:6',
+]);
+} catch (ValidationException $e) {
+return response()->json([
+'message' => 'Validation failed',
+'errors' => $e->errors()
+], 422);
+}
+$student->update([
+'nama' => $validated['nama'] ?? $student->nama,
+'program_studi' => $validated['program_studi'] ?? $student->program_studi,
+'angkatan' => $validated['angkatan'] ?? $student->angkatan,
+]);
+if (isset($validated['mataKuliah'])) {
+$courseIds = [];
+foreach ($validated['mataKuliah'] as $mk) {
+$course = Course::firstOrCreate(
+['kode' => $mk['kode']],
+
+[
+'nama' => $mk['nama'],
+'sks' => $mk['sks']
+
+]
+);
+$courseIds[] = $course->id;
+}
+$student->courses()->sync($courseIds);
+}
+$student->load('courses');
+return response()->json([
+'message' => "Student {$nim} updated successfully",
+'data' => $student
+], 200);
+}
+4.6. METHOD DESTROY
+public function destroy($nim)
+{
+$student = Student::where('nim', $nim)->first();
+if (!$student) {
+return response()->json([
+'message' => 'Student not found'
+], 404);
+}
+$student->delete();
+return response()->json([
+'message' => "Student {$nim} deleted successfully"
+], 200);
+}
+4.7. METHOD NESTED RESOURCE
+public function coursesByStudent($nim)
+{
+$student = Student::with('courses')->where('nim', $nim)->first();
+if (!$student) {
+return response()->json([
+'message' => 'Student not found'
+], 404);
+}
+return response()->json([
+'message' => 'Courses retrieved successfully',
+'student_nim' => $nim,
+'data' => $student->courses
+], 200);
+}
+BAGIAN 6: MENYESUAIKAN ROUTE API
+1. Buka file routes/api.php.
+
+2. Pastikan route Student menjadi seperti berikut.
+Route::get('/students', [StudentController::class, 'index']);
+Route::get('/students/{nim}', [StudentController::class, 'show']);
+Route::post('/students', [StudentController::class, 'store']);
+Route::put('/students/{nim}', [StudentController::class, 'update']);
+Route::patch('/students/{nim}', [StudentController::class, 'update']);
+Route::delete('/students/{nim}', [StudentController::class, 'destroy']);
+Route::get('/students/{nim}/courses', [StudentController::class,
+'coursesByStudent']);
+Route gateway dari modul sebelumnya tetap dapat dipakai, karena GatewayController pada dasarnya
+hanya meneruskan request ke StudentController. Dengan demikian, setelah StudentController menggunakan
+database, gateway otomatis ikut terhubung ke database juga.
+BAGIAN 7: PENGUJIAN ENDPOINT BERBASIS DATABASE
+5.1. CREATE DATA STUDENT
+POST /api/students
+{
+"nim": "123456789012347",
+"nama": "Budi Santoso",
+"program_studi": "Sistem Informasi",
+"angkatan": 2023,
+"mataKuliah": [
+{
+"kode": "CIE61205",
+"nama": "Pemrograman Web",
+"sks": 3
+},
+{
+"kode": "CIE61208",
+"nama": "Basis Data",
+"sks": 3
+}
+]
+}
+5.2. READ SEMUA STUDENT
+GET /api/students
+Response menampilkan seluruh data dari database, bukan lagi array hardcode.
+5.3. READ DETAIL STUDENT
+GET /api/students/123456789012347
+Response menampilkan satu student beserta relasi course.
+5.4. UPDATE STUDENT
+PUT /api/students/123456789012347
+{
+"nama": "Budi Santoso Update",
+"program_studi": "Sistem Informasi",
+"angkatan": 2024,
+"mataKuliah": [
+{
+"kode": "CIE61206",
+"nama": "Jaringan Komputer",
+"sks": 3
+
+}
+]
+}
+5.5. DELETE STUDENT
+DELETE /api/students/123456789012347
+5.6. NESTED RESOURCE
+GET /api/students/123456789012347/courses
+Endpoint ini menunjukkan relasi data berbasis database, bukan lagi relasi dari array dummy.
+BAGIAN 8: KETERKAITAN DENGAN MODUL SEBELUMNYA
+1. JWT Authentication tetap dapat digunakan, tetapi pada modul ini autentikasi masih boleh tetap memakai
+dummy user jika fokus utama adalah integrasi Student ke database.
+2. Authorization berbasis role tetap dapat dipakai pada route Student dan Gateway seperti pada modul
+sebelumnya.
+3. API Gateway tetap relevan, karena gateway sekarang meneruskan request ke Student service yang sudah
+berbasis database.
+4. Client Axios juga tetap dapat dipakai tanpa perubahan besar, karena endpoint masih sama; yang berubah
+hanyalah sumber datanya dari hardcode menjadi database.
+Dengan kata lain, modul ini adalah tahap transisi dari simulasi API menjadi API yang lebih nyata.
+C. TUGAS PRAKTIKUM
+1. Ubah seluruh CRUD Student dari data hardcode menjadi berbasis database menggunakan Eloquent
+ORM.
+2. Buat tabel students, courses, dan course_student.
+3. Pastikan relasi many-to-many antara Student dan Course berjalan dengan benar.
+4. Pastikan endpoint GET /api/students, GET /api/students/{nim}, POST /api/students, PUT
+/api/students/{nim}, DELETE /api/students/{nim}, dan GET /api/students/{nim}/courses bekerja dengan
+baik.
+5. Pastikan endpoint gateway untuk Student juga tetap berjalan setelah integrasi database
+dilakukan.Lakukan pengujian minimal untuk lima skenario: tambah student baru, tampilkan seluruh
+student, tampilkan detail satu student, ubah data student, dan hapus student.
+6. Bandingkan secara singkat perbedaan pendekatan hardcode dan database pada implementasi REST API.
+D. PERTANYAAN REFLEKSI
+1. Apa perbedaan utama antara penyimpanan data hardcode dan penyimpanan data di database?
+2. Mengapa ORM mempermudah pengembangan aplikasi dibandingkan SQL manual?
+3. Mengapa model dan migration perlu disiapkan sebelum CRUD berbasis database dibuat?
+4. Mengapa relasi many-to-many cocok digunakan untuk Student dan Course?
+5. Apa keuntungan jika API Gateway bekerja di atas service yang sudah terhubung ke database?

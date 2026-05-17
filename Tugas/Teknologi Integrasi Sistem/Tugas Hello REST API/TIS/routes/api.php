@@ -63,7 +63,7 @@ Route::get('/students/{nim}', [App\Http\Controllers\StudentController::class, 's
 Route::put('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
 Route::patch('/students/{nim}', [App\Http\Controllers\StudentController::class, 'update']);
 Route::delete('/students/{nim}', [App\Http\Controllers\StudentController::class, 'destroy']);
-Route::get('/students/{nim}/mata-kuliah', [App\Http\Controllers\StudentController::class, 'mataKuliahByStudent']);
+Route::get('/students/{nim}/mata-kuliah', [App\Http\Controllers\StudentController::class, 'coursesByStudent']);
 
 // JWT Auth Routes
 Route::post('/register', [\App\Http\Controllers\Api\AuthController::class, 'register']);

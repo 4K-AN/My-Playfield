@@ -1,0 +1,433 @@
+6.1. Tujuan Pembelajaran
+1. Memahami konsep layanan rest API Supabase.
+2. Menggunakan retrofit untuk mengelola data dalam tabel Supabase.
+3. Mengintegrasikan retrofit dengan ViewModel
+6.2. Dasar Teori
+Supabase
+Supabase adalah platform Backend-as-a-Service (BaaS) berbasis open-source yang dibangun di atas PostgreSQL. Dalam
+pengembangan Android, Supabase menyediakan RESTful API yang dapat diakses melalui Retrofit atau SDK resminya.
+Pada modul ini, Supabase berperan sebagai database cloud yang menyediakan endpoint untuk operasi CRUD (Create,
+Read, Update, Delete) melalui protokol HTTP dengan autentikasi menggunakan API_KEY.
+Pembuatan Tabel di Supabase (PostgreSQL)
+Supabase menggunakan database PostgreSQL. Untuk memulai praktikum, mahasiswa perlu menyiapkan struktur data
+terlebih dahulu melalui Dashboard Supabase.
+Langkah-langkah Pembuatan Tabel:
+1. Table Editor: Masuk ke Dashboard Supabase, pilih menu Table Editor dan klik New Table.
+2. Definisi Kolom: Masukkan nama tabel (misal: mahasiswa) dan tentukan kolom-kolomnya (misal: id (int8,
+primary key), nama (text), nim (text), created_at (timestamptz)).
+3. Row Level Security (RLS): Secara default, Supabase mengaktifkan RLS untuk keamanan. Untuk kebutuhan
+praktikum sederhana, RLS bisa dinonaktifkan agar data dapat diakses tanpa kebijakan yang kompleks, atau
+dikonfigurasi agar mengizinkan akses publik melalui API Key.
+Mengakses Supabase melalui REST API
+Salah satu keunggulan Supabase adalah kemampuannya menghasilkan REST API secara otomatis segera setelah tabel
+dibuat. API ini mengikuti prinsip PostgREST. Format URL dasar untuk mengakses tabel di Supabase adalah
+https://[PROJECT_ID].supabase.co/rest/v1/[TABLE_NAME]. Untuk dapat melakukan request rest API diperlukan apikey
+dalam header yang harus disertakan dalam setiap panggilan API. Apikey ini bisa diperoleh pada bagian Project Setting
+> API Keys > Publishable key. Tambahkan header apikey berisi publishable_key dalam setiap HTTP request
+pemanggilan API. Berikut adalah cara kerja operasi database melalui HTTP method:
+● GET (Read): Mengambil data dari tabel. Contoh: GET /rest/v1/mahasiswa?select=*
+● POST (Create): Menambahkan data baru (mengirimkan body JSON). Contoh: POST /rest/v1/mahasiswa dengan
+JSON {"nama": "Andi", "nim": "123"}.
+● PATCH (Update): Memperbarui data yang sudah ada berdasarkan filter. Contoh: PATCH
+/rest/v1/mahasiswa?id=eq.1
+● DELETE (Delete): Menghapus data. Contoh: DELETE /rest/v1/mahasiswa?id=eq.1
+
+Retrofit
+Retrofit adalah type-safe HTTP client untuk Android dan Java yang dikembangkan oleh Square. Retrofit mengubah API
+HTTP menjadi antarmuka Java/Kotlin menggunakan anotasi. Fitur Utama:
+● Mengelola pembuatan request URL secara dinamis.
+● Mendukung konversi JSON secara otomatis (menggunakan library seperti GSON atau Kotlin Serialization).
+
+Kotlin
+● Integrasi mudah dengan coroutines dan aliran data asinkron.
+Retrofit adalah library HTTP Client yang mengubah API HTTP menjadi antarmuka (interface) Kotlin. Retrofit
+sebenarnya tidak melakukan pemrosesan JSON sendiri; ia mengandalkan Converter Factory (seperti GSON atau Kotlin
+Serialization) untuk mengubah respons dari server menjadi objek data (POJO/Data Class). Komponen Utama Retrofit:
+1. Base URL: Alamat dasar server (Contoh: URL project Supabase Anda).
+2. Converter Factory: Pengubah format data (JSON ke Object).
+3. Adapter: Menentukan bagaimana eksekusi dilakukan (misal: menggunakan Coroutines suspend atau Call).
+Retrofit Service
+Retrofit Service adalah sebuah interface yang mendefinisikan kontrak komunikasi. Di sinilah kita menentukan metode
+HTTP, parameter URL, dan isi dari request body. Dalam pengembangan Android modern, kita menggunakan kata
+kunci suspend agar fungsi tersebut berjalan di dalam Coroutine (tidak memblokir UI thread).
+Kotlin
+
+interface SupabaseService {
+// Menampilkan data dengan filter tertentu
+@GET("rest/v1/produk")
+suspend fun getProduk(
+@Query("select") kolom: String = "*",
+@Query("harga") filterHarga: String = "gt.50000" // Filter: harga >
+50000
+): List<ProdukResponse>
+// Menambah data baru
+@POST("rest/v1/produk")
+suspend fun tambahProduk(
+@Body data: ProdukRequest
+): Response<Unit>
+}
+Anotasi Penting dalam Retrofit
+● @GET / @POST / @PATCH / @DELETE: Menentukan metode HTTP.
+● @Path: Mengganti bagian dari URL secara dinamis (misal: rest/v1/produk/{id}).
+● @Query: Menambahkan parameter di belakang URL (misal: ?id=eq.10).
+● @Body: Mengirimkan objek sebagai JSON dalam body request.
+● @Headers: Digunakan jika header bersifat statis. Untuk Supabase, kita sering menggunakan @Header (tanpa
+'s') di dalam parameter fungsi karena API Key bisa bersifat dinamis.
+
+Retrofit Client (Singleton Pattern)
+Agar aplikasi tidak membuat banyak instance Retrofit yang boros memori, kita menggunakan pola Singleton. Di sini
+kita juga bisa menambahkan OkHttpClient sebagai lapisan interceptor untuk keperluan log (debugging) dan manajemen
+header otomatis. Contoh Implementasi Singleton:
+Kotlin
+
+Kotlin
+
+Kotlin
+object RetrofitClient {
+private const val BASE_URL = "https://xyz.supabase.co/"
+private val client = OkHttpClient.Builder().addInterceptor { chain ->
+val request = chain.request().newBuilder()
+.addHeader("apikey", "YOUR_ANON_KEY")
+.addHeader("Authorization", "Bearer YOUR_ANON_KEY")
+.build()
+chain.proceed(request)
+}.build()
+val instance: SupabaseService by lazy {
+Retrofit.Builder()
+.baseUrl(BASE_URL)
+.client(client) // Menghubungkan OkHttp yang sudah ada header-nya
+.addConverterFactory(GsonConverterFactory.create())
+.build()
+.create(SupabaseService::class.java)
+}
+}
+
+Implementasi pada Repository Pattern
+Repository bertindak sebagai mediator antara sumber data (Retrofit/Supabase) dan ViewModel. Tujuannya adalah untuk
+mengisolasi data dari UI sehingga ViewModel tidak perlu tahu dari mana data berasal (apakah dari server atau database
+lokal). Dalam praktikum ini, Repository akan membungkus pemanggilan Retrofit ke dalam Flow. Mengapa
+menggunakan Flow di Repository?
+● Asinkron: Menjalankan request di background thread tanpa memblokir UI.
+● Reactive: Memungkinkan kita mengirimkan status data secara bertahap (misal: Loading -> Success/Error).
+Kotlin
+
+class ProdukRepository(private val apiService: SupabaseService) {
+// Fungsi ini mengembalikan aliran data (Flow)
+fun getProdukFlow(): Flow<ResultState<List<ProdukResponse>>> = flow {
+emit(ResultState.Loading) // Memberitahu UI bahwa proses dimulai
+try {
+val response = apiService.getProduk()
+emit(ResultState.Success(response)) // Mengirim data jika berhasil
+} catch (e: Exception) {
+emit(ResultState.Error(e.message ?: "Terjadi kesalahan")) //
+Mengirim pesan error
+}
+}.flowOn(Dispatchers.IO) // Memastikan request berjalan di IO Thread
+}
+
+Peran ViewModel: State Management
+ViewModel bertugas mengelola data untuk UI dan menjaga state tersebut tetap ada meskipun Activity hancur
+sementara (seperti saat rotasi layar). ViewModel mengambil data dari Repository dan menyediakannya dalam bentuk
+yang bisa diobservasi oleh View.
+
+Kotlin
+StateFlow dan Collecting Data
+Di dalam ViewModel, kita sering menggunakan StateFlow. Berbeda dengan Flow biasa, StateFlow selalu menyimpan
+nilai terbaru dan akan segera mengirimkannya kepada "pengamat" (subscriber) baru.
+Kotlin
+
+class ProdukViewModel(private val repository: ProdukRepository) : ViewModel() {
+private val _produkState =
+MutableStateFlow<ResultState<List<ProdukResponse>>>(ResultState.Loading)
+val produkState: StateFlow<ResultState<List<ProdukResponse>>> = _produkState
+fun fetchProduk() {
+viewModelScope.launch {
+repository.getProdukFlow().collect { hasil ->
+_produkState.value = hasil // Memperbarui state
+}
+}
+}
+}
+
+Berikut adalah ringkasan bagaimana data mengalir dari server hingga ke tangan pengguna:
+1. Supabase: Menyimpan data di Cloud.
+2. Retrofit Service: Menarik data dari Supabase via HTTP.
+3. Repository: Membungkus hasil Retrofit ke dalam Flow agar bisa dipantau statusnya (Loading/Success/Error).
+4. ViewModel: Meluncurkan Coroutine untuk mengumpulkan (collect) data dari Repository dan menyimpannya
+di StateFlow.
+5. View: Mengamati (observe) StateFlow dan memperbarui tampilan UI secara otomatis setiap ada perubahan
+data.
+
+6.3. Alat dan Bahan Praktik
+6.3.1. Perangkat keras
+● Komputer/Laptop dengan RAM minimal 8 GB, 16 GB direkomendasikan.
+● Processor Dual Core.
+● Perangkat Android fisik, untuk menjalankan program jika RAM komputer yang digunakan tidak memadai untuk
+menjalankan Android Emulator di dalam Android Studio.
+6.3.2. Perangkat Lunak
+● Android Studio dengan Android SDK dan Android Emulator yang telah terinstall.
+● Materi Pembelajaran Kelas.
+● Modul Praktikum.
+6.4. Percobaan Supabase
+● Buat akun supabase kemudian login di http://supabase.com/
+● Buat project kemudian buka Table Editor dan buat tabel Book
+
+● Untuk praktikum ini kita Disable RLS , ini memberikan akses select, insert, update, delete data dalam tabel ini oleh
+semua pengguna(public) menggunakan publishable key.
+● Tabel ini bisa diakses melalui restAPI pada https://[PROJECT_ID].supabase.co/rest/v1/[TABLE_NAME]. Project_ID
+bisa dilihat pada halaman project setting
+
+● publishable key bisa diakses pada bagian Project Setting > API Keys
+
+● Buka postman dan akses tabel book melalui rest API.
+
+● Gunakan postman untuk menambahkan data ke tabel book. Jelaskan bagaimana prosesnya dan hasilnya. Sertakan
+tangkapan layar(screenshoot).
+● Bagaimana cara mendapatkan id dari data/record yang kita tambahkan/insert ke tabel book?
+6.5. Percobaan Retrofit
+● Buat sebuah Project Android Studio baru, dengan Template Empty Activity untuk Phone and Tablet. Pastikan
+project yang dibuat menggunakan Jetpack Compose. Tunggu sampai proses Build inisialisasi project baru ini selesai
+dilakukan sebelum melanjutkan percobaan ke langkah selanjutnya.
+● Tambahkan kode berikut ke dalam file libs.versions.toml dalam folder gradle
+[versions]
+. . . . .
+retrofit = "3.0.0"
+converterGson = "3.0.0"
+[libraries]
+. . . . .
+com-squareup-retrofit2-retrofit = { module = "com.squareup.retrofit2:retrofit",
+version.ref = "retrofit" }
+retrofit2-converter-gson = { module = "com.squareup.retrofit2:converter-gson",
+version.ref = "converterGson" }
+● Tambahkan kode berikut ke dalam file build.gradle.kts dalam folder app
+. . . .
+dependencies {
+. . . .
+implementation(libs.com.squareup.retrofit2.retrofit)
+implementation(libs.retrofit2.converter.gson)
+● Buat data class bernama Book
+data class Book(
+val id: Int?,
+val judul: String,
+val isbn: String
+)
+● Buat interface retrofit service untuk mendefinisikan pemanggilan HTTP request ke supabase
+
+interface BookService {
+@GET("book")
+suspend fun getBooks(): Response<List<Book>>
+@POST("book")
+suspend fun addBook(@Body book: Book): Response<List<Book>>
+}
+● Buat interceptor untuk menambahkan header apikey pada setiap request ke supabase
+class ApiKeyInterceptor(private val apikey:String): Interceptor {
+override fun intercept(chain: Interceptor.Chain): Response {
+val originalRequest = chain.request()
+val requestBuilder = originalRequest.newBuilder().header("apikey",
+apikey).header("Prefer","return=representation")
+val request = requestBuilder.build()
+return chain.proceed(request)
+}
+}
+● Buat object retrofit client
+object RetrofitInstance {
+private const val BASE_URL = "https://[project_id].supabase.co/rest/v1/"
+private val retrofit: Retrofit by lazy {
+val sbHttpClient = OkHttpClient().newBuilder()
+.addInterceptor(ApiKeyInterceptor("[publishable key]"))
+.build()
+Retrofit.Builder()
+.baseUrl(BASE_URL)
+.client(sbHttpClient)
+.addConverterFactory(GsonConverterFactory.create())
+.build()
+}
+val bookService: BookService by lazy {
+retrofit.create(BookService::class.java)
+}
+}
+● Buat class Repository dengan nama BookRepository
+
+class BookRepository {
+private val bookService = RetrofitInstance.bookService
+fun listBooks(): Flow<List<Book>> = flow {
+val res = bookService.getBooks();
+if (res.isSuccessful) {
+emit(res.body()!!)
+} else {
+throw Exception(res.errorBody()?.string())
+}
+}.flowOn(Dispatchers.IO)
+fun insertBook(book: Book): Flow<List<Book>> = flow {
+val res = bookService.addBook(book);
+if (res.isSuccessful) {
+emit(res.body()!!)
+} else {
+throw Exception(res.errorBody()?.string())
+}
+}.flowOn(Dispatchers.IO)
+}
+● Buat interface untuk membungkus data hasil respon dari supabase dan state dari UI
+sealed interface UIState<out T> {
+data class Success<T>(val data: T) : UIState<T>
+data class Error(val message: String) : UIState<Nothing>
+object Loading : UIState<Nothing>
+}
+● Buat class ViewModel BookViewModel
+class BookViewModel(private val repository: BookRepository) : ViewModel() {
+private val _bookUiState =
+MutableStateFlow<UIState<List<Book>>>(UIState.Loading)
+val bookUiState: StateFlow<UIState<List<Book>>> = _bookUiState
+fun listBooks() {
+viewModelScope.launch {
+_bookUiState.value = UIState.Loading
+repository.listBooks()
+.catch { e -> _bookUiState.value = UIState.Error(e.toString()) }
+.collect { bookList ->
+_bookUiState.value = UIState.Success(bookList)
+}
+}
+}
+fun insertBook(book: Book) {
+viewModelScope.launch {
+_bookUiState.value = UIState.Loading
+repository.insertBook(book).onCompletion {
+repository.listBooks().collect { bookList ->
+_bookUiState.value = UIState.Success(bookList)
+}
+}.catch { e -> _bookUiState.value = UIState.Error(e.toString())
+}.collect()
+}
+}
+}
+● Buat class ViewModel Factory BookViewModelFactory untuk menginstansiasi objek BookViewModel.
+
+class BookViewModelFactory(private val repository: BookRepository) :
+ViewModelProvider.NewInstanceFactory() {
+override fun <T : ViewModel> create(modelClass: Class<T>): T {
+try {
+val constructor =
+modelClass.getDeclaredConstructor(BookRepository::class.java)
+return constructor.newInstance(repository)
+} catch (e: Exception) {
+Log.e("ERROR",e.message.toString())
+}
+return super.create(modelClass)
+}
+}
+● Modifikasi MainActivity untuk melakukan instansiasi repository dan viewmodel
+class MainActivity : ComponentActivity() {
+private lateinit var bookViewModel: BookViewModel
+private lateinit var repository: BookRepository
+private lateinit var factory: BookViewModelFactory
+override fun onCreate(savedInstanceState: Bundle?) {
+super.onCreate(savedInstanceState)
+repository = BookRepository()
+factory = BookViewModelFactory(repository)
+bookViewModel = ViewModelProvider(this, factory)[BookViewModel::class.java]
+enableEdgeToEdge()
+setContent {
+Supabase1Theme {
+Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+BookScreen(innerPadding, bookViewModel)
+}
+}
+● Buat fungsi BookScreen untuk menampilkan data dari tabel Book dan form untuk menginputkan data kedalam
+tabel Book
+
+@Composable
+fun BookScreen(padding: PaddingValues, viewModel: BookViewModel) {
+val bookUiState: UIState<List<Book>> by
+viewModel.bookUiState.collectAsStateWithLifecycle()
+var _title by remember { mutableStateOf("") }
+var _isbn by remember { mutableStateOf("") }
+LaunchedEffect(Unit)
+{
+viewModel.listBooks()
+}
+Column(modifier = Modifier
+.padding(padding)
+.fillMaxWidth()) {
+TextField(
+modifier = Modifier.fillMaxWidth(), value = _title,
+onValueChange = { _title = it }, label = { Text("JUDUL") },
+)
+TextField(
+modifier = Modifier.fillMaxWidth(), value = _isbn,
+onValueChange = { _isbn = it }, label = { Text("ISBN") },
+)
+Button(onClick = {
+val book = Book(
+judul = _title, isbn = _isbn,
+id = null
+)
+viewModel.insertBook(book)
+}) { Text(text = "SIMPAN") }
+when (bookUiState) {
+is UIState.Loading -> ShowLoading()
+is UIState.Success -> ShowList((bookUiState as
+UIState.Success<List<Book>>).data)
+is UIState.Error -> ShowError(text = (bookUiState as
+UIState.Error).message)
+}
+}
+}
+@Composable
+fun ShowList(list: List<Book>) {
+LazyColumn(modifier = Modifier.fillMaxSize()) {
+items(list) { item ->
+Card(
+modifier = Modifier
+.padding(vertical = 5.dp)
+.fillMaxWidth()
+) {
+
+Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+Text(text = item.judul)
+Text(text = item.isbn)
+}
+}
+}
+}
+}
+@Composable
+fun ShowLoading() {
+Box(
+modifier = Modifier
+.fillMaxWidth()
+.fillMaxHeight()
+) {
+val contentDesc = "LOADING"
+CircularProgressIndicator(
+modifier = Modifier
+.align(Alignment.Center)
+.semantics {
+contentDescription = contentDesc
+})
+}
+}
+@Composable
+fun ShowError(text: String) {
+Column(
+modifier = Modifier
+.fillMaxWidth()
+.fillMaxHeight(),
+verticalArrangement = Arrangement.spacedBy(10.dp,
+Alignment.CenterVertically),
+horizontalAlignment = Alignment.CenterHorizontally
+) {
+Text(
+text = text,
+style = MaterialTheme.typography.titleMedium,
+color = Color.Gray,
+fontSize = 16.sp,
+modifier = Modifier
+.padding(4.dp)
+)
+}
+}
+
+● Jalankan aplikasi, masukkan judul dan no isbn ke textfield kemudian tekan tombol simpan. Amati perubahan pada
+LazyColumn,
+a. Jelaskan alur proses pengiriman HTTP request ke supabase, pada bagian mana dalam program yang
+memerintahkan proses berjalan pada background thread

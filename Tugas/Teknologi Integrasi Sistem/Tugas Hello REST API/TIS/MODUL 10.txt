@@ -1,0 +1,423 @@
+MODUL 10
+
+DOKUMENTASI DAN VERSIONING API
+
+A. TUJUAN PRAKTIKUM
+1. Memahami konsep dasar API Documentation pada REST API yang telah dibangun.
+2. Menjelaskan pentingnya dokumentasi API sebagai kontrak antara client dan server.
+3. Memahami konsep API Versioning untuk mengelola perubahan API.
+4. Menerapkan URI Versioning pada endpoint API.
+5. Membuat dokumentasi API interaktif menggunakan OpenAPI/Swagger.
+6. Mengintegrasikan dokumentasi dan versioning pada studi kasus Student API berbasis database.
+
+B. PRA-PRAKTIKUM
+Bagian 1: Keterkaitan dengan Modul 09
+1. Gunakan project Laravel yang sama dengan Modul 09, sehingga data Student dan Course sudah
+tersimpan di database melalui Eloquent ORM.
+2. Pastikan project telah memiliki tabel students, courses, dan course_student, serta endpoint CRUD
+Student, JWT authentication, authorization berbasis role, dan API Gateway.
+3. Pastikan endpoint berikut sudah berjalan sebelum memulai modul ini: POST /api/login, GET /api/profile,
+GET /api/students, GET /api/students/{nim}/courses, dan GET /api/gateway/students. 4. Jalankan server
+Laravel dengan perintah berikut.
+php artisan serve
+Bagian 2: Memahami Dokumentasi API
+Dokumentasi API adalah panduan penggunaan API yang memuat endpoint, parameter, request, response,
+status code, dan kebutuhan authentication. Dokumentasi berfungsi sebagai kontrak antara client dan server
+sehingga frontend, backend, maupun pihak ketiga memiliki pemahaman yang sama tentang cara
+menggunakan endpoint yang tersedia.
+Pada studi kasus lanjutan dari Modul 09, dokumentasi menjadi penting karena Student API sudah
+menggunakan database. Artinya, API tidak lagi bersifat simulatif, tetapi mulai menyerupai sistem nyata yang
+harus dapat dipahami, diuji, dan dipelihara oleh developer lain.
+Bagian 3: Komponen Dokumentasi API
+1. Endpoint API
+2. HTTP Method seperti GET, POST, PUT, PATCH, dan DELETE
+3. Parameter, baik query, path, maupun body
+4. Format request, umumnya JSON
+5. Format response
+6. Status code
+7. Authentication
+Bagian 4: Instalasi Swagger pada Project
+1. Install package Swagger pada project Laravel dengan perintah berikut.
+
+composer require darkaonline/l5-swagger
+2. Publish konfigurasi Swagger.
+php artisan vendor:publish --provider="L5Swagger\L5SwaggerServiceProvider"
+3. Generate dokumentasi awal.
+php artisan l5-swagger:generate
+4. Jika berhasil, dokumentasi dapat diakses melalui browser pada alamat berikut.
+http://127.0.0.1:8000/api/documentation
+Bagian 5: Menambahkan Informasi Dasar OpenAPI
+1. Buka file app/Http/Controllers/Controller.php lalu tambahkan anotasi OpenAPI berikut di atas class
+Controller.
+<?php
+namespace App\Http\Controllers;
+use OpenApi\Attributes as OA;
+#[OA\Info(
+version: "1.0.0",
+description: "Dokumentasi REST API untuk studi kasus Student API berbasis
+database.",
+title: "Student API Documentation"
+)]
+#[OA\Server(
+url: "http://127.0.0.1:8000/api",
+description: "Local API Server"
+)]
+#[OA\SecurityScheme(
+securityScheme: "bearerAuth",
+type: "http",
+scheme: "bearer",
+bearerFormat: "JWT"
+)]
+abstract class Controller
+{
+//
+}
+Bagian 6: Dokumentasi Endpoint Utama
+6.1. Dokumentasi Endpoint Login
+1. Buka file app/Http/Controllers/Api/AuthController.php lalu tambahkan anotasi berikut sebelum method
+login().
+use OpenApi\Attributes as OA; //tambahkan ini di bagian atas
+#[OA\Post(
+path: "/login",
+summary: "Login user dan mendapatkan JWT token",
+tags: ["Authentication"]
+)]
+#[OA\RequestBody(
+required: true,
+content: new OA\JsonContent(
+required: ["email", "password"],
+properties: [
+new OA\Property(property: "email", type: "string", example:
+"admin@example.com"),
+
+new OA\Property(property: "password", type: "string", example:
+"secret321")
+]
+)
+)]
+#[OA\Response(
+response: 200,
+description: "Login berhasil",
+content: new OA\JsonContent(
+properties: [
+new OA\Property(property: "message", type: "string", example:
+"Login successful (dummy)"),
+new OA\Property(property: "token", type: "string", example:
+"jwt_token_here")
+]
+)
+)]
+#[OA\Response(
+response: 401,
+description: "Email atau password salah"
+)]
+6.2. Dokumentasi Endpoint Profile
+#[OA\Get(
+path: "/v1/profile",
+summary: "Menampilkan profile user berdasarkan JWT token",
+tags: ["Authentication"],
+security: [["bearerAuth" => []]]
+)]
+#[OA\Response(
+response: 200,
+description: "Profile berhasil ditampilkan",
+content: new OA\JsonContent(
+properties: [
+new OA\Property(
+property: "user",
+type: "object",
+properties: [
+
+new OA\Property(property: "email", type: "string", example:
+"admin@example.com"),
+new OA\Property(property: "name", type: "string", example:
+"Admin Hebat"),
+new OA\Property(property: "role", type: "string", example:
+"admin")
+]
+)
+]
+)
+)]
+#[OA\Response(
+response: 401,
+description: "Token tidak valid atau expired"
+)]
+6.3. Dokumentasi Endpoint Gateway Students (GatewayController)
+use OpenApi\Attributes as OA; //tambahkan ini di bagian atas
+#[OA\Get(
+path: "/gateway/students",
+summary: "Menampilkan data student melalui API Gateway",
+tags: ["API Gateway"],
+security: [["bearerAuth" => []]]
+)]
+#[OA\Response(
+
+response: 200,
+description: "Data student berhasil ditampilkan melalui gateway",
+content: new OA\JsonContent(
+properties: [
+new OA\Property(property: "gateway", type: "string", example: "API
+Gateway"),
+new OA\Property(property: "message", type: "string", example:
+"Request forwarded to Student Service")
+]
+)
+)]
+#[OA\Response(
+response: 401,
+description: "Token tidak valid atau tidak dikirim"
+)]
+#[OA\Response(
+response: 403,
+description: "Role tidak memiliki akses"
+)]
+6.4. Dokumentasi Endpoint Student Berbasis Database
+Karena studi kasus ini melanjutkan Modul 09, dokumentasikan juga endpoint student yang sudah terhubung
+ke database.
+use OpenApi\Attributes as OA; //tambahkan ini di bagian atas
+#[OA\Post(
+path: "/students",
+summary: "Menambahkan data student baru ke database",
+tags: ["Students V1"]
+)]
+#[OA\RequestBody(
+required: true,
+content: new OA\JsonContent(
+required: ["nim", "nama", "mataKuliah"],
+properties: [
+new OA\Property(property: "nim", type: "string", example:
+"123456789012347"),
+new OA\Property(property: "nama", type: "string", example: "Budi
+Santoso"),
+new OA\Property(property: "program_studi", type: "string", example:
+"Sistem Informasi"),
+new OA\Property(property: "angkatan", type: "integer", example:
+2023),
+new OA\Property(
+property: "mataKuliah",
+type: "array",
+items: new OA\Items(
+type: "object",
+properties: [
+
+new OA\Property(property: "kode", type: "string",
+example: "CIE61205"),
+new OA\Property(property: "nama", type: "string",
+example: "Pemrograman Web"),
+new OA\Property(property: "sks", type: "integer",
+example: 3)
+]
+)
+)
+]
+)
+)]
+#[OA\Response(
+
+response: 201,
+description: "Student berhasil ditambahkan"
+)]
+#[OA\Response(
+response: 422,
+description: "Validasi gagal"
+)]
+Bagian 7: Generate Ulang Dokumentasi
+1. Setelah seluruh anotasi ditambahkan, generate ulang dokumentasi Swagger.
+php artisan l5-swagger:generate
+2. Akses kembali Swagger UI melalui browser.
+http://127.0.0.1:8000/api/documentation
+3. Pastikan dokumentasi menampilkan kelompok endpoint seperti Authentication, Students V1, Students
+V2, dan API Gateway.
+4. Gunakan tombol Try it out untuk mencoba endpoint secara langsung dari browser.
+Bagian 8: Menerapkan API Versioning pada Studi Kasus Modul 09
+8.1. Konsep Versioning
+API Versioning adalah teknik untuk mengelola perubahan API agar client lama tidak rusak ketika struktur
+response atau perilaku endpoint berubah. Tanpa versioning, perubahan field atau struktur response dapat
+menyebabkan client lama error, integrasi pihak ketiga gagal, dan maintenance menjadi sulit.
+Pada modul ini digunakan strategi URI Versioning karena paling mudah dipahami dan diimplementasikan
+pada tahap pembelajaran.
+8.2. Menyusun Route API v1
+1. Buka file routes/api.php lalu ubah route utama menjadi group v1 seperti berikut.
+<?php
+
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\Api\GatewayController;
+use Illuminate\Support\Facades\Route;
+
+Route::prefix('v1')->group(function () {
+
+Route::get('/ping', function () {
+return response()->json([
+'version' => 'v1',
+'message' => 'pong'
+
+]);
+});
+
+// Authentication
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware(['dummy.jwt'])->group(function () {
+Route::get('/profile', [AuthController::class, 'profile']);
+
+Route::get('/admin/dashboard', function () {
+return response()->json([
+'version' => 'v1',
+'message' => 'Welcome to Admin Dashboard'
+]);
+})->middleware('role:admin');
+
+Route::get('/user/dashboard', function () {
+return response()->json([
+'version' => 'v1',
+'message' => 'Welcome to User Dashboard'
+]);
+})->middleware('role:user');
+
+Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+// Student API langsung berbasis database
+Route::get('/students', [StudentController::class, 'index']);
+Route::get('/students/{nim}', [StudentController::class,
+'show']);
+Route::post('/students', [StudentController::class, 'store']);
+
+Route::put('/students/{nim}', [StudentController::class,
+'update']);
+Route::patch('/students/{nim}', [StudentController::class,
+'update']);
+Route::delete('/students/{nim}', [StudentController::class,
+'destroy']);
+Route::get('/students/{nim}/courses', [StudentController::class,
+'coursesByStudent']);
+
+// API Gateway
+
+Route::middleware(['dummy.jwt'])->prefix('gateway')->group(funct
+ion () {
+Route::get('/students', [GatewayController::class,
+'getStudents'])
+->middleware('role:admin,user');
+
+Route::post('/students', [GatewayController::class,
+'createStudent'])
+->middleware('role:admin');
+
+Route::put('/students/{nim}', [GatewayController::class,
+'updateStudent'])
+->middleware('role:admin');
+
+Route::patch('/students/{nim}', [GatewayController::class,
+'updateStudent'])
+->middleware('role:admin');
+
+Route::delete('/students/{nim}', [GatewayController::class,
+'deleteStudent'])
+->middleware('role:admin');
+});
+
+});
+8.3. Uji Endpoint v1
+1. Lakukan pengujian endpoint ping versi 1.
+GET http://127.0.0.1:8000/api/v1/ping
+2. Response yang diharapkan adalah sebagai berikut.
+{
+"version": "v1",
+"message": "pong"
+}
+3. Uji juga login versi 1.
+POST http://127.0.0.1:8000/api/v1/login
+{
+"email": "admin@example.com",
+"password": "secret321"
+}
+8.4. Uji Gateway v1
+1. Lakukan request berikut untuk menguji gateway versi 1.
+GET http://127.0.0.1:8000/api/v1/gateway/students
+Authorization: Bearer <jwt-token-admin>
+Accept: application/json
+Karena studi kasus ini melanjutkan Modul 09, data student yang tampil pada response harus berasal dari
+database, bukan lagi dari array hardcode.
+Bagian 9: Membuat Simulasi API v2 Berdasarkan Data Database
+9.1. Menambahkan Route v2
+Route::prefix('v2')->group(function () {
+Route::get('/ping', function () {
+return response()->json([
+'version' => 'v2',
+'message' => 'pong',
+'documentation' => 'This is API version 2'
+]);
+});
+Route::get('/students', [StudentController::class, 'indexV2']);
+});
+9.2. Menambahkan Method indexV2()
+public function indexV2()
+{
+$students = \App\Models\Student::with('courses')->get()->map(function ($student) {
+return [
+'nim' => $student->nim,
+'nama' => $student->nama,
+'program_studi' => $student->program_studi,
+'status' => 'active',
+'mata_kuliah_count' => $student->courses->count()
+];
+
+});
+return response()->json([
+'version' => 'v2',
+'message' => 'Student data with new response format',
+'data' => $students
+]);
+}
+9.3. Membandingkan v1 dan v2
+1. Uji endpoint v1: GET http://127.0.0.1:8000/api/v1/students
+2. Uji endpoint v2: GET http://127.0.0.1:8000/api/v2/students
+3. Amati bahwa v1 masih menggunakan struktur lama, sedangkan v2 menambahkan program_studi, status,
+dan mata_kuliah_count.
+Bagian 10: Menambahkan Dokumentasi Swagger untuk v1 dan v2
+#[OA\Get(
+path: "/v1/students",
+summary: "Menampilkan data student versi 1",
+tags: ["Students V1"]
+)]
+#[OA\Response(
+response: 200,
+description: "Data student versi 1 berhasil ditampilkan"
+)]
+//Di atas indexv2()
+#[OA\Get(
+path: "/v2/students",
+summary: "Menampilkan data student versi 2",
+tags: ["Students V2"]
+)]
+#[OA\Response(
+response: 200,
+description: "Data student versi 2 berhasil ditampilkan dengan format baru"
+)]
+1. Setelah anotasi v1 dan v2 ditambahkan, generate ulang dokumentasi Swagger.
+php artisan l5-swagger:generate
+2. Akses kembali dokumentasi pada http://127.0.0.1:8000/api/documentation dan pastikan endpoint v1 serta
+v2 muncul terpisah.
+
+C. TUGAS PRAKTIKUM
+1. Instal dan konfigurasi l5-swagger pada project Laravel lanjutan dari Modul 09.
+2. Tambahkan anotasi OpenAPI dasar pada Controller.php.
+3. Dokumentasikan minimal endpoint berikut: POST /api/v1/login, GET /api/v1/profile, GET
+/api/v1/students, POST /api/v1/students, GET /api/v1/gateway/students, dan GET /api/v2/students. 4.
+Ubah seluruh endpoint utama hasil Modul 09 ke dalam prefix v1.
+5. Tambahkan simulasi v2 untuk endpoint students dengan format response baru berbasis data database.
+6. Generate ulang Swagger dan pastikan dokumentasi dapat diakses di browser.
+7. Lakukan pengujian minimal untuk GET /api/v1/ping, POST /api/v1/login, GET
+/api/v1/gateway/students, GET /api/v1/students, dan GET /api/v2/students.
+
+D. PERTANYAAN REFLEKSI
+1. Mengapa dokumentasi API penting pada sistem yang sudah mulai berkembang? 2. Mengapa
+endpoint hasil Modul 09 perlu didokumentasikan ketika sudah terhubung ke database? 3. Apa risiko
+jika API berbasis database berubah struktur response tanpa versioning? 4. Mengapa v1 dan v2 perlu
+didokumentasikan secara terpisah?
+5. Apa manfaat Swagger bagi developer frontend atau pihak ketiga?
+6. Mengapa URI versioning cocok digunakan pada tahap pembelajaran ini?

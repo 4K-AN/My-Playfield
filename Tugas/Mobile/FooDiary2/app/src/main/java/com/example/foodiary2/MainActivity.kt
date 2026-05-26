@@ -1,4 +1,4 @@
-package com.example.fooddiary
+package com.example.foodiary2
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,15 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.example.fooddiary.ui.navigation.AppNavigation
-import com.example.fooddiary.ui.theme.FoodDiaryTheme
+import com.example.foodiary2.ui.navigation.AppNavigation
+import com.example.foodiary2.ui.theme.FooDiary2Theme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FoodDiaryTheme {
+            FooDiary2Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

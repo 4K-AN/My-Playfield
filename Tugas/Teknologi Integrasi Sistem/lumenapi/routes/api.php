@@ -1,6 +1,7 @@
 <?php
 
 /** @var \Laravel\Lumen\Routing\Router $router */
+/** @var \Laravel\Lumen\Routing\Router $router */
 
 use App\Http\Controllers\Api\AuthController;
 

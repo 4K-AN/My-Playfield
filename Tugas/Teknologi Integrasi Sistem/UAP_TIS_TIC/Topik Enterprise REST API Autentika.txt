@@ -1,0 +1,48 @@
+Topik: Enterprise REST API: Autentikasi JWT, Authorization, API Gateway, Eloquent ORM, dan Dokumentasi OpenAPI/Swagger dengan Versioning. 
+Sifat: Melanjutkan Project UTP ("WowoClean")
+Deskripsi Kasus Lanjutan
+Startup WowoClean kini berkembang pesat dan mendapatkan pendanaan baru. Manajemen memutuskan untuk memigrasi purwarupa sistem manajemen kontainer limbah B3 Anda ke tingkat produksi (production-ready).
+Anda diminta untuk mengubah sistem yang sebelumnya menggunakan array statis (hardcode dummy) menjadi sistem yang berbasis database relasional. Selain itu, demi keamanan data limbah, akses ke endpoint harus diproteksi menggunakan token, dipisahkan berdasarkan hak akses (Role), diakses melalui satu pintu utama (API Gateway), serta didokumentasikan versinya agar bisa digunakan oleh tim Frontend secara konsisten.
+Requirement Sistem (Evolusi Project UTP)
+1. Backend Migration & Database Integration
+Pindahkan seluruh data kontainer (containers) dan log perjalanan (tracking_logs) yang sebelumnya berbentuk dummy di controller ke dalam database nyata.
+Buatlah Migration dan Model Eloquent yang saling berelasi:
+Satu Kontainer dapat memiliki banyak Log Perjalanan (One-to-Many atau sesuai rancangan relasi log di UTP).
+Pastikan fitur CRUD, Conditional Validation, serta Fitur Pencarian/Filter dari UTP Anda tetap berjalan 100% menggunakan data dari database ini.
+2. Token-Based Authentication & Role Authorization
+Amankan API Anda dengan menggunakan JWT (JSON Web Token) dengan skenario pengguna dummy (atau tabel user jika sudah migrate):
+Aktor & Role: Terdapat 2 Role dalam sistem: admin dan user (Operator Lapangan).
+Endpoint Autentikasi: Buat endpoint /api/login, /api/profile, dan /api/logout.
+Hak Akses (Authorization):
+Role admin dan user sama-sama bisa melihat daftar kontainer (GET).
+Hanya Role admin yang boleh membuat kontainer baru (POST), mengubah status menjadi Archived (PATCH), atau menghapus kontainer (DELETE).
+Jika user biasa mencoba memodifikasi data, API harus mengembalikan response JSON dengan status code 403 Forbidden.
+3. Implementasi API Gateway
+Sistem harus menerapkan pola arsitektur API Gateway sederhana di Laravel.
+Ganti atau bungkus akses endpoint utama Anda sehingga client tidak lagi menembak langsung ke endpoint internal, melainkan melalui prefix gateway.
+Contoh: Client harus mengakses GET /api/gateway/containers dan bukan langsung ke endpoint internal.
+Pastikan middleware JWT dan Middleware Role dipasang dengan benar di rute gateway ini.
+4. API Documentation & Versioning
+Instal dan konfigurasikan package l5-swagger pada project Anda.
+Terapkan URI Versioning pada rute API Anda menjadi V1:
+Contoh: /api/v1/login atau /api/v1/gateway/containers.
+Tulis anotasi OpenAPI/Swagger secara lengkap pada Controller Anda untuk mendokumentasikan minimal:
+Endpoint Login (POST)
+Endpoint Ambil Data Kontainer via Gateway (GET v1)
+Endpoint Tambah Kontainer via Gateway (POST v1)
+Pastikan dokumentasi Swagger interaktif dapat diakses melalui browser di /api/documentation.
+5. Frontend Refactoring (HTML + Axios)
+Sesuaikan aplikasi client (index.html & app.js) Anda:
+Tambahkan halaman/form Login sederhana untuk mendapatkan Token JWT.
+Simpan token tersebut di client-side (misal: localStorage atau variabel state).
+Ubah semua request Axios agar mengarah ke endpoint API Gateway V1.
+Sertakan token di dalam komponen headers Axios (Authorization: Bearer <token>) pada setiap request yang membutuhkan proteksi.
+Prosedur Teknis & Pengumpulan:
+Output Minimal: * Source code lengkap Backend Laravel (termasuk berkas migration, seeders jika ada, controller, dan middleware).
+Source code Frontend (index.html dan app.js).
+Repositori GitHub: Wajib di-push ke repositori GitHub masing-masing (Public). Buat repo baru yang terpisah dari repo UTP
+Laporan Akhir (PDF):
+Screenshot halaman Swagger UI yang membuktikan endpoint terdokumentasi dengan baik.
+Screenshot pengujian Postman/Browser yang memperlihatkan response sukses (201/200) serta response gagal authorization (403 Forbidden jika login sebagai user biasa).
+Penjelasan mengenai logika kode yang dibuat dan cara kerja API nya.
+Link Repositori GitHub diletakkan di lembar utama laporan.

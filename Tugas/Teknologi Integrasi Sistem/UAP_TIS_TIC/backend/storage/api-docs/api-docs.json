@@ -1,0 +1,723 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "WowoClean API - Sistem Manajemen Kontainer Limbah B3",
+        "description": "Enterprise REST API untuk manajemen kontainer limbah B3 dengan autentikasi JWT, otorisasi berbasis Role, dan API Gateway pattern.",
+        "contact": {
+            "name": "WowoClean API Support",
+            "email": "admin@wowoclean.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Local Development Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login dan dapatkan JWT Token",
+                "description": "Autentikasi pengguna menggunakan email dan password, mengembalikan JWT token.",
+                "operationId": "login",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@wowoclean.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login berhasil"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "bearer"
+                                                },
+                                                "expires_in": {
+                                                    "type": "integer",
+                                                    "example": 3600
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Administrator"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "admin@wowoclean.com"
+                                                        },
+                                                        "role": {
+                                                            "type": "string",
+                                                            "example": "admin"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Kredensial tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email atau password salah"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/profile": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Ambil profil pengguna yang sedang login",
+                "description": "Mengembalikan data profil pengguna berdasarkan JWT token.",
+                "operationId": "profile",
+                "responses": {
+                    "200": {
+                        "description": "Profil berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Administrator"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "admin@wowoclean.com"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "admin"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout dan invalidasi token",
+                "description": "Menginvalidasi JWT token pengguna.",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logout berhasil"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gateway/containers": {
+            "get": {
+                "tags": [
+                    "Gateway - Containers"
+                ],
+                "summary": "Ambil daftar semua kontainer",
+                "description": "Mengambil semua kontainer dengan fitur pencarian dan filter. Dapat diakses oleh semua role (admin & user).",
+                "operationId": "getContainers",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Pencarian berdasarkan kode kontainer atau lokasi",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "WC-LC"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Filter berdasarkan tipe limbah",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "limbah_cair",
+                                "limbah_padat",
+                                "limbah_gas"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter berdasarkan status kontainer",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Active",
+                                "Maintenance",
+                                "Archived",
+                                "Full"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Daftar kontainer berhasil diambil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data kontainer berhasil diambil"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Gateway - Containers"
+                ],
+                "summary": "Buat kontainer baru (Admin only)",
+                "description": "Membuat kontainer limbah B3 baru. Hanya dapat diakses oleh role admin.",
+                "operationId": "createContainer",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "container_code",
+                                    "type",
+                                    "capacity",
+                                    "location"
+                                ],
+                                "properties": {
+                                    "container_code": {
+                                        "type": "string",
+                                        "example": "WC-LC-009"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "limbah_cair",
+                                        "enum": [
+                                            "limbah_cair",
+                                            "limbah_padat",
+                                            "limbah_gas"
+                                        ]
+                                    },
+                                    "capacity": {
+                                        "type": "number",
+                                        "example": 5000
+                                    },
+                                    "current_fill_level": {
+                                        "type": "number",
+                                        "example": 0
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Gudang Baru - Surabaya"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "Active",
+                                        "enum": [
+                                            "Active",
+                                            "Maintenance",
+                                            "Archived",
+                                            "Full"
+                                        ]
+                                    },
+                                    "last_maintenance_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2024-12-20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Kontainer berhasil dibuat"
+                    },
+                    "403": {
+                        "description": "Forbidden - Hanya admin"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gateway/containers/{id}": {
+            "get": {
+                "tags": [
+                    "Gateway - Containers"
+                ],
+                "summary": "Ambil detail kontainer berdasarkan ID",
+                "description": "Mengambil detail kontainer beserta tracking logs. Dapat diakses oleh semua role.",
+                "operationId": "getContainerById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID kontainer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detail kontainer berhasil diambil"
+                    },
+                    "404": {
+                        "description": "Kontainer tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Gateway - Containers"
+                ],
+                "summary": "Update kontainer (Admin only)",
+                "description": "Memperbarui data kontainer limbah B3. Hanya dapat diakses oleh role admin.",
+                "operationId": "updateContainer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID kontainer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "container_code": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "limbah_cair",
+                                            "limbah_padat",
+                                            "limbah_gas"
+                                        ]
+                                    },
+                                    "capacity": {
+                                        "type": "number"
+                                    },
+                                    "current_fill_level": {
+                                        "type": "number"
+                                    },
+                                    "location": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Active",
+                                            "Maintenance",
+                                            "Archived",
+                                            "Full"
+                                        ]
+                                    },
+                                    "last_maintenance_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Kontainer berhasil diperbarui"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Kontainer tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Gateway - Containers"
+                ],
+                "summary": "Hapus kontainer (Admin only)",
+                "description": "Menghapus kontainer dari database. Hanya admin.",
+                "operationId": "deleteContainer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID kontainer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kontainer berhasil dihapus"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Kontainer tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gateway/containers/{id}/archive": {
+            "patch": {
+                "tags": [
+                    "Gateway - Containers"
+                ],
+                "summary": "Archive kontainer (Admin only)",
+                "description": "Mengubah status kontainer menjadi Archived. Hanya admin.",
+                "operationId": "archiveContainer",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID kontainer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Kontainer berhasil di-archive"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Kontainer tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/gateway/containers/{containerId}/tracking-logs": {
+            "get": {
+                "tags": [
+                    "Gateway - Tracking Logs"
+                ],
+                "summary": "Ambil log perjalanan kontainer",
+                "description": "Mengambil semua log perjalanan untuk kontainer tertentu.",
+                "operationId": "getTrackingLogs",
+                "parameters": [
+                    {
+                        "name": "containerId",
+                        "in": "path",
+                        "description": "ID kontainer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Log perjalanan berhasil diambil"
+                    },
+                    "404": {
+                        "description": "Kontainer tidak ditemukan"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Gateway - Tracking Logs"
+                ],
+                "summary": "Tambah log perjalanan (Admin only)",
+                "description": "Membuat log perjalanan baru untuk kontainer tertentu. Hanya admin.",
+                "operationId": "createTrackingLog",
+                "parameters": [
+                    {
+                        "name": "containerId",
+                        "in": "path",
+                        "description": "ID kontainer",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "location_from",
+                                    "location_to"
+                                ],
+                                "properties": {
+                                    "location_from": {
+                                        "type": "string",
+                                        "example": "Gudang Utama - Jakarta Utara"
+                                    },
+                                    "location_to": {
+                                        "type": "string",
+                                        "example": "Zona B - Tangerang"
+                                    },
+                                    "status_change": {
+                                        "type": "string",
+                                        "example": "Active → Full"
+                                    },
+                                    "notes": {
+                                        "type": "string",
+                                        "example": "Kontainer dipindahkan karena kapasitas penuh"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Log berhasil ditambahkan"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Kontainer tidak ditemukan"
+                    },
+                    "422": {
+                        "description": "Validasi gagal"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Masukkan JWT token yang didapat dari endpoint login.",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Endpoint autentikasi JWT (login, profile, logout)"
+        },
+        {
+            "name": "Gateway - Containers",
+            "description": "API Gateway untuk manajemen kontainer limbah B3"
+        },
+        {
+            "name": "Gateway - Tracking Logs",
+            "description": "API Gateway untuk log perjalanan kontainer"
+        }
+    ]
+}

@@ -38,7 +38,8 @@ function renderList(students) {
         outputList.innerHTML = '<div class="no-data">Belum ada data mahasiswa.</div>';
         return;
     }
-    
+
+    //dsdawds
     students.forEach(function(std, index) {
         let mkHtml = '<ul>';
         if(std.mataKuliah && std.mataKuliah.length > 0) {

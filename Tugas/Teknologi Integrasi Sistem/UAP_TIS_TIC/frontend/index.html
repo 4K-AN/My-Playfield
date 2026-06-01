@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="WowoClean - Sistem Manajemen Kontainer Limbah B3 Enterprise">
     <title>WowoClean | Manajemen Kontainer Limbah B3</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -872,52 +872,38 @@
         ::-webkit-scrollbar-thumb { background: var(--bg-input); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-        /* === INDUSTRIAL EDITORIAL REDESIGN: NO GLASSMORPHISM === */
+        /* === SIMPLE OPERATIONS REDESIGN: NO GLASSMORPHISM === */
         :root {
-            --primary: #22412f;
-            --primary-light: #3b6b4f;
-            --primary-dark: #14261c;
-            --secondary: #1f5d68;
-            --accent: #d76f27;
-            --success: #2f7d4f;
-            --danger: #b93b2f;
-            --warning: #c88a1a;
-            --bg-dark: #e7dfcf;
-            --bg-card: #f5efdf;
-            --bg-input: #fff9e9;
-            --text-primary: #18211c;
-            --text-secondary: #596255;
-            --text-muted: #7a7568;
-            --border: #1e241f;
-            --glass: #f5efdf;
-            --shadow: 9px 9px 0 #18211c;
-            --radius: 2px;
-            --radius-sm: 2px;
-            --radius-xs: 2px;
+            --primary: #235347;
+            --primary-light: #2f7565;
+            --primary-dark: #183b33;
+            --secondary: #315f7c;
+            --accent: #c66a32;
+            --success: #287553;
+            --danger: #b84a3a;
+            --warning: #b7791f;
+            --bg-dark: #f4f1ea;
+            --bg-card: #fffdf7;
+            --bg-input: #ffffff;
+            --text-primary: #1d2925;
+            --text-secondary: #68736e;
+            --text-muted: #8a918d;
+            --border: #d9d4c8;
+            --glass: #fffdf7;
+            --shadow: 0 14px 34px rgba(29, 41, 37, 0.08);
+            --radius: 18px;
+            --radius-sm: 12px;
+            --radius-xs: 10px;
         }
 
         body {
-            font-family: 'Bricolage Grotesque', sans-serif;
+            font-family: 'Public Sans', sans-serif;
             background:
-                linear-gradient(90deg, rgba(24, 33, 28, 0.055) 1px, transparent 1px),
-                linear-gradient(0deg, rgba(24, 33, 28, 0.055) 1px, transparent 1px),
-                radial-gradient(circle at 16% 12%, rgba(215, 111, 39, 0.18), transparent 30%),
-                radial-gradient(circle at 92% 7%, rgba(31, 93, 104, 0.16), transparent 27%),
-                var(--bg-dark);
-            background-size: 34px 34px, 34px 34px, auto, auto, auto;
+                linear-gradient(180deg, #fbfaf6 0%, var(--bg-dark) 46%, #eee8dc 100%);
         }
 
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            opacity: .34;
-            background-image:
-                repeating-linear-gradient(135deg, transparent 0 10px, rgba(24, 33, 28, .055) 10px 11px),
-                linear-gradient(rgba(255,255,255,.2), rgba(0,0,0,.03));
-            mix-blend-mode: multiply;
+            display: none;
         }
 
         .bg-animation {
@@ -933,7 +919,7 @@
         }
 
         .login-container {
-            max-width: 520px;
+            max-width: 440px;
         }
 
         .login-card,
@@ -943,42 +929,44 @@
         .login-hint {
             background: var(--bg-card);
             backdrop-filter: none;
-            border: 2px solid var(--border);
-            border-radius: 2px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             box-shadow: var(--shadow);
         }
 
         .login-card {
             position: relative;
-            padding: 42px;
-            transform: rotate(-.7deg);
+            padding: 40px;
+            transform: none;
         }
 
         .login-card::before {
-            content: 'B3 OPERATIONS TERMINAL';
+            content: 'Container Ops';
             position: absolute;
-            top: -16px;
-            left: 24px;
-            padding: 6px 12px;
-            background: var(--accent);
-            border: 2px solid var(--border);
-            color: #18120d;
+            top: 20px;
+            right: 20px;
+            padding: 6px 10px;
+            background: #f3eadc;
+            border: 1px solid #e2d7c7;
+            border-radius: 999px;
+            color: var(--primary-dark);
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .12em;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
         }
 
         .login-logo {
-            text-align: left;
+            text-align: center;
         }
 
         .login-logo .icon-wrapper,
         .navbar-brand .brand-icon {
             background: var(--primary);
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            box-shadow: 5px 5px 0 var(--accent);
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(35, 83, 71, .18);
         }
 
         .login-logo h1,
@@ -986,20 +974,22 @@
             color: var(--text-primary);
             background: none;
             -webkit-text-fill-color: currentColor;
-            letter-spacing: -.04em;
+            letter-spacing: -.03em;
         }
 
         .login-logo h1 {
-            font-size: clamp(42px, 9vw, 64px);
-            line-height: .88;
+            font-size: 34px;
+            line-height: 1;
         }
 
         .login-logo p {
-            max-width: 320px;
+            max-width: 300px;
+            margin-inline: auto;
             color: var(--text-secondary);
-            font-family: 'IBM Plex Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: .08em;
+            font-family: 'Public Sans', sans-serif;
+            text-transform: none;
+            letter-spacing: 0;
+            line-height: 1.5;
         }
 
         .form-group label,
@@ -1012,24 +1002,24 @@
         .btn,
         .btn-logout,
         .toast {
-            font-family: 'IBM Plex Mono', monospace;
+            font-family: 'Public Sans', sans-serif;
         }
 
         .form-control,
         .filter-input,
         .filter-select {
             background: var(--bg-input);
-            border: 2px solid var(--border);
-            border-radius: 2px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
             color: var(--text-primary);
-            box-shadow: 3px 3px 0 rgba(24, 33, 28, .92);
+            box-shadow: none;
         }
 
         .form-control:focus,
         .filter-input:focus,
         .filter-select:focus {
-            border-color: var(--accent);
-            box-shadow: 5px 5px 0 var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(35, 83, 71, .1);
         }
 
         .input-wrapper i {
@@ -1040,9 +1030,9 @@
         .btn-logout,
         .action-btn,
         .modal-close {
-            border: 2px solid var(--border);
-            border-radius: 2px;
-            box-shadow: 4px 4px 0 var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: none;
             transform: none;
         }
 
@@ -1050,19 +1040,19 @@
         .btn-logout:hover,
         .action-btn:hover,
         .modal-close:hover {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0 var(--border);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 22px rgba(29, 41, 37, .09);
         }
 
         .btn-primary,
         .btn-success {
-            background: var(--accent);
-            color: #1d130a;
+            background: var(--primary);
+            color: white;
         }
 
         .btn-danger,
         .btn-logout {
-            background: #f0c4b5;
+            background: #fff4f1;
             color: var(--danger);
         }
 
@@ -1072,14 +1062,16 @@
         }
 
         .login-error {
-            background: #f0c4b5;
-            border: 2px solid var(--danger);
-            color: #4b1712;
+            background: #fff4f1;
+            border: 1px solid #efc6bd;
+            color: var(--danger);
         }
 
         .login-hint {
             color: var(--text-secondary);
-            transform: rotate(.35deg);
+            transform: none;
+            box-shadow: none;
+            background: #f8f1e6;
         }
 
         .login-hint strong,
@@ -1089,84 +1081,80 @@
 
         .navbar {
             height: auto;
-            min-height: 78px;
-            background: #171f1a;
+            min-height: 72px;
+            background: rgba(255, 253, 247, .98);
             backdrop-filter: none;
-            border-bottom: 4px solid var(--accent);
-            color: #f5efdf;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+            box-shadow: 0 8px 24px rgba(29, 41, 37, .05);
         }
 
         .navbar-brand h2,
         .user-info .user-name {
-            color: #f5efdf;
+            color: var(--text-primary);
         }
 
         .main-content {
             max-width: 1480px;
-            padding-top: 42px;
+            padding-top: 32px;
         }
 
         .stats-grid {
             grid-template-columns: repeat(4, minmax(170px, 1fr));
-            gap: 16px;
+            gap: 18px;
         }
 
         .stat-card {
             position: relative;
-            align-items: flex-start;
-            min-height: 142px;
+            align-items: center;
+            min-height: 118px;
             overflow: hidden;
         }
 
         .stat-card::after {
-            content: '';
-            position: absolute;
-            right: -28px;
-            bottom: -32px;
-            width: 112px;
-            height: 112px;
-            border: 18px solid rgba(24, 33, 28, .09);
-            transform: rotate(18deg);
+            display: none;
         }
 
         .stat-icon {
-            width: 48px;
-            height: 48px;
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            background: var(--accent) !important;
-            color: #1d130a !important;
+            width: 52px;
+            height: 52px;
+            border: none;
+            border-radius: 14px;
+            background: #edf6f1 !important;
+            color: var(--primary) !important;
         }
 
         .stat-info h3 {
-            font-size: clamp(36px, 6vw, 54px);
-            line-height: .9;
-            letter-spacing: -.06em;
+            font-size: 34px;
+            line-height: 1;
+            letter-spacing: -.04em;
         }
 
         .stat-info p {
-            margin-top: 10px;
+            margin-top: 4px;
             color: var(--text-secondary);
-            font-family: 'IBM Plex Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: .08em;
+            font-family: 'Public Sans', sans-serif;
+            text-transform: none;
+            letter-spacing: 0;
         }
 
         .section-header {
             margin-top: 12px;
-            border-top: 4px solid var(--border);
-            padding-top: 22px;
+            border-top: none;
+            padding-top: 4px;
         }
 
         .section-header h2 {
-            font-size: clamp(28px, 4vw, 46px);
-            letter-spacing: -.05em;
+            font-size: 24px;
+            letter-spacing: -.03em;
         }
 
         .filters-bar {
             padding: 14px;
-            background: #d8cbb7;
-            border: 2px dashed var(--border);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: 0 8px 22px rgba(29, 41, 37, .04);
         }
 
         .table-container {
@@ -1174,33 +1162,33 @@
         }
 
         .data-table thead {
-            background: #18211c;
+            background: #f7f3ea;
         }
 
         .data-table th {
-            color: #f5efdf;
-            border-bottom: 3px solid var(--accent);
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
         }
 
         .data-table td {
-            border-bottom: 2px solid rgba(24, 33, 28, .18);
+            border-bottom: 1px solid rgba(217, 212, 200, .72);
         }
 
         .data-table tbody tr:nth-child(even) {
-            background: #eee5d2;
+            background: #fdf9f1;
         }
 
         .data-table tbody tr:hover {
-            background: #f1cf9f;
+            background: #f1f7f3;
         }
 
         .badge,
         .type-badge {
-            border: 2px solid currentColor;
+            border: 1px solid currentColor;
             border-radius: 999px;
-            background: #fff6df;
-            font-family: 'IBM Plex Mono', monospace;
-            font-weight: 700;
+            background: white;
+            font-family: 'Public Sans', sans-serif;
+            font-weight: 600;
         }
 
         .badge-active { color: var(--success); }
@@ -1210,18 +1198,18 @@
         .type-badge { color: var(--secondary); }
 
         .fill-bar {
-            height: 12px;
-            background: #cabda9;
-            border: 2px solid var(--border);
-            border-radius: 0;
+            height: 8px;
+            background: #e7e0d4;
+            border: none;
+            border-radius: 999px;
         }
 
         .fill-bar-inner {
-            border-radius: 0;
+            border-radius: 999px;
         }
 
         .modal-overlay {
-            background: rgba(24, 33, 28, .78);
+            background: rgba(29, 41, 37, .56);
             backdrop-filter: none;
         }
 
@@ -1230,35 +1218,35 @@
         }
 
         .modal-header {
-            background: #18211c;
-            color: #f5efdf;
-            border-bottom: 4px solid var(--accent);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
         }
 
         .modal-close {
-            background: var(--accent);
-            color: #1d130a;
+            background: #f7f3ea;
+            color: var(--text-primary);
         }
 
         .toast {
             background: var(--bg-card);
             color: var(--text-primary);
-            border: 2px solid var(--border);
-            border-radius: 2px;
-            box-shadow: 5px 5px 0 var(--border);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
         }
 
-        .toast-success { border-left: 10px solid var(--success); }
-        .toast-error { border-left: 10px solid var(--danger); }
-        .toast-warning { border-left: 10px solid var(--warning); }
+        .toast-success { border-left: 4px solid var(--success); }
+        .toast-error { border-left: 4px solid var(--danger); }
+        .toast-warning { border-left: 4px solid var(--warning); }
 
         .empty-state i {
             color: var(--accent);
         }
 
         .loading-spinner {
-            border-color: #cabda9;
-            border-top-color: var(--accent);
+            border-color: #d8d1c4;
+            border-top-color: var(--primary);
         }
 
         @media (max-width: 900px) {

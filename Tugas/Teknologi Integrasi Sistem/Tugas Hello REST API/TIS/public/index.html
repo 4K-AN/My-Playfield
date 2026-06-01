@@ -10,246 +10,298 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 24px;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f0f9ff 100%);
+            min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            padding: 32px;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+            border: 1px solid rgba(255,255,255,0.6);
         }
-        
+
         h1 {
-            color: #333;
-            margin-bottom: 10px;
+            color: #1a1a2e;
+            margin-bottom: 4px;
             text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
         }
-        
+
+        h1 span {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         .subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 30px;
+            color: #64748b;
+            margin-bottom: 28px;
             font-size: 14px;
         }
-        
+
         .form-section {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 6px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 24px;
+            border-radius: 14px;
             margin-bottom: 20px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #e2e8f0;
         }
-        
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 14px;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-        
+
         .form-group input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 11px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 14px;
             flex: 1;
             min-width: 150px;
+            background: white;
+            transition: all 0.25s ease;
+            font-family: inherit;
         }
-        
+
         .form-group input:focus {
             outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
         }
-        
+
         .form-group input::placeholder {
-            color: #999;
+            color: #94a3b8;
         }
-        
+
         .button-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
-        
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            flex: 1;
-            min-width: 150px;
+
+        .button-group + .button-group {
+            margin-top: 8px;
         }
-        
+
+        button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 130px;
+            font-family: inherit;
+            letter-spacing: 0.2px;
+        }
+
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
         }
-        
+
         button:active {
             transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-        
+
         #btn-get {
-            background-color: #28a745;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
             color: white;
         }
-        
-        #btn-get:hover {
-            background-color: #218838;
-        }
-        
+
         #btn-post {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
             color: white;
         }
-        
-        #btn-post:hover {
-            background-color: #0056b3;
-        }
-        
+
         #btn-patch {
-            background-color: #ffc107;
-            color: black;
+            background: linear-gradient(135deg, #facc15, #eab308);
+            color: #1a1a2e;
         }
-        
-        #btn-patch:hover {
-            background-color: #e0a800;
-        }
-        
+
         #btn-delete {
-            background-color: #dc3545;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
-        }
-        
-        #btn-delete:hover {
-            background-color: #c82333;
         }
 
         #btn-compound {
-            background-color: #17a2b8;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
             color: white;
-        }
-        
-        #btn-compound:hover {
-            background-color: #138496;
         }
 
         #btn-nested {
-            background-color: #6f42c1;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
             color: white;
         }
-        
-        #btn-nested:hover {
-            background-color: #5a32a3;
-        }
-        
+
         .error {
-            color: #721c24;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            padding: 12px;
+            color: #991b1b;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 14px 16px;
             margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 12px;
             display: none;
+            font-size: 14px;
+            line-height: 1.5;
         }
-        
+
         .error.show {
             display: block;
         }
-        
+
         .success {
-            color: #155724;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            padding: 12px;
+            color: #166534;
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 14px 16px;
             margin-bottom: 20px;
-            border-radius: 4px;
+            border-radius: 12px;
             display: none;
+            font-size: 14px;
         }
-        
+
         .success.show {
             display: block;
         }
-        
+
         .output-section {
-            margin-top: 30px;
+            margin-top: 28px;
         }
-        
+
         .output-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 20px;
-            border-bottom: 2px solid #007bff;
+            color: #1a1a2e;
+            margin-bottom: 18px;
+            font-size: 18px;
+            font-weight: 600;
             padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
+
+        .output-section h2::before {
+            content: '📋';
+            font-size: 18px;
+        }
+
         #output-list {
             display: grid;
-            gap: 15px;
+            gap: 12px;
         }
-        
+
         .student-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 6px;
-            background-color: #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            padding: 18px 20px;
+            border-radius: 14px;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: all 0.25s ease;
         }
-        
+
         .student-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
         }
-        
+
+        .student-card > div {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            padding: 3px 0;
+        }
+
         .student-card strong {
-            color: #007bff;
-            display: block;
-            margin-top: 8px;
+            color: #475569;
+            font-weight: 600;
+            min-width: 100px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
-        
+
         .student-card strong:first-child {
             margin-top: 0;
         }
-        
+
         .student-card ul {
-            margin: 10px 0 0 20px;
-            padding-left: 0;
+            margin: 8px 0 0 0;
+            padding: 0;
+            list-style: none;
+            width: 100%;
         }
-        
+
         .student-card li {
-            color: #555;
-            margin-bottom: 5px;
+            color: #334155;
+            margin-bottom: 4px;
+            font-size: 13px;
+            padding: 4px 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            display: inline-block;
+            margin-right: 6px;
         }
-        
+
+        .student-card li strong {
+            min-width: auto;
+            font-size: 12px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .student-card li em {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
         .no-data {
             text-align: center;
-            padding: 30px;
-            color: #999;
-            font-size: 16px;
+            padding: 40px 20px;
+            color: #94a3b8;
+            font-size: 15px;
         }
-        
+
         .loading {
             text-align: center;
-            color: #666;
+            color: #64748b;
             font-style: italic;
+            padding: 20px;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .container { padding: 20px; }
+            h1 { font-size: 22px; }
+            .button-group { flex-direction: column; }
+            button { min-width: 100%; }
+            .student-card strong { min-width: 80px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1> Manajemen Data Mahasiswa</h1>
-        <p class="subtitle">REST API Client - Interaksi dengan Backend Laravel</p>
+        <h1><span>✨</span> Manajemen Data Mahasiswa</h1>
+        <p class="subtitle">REST API Client — Laravel Backend</p>
 
         <!-- Error & Success Messages -->
         <div id="error-message" class="error"></div>
@@ -268,21 +320,21 @@
             </div>
 
             <div class="button-group">
-                <button id="btn-get" onclick="getStudents()"> Tampilkan Semua</button>
-                <button id="btn-post" onclick="saveStudent()"> Simpan Mahasiswa</button>
-                <button id="btn-patch" onclick="updateStudentName()"> Ubah Nama (PATCH)</button>
-                <button id="btn-delete" onclick="deleteStudent()"> Hapus Mahasiswa</button>
+                <button id="btn-get" onclick="getStudents()">📥 Tampilkan Semua</button>
+                <button id="btn-post" onclick="saveStudent()">💾 Simpan Mahasiswa</button>
+                <button id="btn-patch" onclick="updateStudentName()">✏️ Ubah Nama</button>
+                <button id="btn-delete" onclick="deleteStudent()">🗑️ Hapus Mahasiswa</button>
             </div>
 
             <div class="button-group">
-                <button id="btn-compound" onclick="viewStudentCompound()" style="background-color: #17a2b8; color: white;"> Lihat Data Mahasiswa (Compound Data)</button>
-                <button id="btn-nested" onclick="viewStudentCourses()" style="background-color: #6f42c1; color: white;"> Lihat Mata Kuliah (Nested Resource)</button>
+                <button id="btn-compound" onclick="viewStudentCompound()">👤 Data Mahasiswa</button>
+                <button id="btn-nested" onclick="viewStudentCourses()">📚 Mata Kuliah</button>
             </div>
         </div>
 
         <!-- Output Section -->
         <div class="output-section">
-            <h2>Daftar Mahasiswa</h2>
+            <h2>Data Mahasiswa</h2>
             <div id="output-list"></div>
         </div>
     </div>

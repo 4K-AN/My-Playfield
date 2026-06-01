@@ -39,7 +39,6 @@ function renderList(students) {
         return;
     }
 
-    //dsdawds
     students.forEach(function(std, index) {
         let mkHtml = '<ul>';
         if(std.mataKuliah && std.mataKuliah.length > 0) {

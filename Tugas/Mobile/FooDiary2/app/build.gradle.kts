@@ -1,13 +1,13 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinCompose)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
     namespace = "com.example.foodiary2"
-    compileSdk = 35 // Tetap gunakan 35 untuk stabilitas dengan AGP 8.7.3
+    compileSdk = 35 // Menggunakan SDK 35 untuk stabilitas dengan AGP 8.7.3
 
     defaultConfig {
         applicationId = "com.example.foodiary2"
@@ -32,17 +32,21 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
     }
 }
 
+// Kotlin 2.3+ compiler options (migrated from deprecated kotlinOptions.jvmTarget)
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
+}
+
+// FORCE LOCK: Memastikan library tidak naik ke versi yang butuh AGP 8.9.1+
 configurations.all {
     resolutionStrategy {
-        // Paksa semua dependensi bermasalah ke versi stabil yang kompatibel dengan AGP 8.7.3
         force("androidx.core:core:1.15.0")
         force("androidx.core:core-ktx:1.15.0")
         force("androidx.activity:activity:1.10.0")
@@ -52,52 +56,45 @@ configurations.all {
         force("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
         force("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
         force("androidx.browser:browser:1.8.0")
-        
-        // Mencegah penarikan otomatis library navigationevent yang butuh AGP tinggi
-        eachDependency {
-            if (requested.group == "androidx.navigationevent") {
-                useVersion("1.0.0-alpha01") 
-            }
-        }
     }
 }
 
 dependencies {
-    // UI & Core
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.compose.ui)
-    implementation(libs.androidx.compose.ui.graphics)
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    implementation(libs.androidx.compose.material3)
+    // UI & Core (Menggunakan camelCase alias sesuai libs.versions.toml)
+    implementation(libs.androidxCoreKtx)
+    implementation(libs.androidxLifecycleRuntimeKtx)
+    implementation(libs.androidxActivityCompose)
+    implementation(platform(libs.androidxComposeBom))
+    implementation(libs.androidxComposeUi)
+    implementation(libs.androidxComposeUiGraphics)
+    implementation(libs.androidxComposeUiToolingPreview)
+    implementation(libs.androidxComposeMaterial3)
 
     // Coil & Navigation
-    implementation(libs.coil.compose)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.coilCompose)
+    implementation(libs.androidxNavigationCompose)
 
     // Lifecycle
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidxLifecycleViewmodelCompose)
+    implementation(libs.androidxLifecycleRuntimeCompose)
 
     // Supabase 3.x
-    implementation(platform(libs.supabase.bom))
-    implementation(libs.supabase.kt)
-    implementation(libs.supabase.postgrest.kt)
-    implementation(libs.supabase.auth.kt)
-    implementation(libs.supabase.storage.kt)
+    implementation(platform(libs.supabaseBom))
+    implementation(libs.supabaseKt)
+    implementation(libs.supabasePostgrest)
+    implementation(libs.supabaseAuth)
+    implementation(libs.supabaseStorage)
     
-    // Ktor (Wajib untuk Networking & JSON Supabase)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
+    // Ktor
+    implementation(libs.ktorClientAndroid)
+    implementation(libs.ktorClientContentNegotiation)
+    implementation(libs.ktorSerializationJson)
 
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-    debugImplementation(libs.androidx.compose.ui.tooling)
-    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    androidTestImplementation(libs.androidxJunit)
+    androidTestImplementation(libs.androidxEspressoCore)
+    androidTestImplementation(platform(libs.androidxComposeBom))
+    androidTestImplementation(libs.androidxComposeUiTestJunit4)
+    debugImplementation(libs.androidxComposeUiTooling)
+    debugImplementation(libs.androidxComposeUiTestManifest)
 }

@@ -1,0 +1,166 @@
+LAPORAN PERANCANGAN DATABASE
+Aplikasi Food Diary
+Nama : Akhmad Syafiul Anam
+NIM : 245150707111012
+Matkul : Pengembangan Aplikasi Mobile- E
+1 Entity Relationship Diagram (ERD)
+ERD berikut menggambarkan tiga entitas utama aplikasi Food Diary beserta relasi antar-entitas. Terdapat tiga jenis
+relasi: 1:1 antara auth.users dan profiles, 1:N antara profiles dan food_items, serta 1:N antara categories dan
+food_items.
+Gambar 1. Entity Relationship Diagram (ERD) – Aplikasi Food Diary
+Deskripsi Relasi
+Entitas Kardinalitas Keterangan
+auth.users ↔ profiles 1 : 1 Setiap akun Supabase Auth memiliki tepat satu profil pengguna.
+profiles → food_items 1 : N
+Satu pengguna dapat memiliki banyak catatan makanan (food
+items).
+categories → food_items 1 : N Satu kategori dapat dikaitkan dengan banyak item makanan.
+2 Mapping (Pemetaan Entitas ke Tabel Relasional)
+Hasil pemetaan ERD ke model relasional menghasilkan tiga tabel. Setiap atribut dilengkapi dengan tipe data
+PostgreSQL, status kunci (PK/FK), dan keterangan singkat. Gambar disimpan sebagai URL string yang merujuk ke
+objek di Supabase Storage.
+Tabel: public.profiles (Relasi 1:1 dengan auth.users)
+Kolom Tipe Data PK FK Keterangan
+id UUID ✔ ✔ → auth.users(id)
+PK & FK; relasi 1:1 dengan Supabase Auth.
+ON DELETE CASCADE.
+full_name
+VARCHAR(25
+5)
+– –
+Nama lengkap pengguna yang ditampilkan di
+profil.
+avatar_url TEXT – –
+URL foto profil dari Supabase Storage
+bucket 'avatars'.
+updated_at
+TIMESTAMPT
+Z
+– – Waktu pembaruan terakhir profil.
+Tabel: public.categories (Entitas Kategori – global)
+Kolom Tipe Data PK FK Keterangan
+id UUID ✔ –
+Primary Key; di-generate otomatis dengan
+gen_random_uuid().
+name
+VARCHAR(10
+0)
+– –
+Nama kategori makanan, bersifat UNIQUE
+(mis. Sarapan, Camilan).
+created_at
+TIMESTAMPT
+Z
+– –
+Waktu pembuatan kategori; default timezone
+UTC now().
+Tabel: public.food_items (Entitas Utama – catatan makanan)
+Kolom Tipe Data PK FK Keterangan
+id UUID ✔ – Primary Key; di-generate otomatis.
+user_id UUID – ✔ → profiles(id) FK ke profiles; ON DELETE CASCADE.
+category_id UUID – ✔ → categories(id)
+FK ke categories; ON DELETE SET NULL
+(nullable).
+title
+VARCHAR(25
+5)
+– –
+Nama/judul makanan; wajib diisi (NOT
+NULL).
+description TEXT – –
+Deskripsi detail, ulasan, atau catatan
+makanan.
+image_url TEXT – –
+URL akses publik gambar di Supabase
+Storage bucket 'food-images'.
+created_at
+TIMESTAMPT
+Z
+– – Waktu pembuatan data; default UTC now().
+3 Strategi Penyimpanan Gambar (URL-Based)
+Aplikasi mengadopsi pendekatan Penyimpanan Berbasis URL. File fisik gambar dikelola sepenuhnya oleh Supabase
+Storage, sedangkan database hanya menyimpan string alamat aksesnya (kolom image_url).
+Aspek Penjelasan
+Efisiensi Memori Database hanya menyimpan string URL, sehingga ukuran tabel tetap kecil dan query cepat.
+Performa Query Pengambilan gambar dilakukan langsung melalui CDN Supabase ke UI Android
+menggunakan library Coil, tidak membebani query database utama.
+Skalabilitas Penyimpanan objek di Storage dapat diperluas tanpa batas dan mendukung berbagai format
+(JPG, PNG, WebP).
+Keamanan Akses gambar dikontrol via Storage Policies (public bucket atau signed URL untuk konten
+privat).
+Pengelolaan Mudah File gambar dapat dihapus, diganti, atau diorganisasi per folder di Storage secara
+independen.
+Alur Penyimpanan Gambar
+4 Ringkasan Query DDL (PostgreSQL / Supabase)
+Query DDL lengkap disimpan dalam file terpisah DDL_FoodDiary.sql. Berikut adalah cuplikan DDL utama untuk
+setiap tabel beserta implementasi Row Level Security (RLS) dan trigger otomatis.
+4.1 Tabel profiles
+CREATE TABLE IF NOT EXISTS public.profiles (
+id UUID NOT NULL,
+full_name VARCHAR(255),
+avatar_url TEXT,
+updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+CONSTRAINT profiles_pkey PRIMARY KEY (id),
+CONSTRAINT profiles_id_fkey
+FOREIGN KEY (id) REFERENCES auth.users(id) ON DELETE CASCADE
+);
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+4.2 Tabel categories
+CREATE TABLE IF NOT EXISTS public.categories (
+id UUID DEFAULT gen_random_uuid() NOT NULL,
+name VARCHAR(100) NOT NULL,
+created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+CONSTRAINT categories_pkey PRIMARY KEY (id),
+CONSTRAINT categories_name_uq UNIQUE (name)
+);
+ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+4.3 Tabel food_items (Entitas Utama)
+CREATE TABLE IF NOT EXISTS public.food_items (
+id UUID DEFAULT gen_random_uuid() NOT NULL,
+user_id UUID NOT NULL,
+category_id UUID,
+title VARCHAR(255) NOT NULL,
+description TEXT,
+image_url TEXT,
+created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+CONSTRAINT food_items_pkey PRIMARY KEY (id),
+CONSTRAINT food_items_user_fkey
+FOREIGN KEY (user_id) REFERENCES public.profiles(id) ON DELETE CASCADE,
+CONSTRAINT food_items_category_fkey
+FOREIGN KEY (category_id) REFERENCES public.categories(id) ON DELETE SET NULL
+);
+ALTER TABLE public.food_items ENABLE ROW LEVEL SECURITY;
+4.4 Contoh RLS Policy – food_items
+-- Pengguna hanya dapat melihat data miliknya sendiri
+CREATE POLICY "Users can view own food items"
+ON public.food_items FOR SELECT
+USING (auth.uid() = user_id);
+-- Pengguna hanya dapat insert data untuk dirinya sendiri
+CREATE POLICY "Users can insert own food items"
+ON public.food_items FOR INSERT
+WITH CHECK (auth.uid() = user_id);
+4.5 Trigger: Auto-Create Profile
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+INSERT INTO public.profiles (id, full_name, avatar_url)
+VALUES (NEW.id, NEW.raw_user_meta_data->>'full_name',
+NEW.raw_user_meta_data->>'avatar_url');
+RETURN NEW;
+END; $$;
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+5 Penutup & Ringkasan Implementasi
+Komponen Detail Implementasi
+DBMS PostgreSQL (via Supabase)
+Jumlah Tabel 3 tabel utama: profiles, categories, food_items
+Relasi 1:1 (auth.users–profiles), 1:N (profiles–food_items), 1:N (categories–food_items)
+Primary Key UUID (gen_random_uuid()) pada semua tabel
+Foreign Key 2 FK di food_items; 1 FK di profiles (ke auth.users)
+Gambar URL-based; file di Supabase Storage bucket 'food-images'
+Keamanan Row Level Security (RLS) aktif pada semua tabel
+Trigger Auto-insert ke profiles saat user baru daftar via Supabase Auth
+Index 3 index tambahan: user_id, category_id, created_at DESC
+Seed Data 6 kategori default: Sarapan, Makan Siang, Makan Malam, Camilan, Minuman, Dessert
+4.6 Bukti Implementasi di Supabase

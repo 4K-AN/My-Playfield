@@ -1,0 +1,89 @@
+RANCANGAN AWAL PROYEK AKHIR APLIKASI ANDROID
+Nama : Akhmad Syafiul Anam
+NIM : 245150707111012
+Mata Kuliah : Pengembangan Aplikasi Mobile
+1. Deskripsi Umum Aplikasi
+Aplikasi "Food Diary" adalah platform pencatatan dan manajemen inventarisasi
+kuliner pribadi berbasis Android yang dirancang menggunakan framework Jetpack
+Compose. Secara fungsional, aplikasi ini menjadi jurnal digital yang memungkinkan
+pengguna untuk mendokumentasikan jejak kuliner mereka melalui pencatatan nama
+makanan/restoran, menuliskan deskripsi detail (seperti harga atau ulasan rasa), serta
+mengunggah foto makanan sebagai dokumentasi visual.
+Secara teknis, aplikasi ini mengimplementasikan pola arsitektur MVVM
+(Model-View-ViewModel) untuk memisahkan logika bisnis dari antarmuka pengguna.
+Untuk infrastruktur backend, aplikasi ini terintegrasi penuh dengan Supabase sebagai
+Backend-as-a-Service (BaaS), yang menangani proses autentikasi pengguna (Supabase
+Auth), manajemen basis data relasional (PostgreSQL) untuk menyimpan teks catatan,
+dan penyimpanan berkas media (Supabase Storage) untuk menyimpan file foto.
+2. Struktur Data (Supabase Schema)
+Perancangan struktur basis data terdiri dari dua entitas utama:
+A. Tabel users (Sistem Auth Supabase)
+● id (UUID) - Primary Key
+● email (String) - Unique
+● created_at (Timestamp)
+B. Tabel items (Data Utama CRUD)
+Tabel ini menyimpan data konten yang diinputkan oleh pengguna.
+● id (UUID / BigInt) - Primary Key
+● user_id (UUID) - Foreign Key merujuk ke tabel users (agar pengguna hanya bisa
+melihat/mengedit datanya sendiri).
+● title (String) - Judul item.
+● description (Text) - Deskripsi detail item.
+● image_url (String) - Menyimpan URL referensi gambar yang diunggah ke
+Supabase Storage.
+● created_at (Timestamp) - Waktu data dibuat.
+3. Alur Kerja (Workflow) & Navigasi
+Alur navigasi aplikasi menggunakan pustaka Navigation Compose dengan rute sebagai
+berikut:
+1. Inisialisasi (Splash): Sistem mengecek sesi Current User di Supabase. Jika null,
+navigasi diarahkan ke AuthScreen. Jika ada sesi aktif, navigasi diarahkan ke
+HomeScreen.
+2. Autentikasi: Pengguna melakukan pendaftaran/masuk di AuthScreen. Jika
+sukses, diarahkan ke HomeScreen.
+3. Dashboard (Read): HomeScreen menampilkan data. Dari halaman ini, pengguna
+dapat:
+○ Mengklik Floating Action Button (FAB) menuju FormScreen (Mode
+Insert).
+○ Mengklik salah satu Card item menuju DetailScreen (Read Detail).
+○ Mengklik ikon profil di TopAppBar menuju ProfileScreen.
+4. Detail & Intervensi (Update/Delete): Pada DetailScreen, pengguna dapat
+melihat informasi penuh. Terdapat opsi Hapus (memanggil fungsi Delete lalu
+kembali ke HomeScreen) dan opsi Edit (menuju FormScreen dalam Mode Update
+dengan membawa argumen ID).
+5. Formulasi Data (Create/Update): Pada FormScreen, pengguna mengisi teks
+dan mengunggah gambar. Setelah klik Simpan, gambar diunggah ke Supabase
+Storage terlebih dahulu, lalu URL-nya disimpan bersama teks ke Supabase
+Database. Setelah sukses, navigasi pop-up kembali ke HomeScreen.
+4. Rancangan Antarmuka Pengguna (UI)
+Antarmuka dibangun secara deklaratif dengan Jetpack Compose, mengedepankan
+reaktivitas (State Hoisting).
+1. Auth Screen (Login & Register)
+● Layout: Column terpusat (CenterVertically & CenterHorizontally).
+● Komponen: OutlinedTextField (Email & Password), Button (Submit), dan
+TextButton (Toggle Login/Register).
+● Side-effect: LaunchedEffect untuk memantau transisi state Loading, Success,
+atau Error dari ViewModel.
+2. Home Screen (List Dashboard)
+● Layout: Scaffold sebagai kerangka utama.
+● Komponen: TopAppBar (dengan judul dan ikon ke Profile).
+○ LazyVerticalGrid (dengan GridCells.Adaptive(150.dp)) untuk
+menampilkan daftar Card item secara responsif dan menghemat memori.
+○ FloatingActionButton dengan ikon (+).
+3. Detail Screen
+● Layout: Scaffold dengan Column yang memiliki modifier verticalScroll.
+● Komponen: AsyncImage (menggunakan pustaka Coil) untuk merender gambar
+dari image_url Supabase.
+○ Text bergaya Headline (Judul) dan Body (Deskripsi).
+○ Row berisi dua Button (Edit dan Delete).
+4. Form Screen (Insert/Update)
+● Layout: Column vertikal.
+● Komponen:
+○ Area Image Picker: Sebuah Box yang jika diklik akan memanggil
+ActivityResultLauncher untuk memilih gambar dari galeri HP.
+Menampilkan preview lokal menggunakan AsyncImage URI.
+○ OutlinedTextField untuk input judul dan deskripsi.
+○ Button "Simpan" yang terhubung ke logika ViewModel.upsertData().
+5. Profile Screen
+● Layout: Column terpusat.
+● Komponen: Ikon Avatar besar, Text (menampilkan email dari Supabase Current
+User), dan Button berwarna merah untuk fungsi Logout (menghapus sesi dan
+navigasi kembali ke AuthScreen).

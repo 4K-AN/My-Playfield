@@ -35,6 +35,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -53,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.foodiary2.viewmodel.DetailViewModel
+import com.example.foodiary2.viewmodel.LoadingState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +68,7 @@ fun DetailScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     var visible by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(itemId) {
         viewModel.loadItem(itemId)
@@ -240,7 +244,7 @@ fun DetailScreen(
                                 }
 
                                 Button(
-                                    onClick = { viewModel.deleteItem(itemId) },
+                                    onClick = { showDeleteDialog = true },
                                     modifier = Modifier
                                         .weight(1f)
                                         .height(48.dp),
@@ -265,6 +269,45 @@ fun DetailScreen(
                     }
                 }
             }
+        }
+
+        // Delete confirmation dialog
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = {
+                    Text("Hapus catatan?", fontWeight = FontWeight.SemiBold)
+                },
+                text = {
+                    Text("Catatan ini akan dihapus permanen, termasuk gambarnya.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showDeleteDialog = false
+                            viewModel.deleteItem()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        if (state.loadingState is LoadingState.Deleting) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(18.dp),
+                                color = MaterialTheme.colorScheme.onError,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text("Hapus")
+                        }
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Batal")
+                    }
+                }
+            )
         }
     }
 }

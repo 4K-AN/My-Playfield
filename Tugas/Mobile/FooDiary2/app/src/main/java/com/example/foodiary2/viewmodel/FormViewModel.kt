@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.foodiary2.data.FoodRepository
+import com.example.foodiary2.model.Category
 import com.example.foodiary2.model.FoodItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,11 +17,15 @@ data class FormUiState(
     val title: String = "",
     val description: String = "",
     val imageUri: Uri? = null,
-    val isLoading: Boolean = false,
+    val categories: List<Category> = emptyList(),
+    val selectedCategoryId: String? = null,
+    val loadingState: LoadingState = LoadingState.Idle,
     val isEditMode: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false
-)
+) {
+    val isLoading: Boolean get() = loadingState.isLoading
+}
 
 class FormViewModel : ViewModel() {
 
@@ -31,22 +36,32 @@ class FormViewModel : ViewModel() {
     private var existingImageUrl: String? = null
     private var selectedImageBytes: ByteArray? = null
 
+    fun loadCategories() {
+        viewModelScope.launch {
+            val categories = FoodRepository.getCategories()
+            _uiState.value = _uiState.value.copy(categories = categories)
+        }
+    }
+
     fun loadItem(itemId: String) {
         existingItemId = itemId
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
+            _uiState.value = _uiState.value.copy(loadingState = LoadingState.Loading)
             try {
+                val categories = FoodRepository.getCategories()
                 val item = FoodRepository.getFoodItem(itemId)
                 if (item != null) {
                     existingImageUrl = item.imageUrl
                     _uiState.value = FormUiState(
                         title = item.title,
                         description = item.description,
+                        categories = categories,
+                        selectedCategoryId = item.categoryId,
                         isEditMode = true
                     )
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = e.message)
+                _uiState.value = _uiState.value.copy(loadingState = LoadingState.Idle, error = e.message)
             }
         }
     }
@@ -57,6 +72,10 @@ class FormViewModel : ViewModel() {
 
     fun onDescriptionChanged(description: String) {
         _uiState.value = _uiState.value.copy(description = description, error = null)
+    }
+
+    fun onCategorySelected(categoryId: String?) {
+        _uiState.value = _uiState.value.copy(selectedCategoryId = categoryId, error = null)
     }
 
     fun onImageSelected(uri: Uri, contentResolver: ContentResolver) {
@@ -72,7 +91,7 @@ class FormViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(loadingState = LoadingState.Saving, error = null)
             try {
                 val userId = FoodRepository.getCurrentUserId()
                     ?: throw Exception("Sesi tidak ditemukan")
@@ -87,16 +106,17 @@ class FormViewModel : ViewModel() {
                 val item = FoodItem(
                     id = existingItemId ?: UUID.randomUUID().toString(),
                     userId = userId,
+                    categoryId = state.selectedCategoryId,
                     title = state.title,
                     description = state.description,
                     imageUrl = imageUrl
                 )
 
                 FoodRepository.upsertFoodItem(item)
-                _uiState.value = _uiState.value.copy(isLoading = false, isSuccess = true)
+                _uiState.value = _uiState.value.copy(loadingState = LoadingState.Idle, isSuccess = true)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
+                    loadingState = LoadingState.Idle,
                     error = e.message ?: "Gagal menyimpan"
                 )
             }

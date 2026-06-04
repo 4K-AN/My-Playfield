@@ -11,11 +11,13 @@ import kotlinx.coroutines.launch
 data class AuthUiState(
     val email: String = "",
     val password: String = "",
-    val isLoading: Boolean = false,
+    val loadingState: LoadingState = LoadingState.Idle,
     val isLoginMode: Boolean = true,
     val error: String? = null,
     val isSuccess: Boolean = false
-)
+) {
+    val isLoading: Boolean get() = loadingState.isLoading
+}
 
 class AuthViewModel : ViewModel() {
 
@@ -45,7 +47,7 @@ class AuthViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(loadingState = LoadingState.Loading, error = null)
             try {
                 if (state.isLoginMode) {
                     FoodRepository.signIn(state.email, state.password)
@@ -56,11 +58,11 @@ class AuthViewModel : ViewModel() {
                 // Verify session is actually active after auth
                 val hasSession = FoodRepository.hasActiveSession()
                 if (hasSession) {
-                    _uiState.value = _uiState.value.copy(isLoading = false, isSuccess = true)
+                    _uiState.value = _uiState.value.copy(loadingState = LoadingState.Idle, isSuccess = true)
                 } else {
                     // Signup succeeded but email confirmation is required
                     _uiState.value = _uiState.value.copy(
-                        isLoading = false,
+                        loadingState = LoadingState.Idle,
                         error = if (state.isLoginMode)
                             "Login gagal. Periksa kembali email dan password."
                         else
@@ -69,7 +71,7 @@ class AuthViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
+                    loadingState = LoadingState.Idle,
                     error = e.message ?: "Terjadi kesalahan"
                 )
             }

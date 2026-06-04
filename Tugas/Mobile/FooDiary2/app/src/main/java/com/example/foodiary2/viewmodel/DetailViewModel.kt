@@ -11,40 +11,46 @@ import kotlinx.coroutines.launch
 
 data class DetailUiState(
     val foodItem: FoodItem? = null,
-    val isLoading: Boolean = false,
+    val loadingState: LoadingState = LoadingState.Idle,
     val error: String? = null,
     val isDeleted: Boolean = false
-)
+) {
+    val isLoading: Boolean get() = loadingState.isLoading
+}
 
 class DetailViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailUiState())
     val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
+    private var currentItem: FoodItem? = null
+
     fun loadItem(itemId: String) {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(loadingState = LoadingState.Loading, error = null)
             try {
                 val item = FoodRepository.getFoodItem(itemId)
+                currentItem = item
                 _uiState.value = DetailUiState(foodItem = item)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
+                    loadingState = LoadingState.Idle,
                     error = e.message ?: "Gagal memuat detail"
                 )
             }
         }
     }
 
-    fun deleteItem(itemId: String) {
+    fun deleteItem() {
+        val item = currentItem ?: return
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(loadingState = LoadingState.Deleting, error = null)
             try {
-                FoodRepository.deleteFoodItem(itemId)
-                _uiState.value = _uiState.value.copy(isLoading = false, isDeleted = true)
+                FoodRepository.deleteFoodItem(item)
+                _uiState.value = _uiState.value.copy(loadingState = LoadingState.Idle, isDeleted = true)
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
+                    loadingState = LoadingState.Idle,
                     error = e.message ?: "Gagal menghapus"
                 )
             }

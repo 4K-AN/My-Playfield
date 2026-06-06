@@ -1,0 +1,11 @@
+{
+  "name": "collaborative-editor",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Collaborative text editor using CRDTs (Yjs)",
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "install:all": "cd server && npm install && cd ../client && npm install"
+  }
+}

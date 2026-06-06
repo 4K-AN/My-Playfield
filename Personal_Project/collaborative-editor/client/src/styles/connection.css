@@ -1,0 +1,81 @@
+/* ─── Connection status bar ─────────────────────────────────────── */
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+.status-connected {
+  background: #18242b;
+  color: #7ee787;
+}
+
+.status-connecting {
+  background: #1f2116;
+  color: #ffa657;
+}
+
+.status-disconnected {
+  background: #271818;
+  color: #ff7b72;
+}
+
+/* ─── Status dots ────────────────────────────────────────────────── */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.dot-green {
+  background: #3fb950;
+}
+
+.dot-yellow {
+  background: #d29922;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.dot-red {
+  background: #f85149;
+}
+
+.dot-green-small {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3fb950;
+  margin-right: 4px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ─── Status label ───────────────────────────────────────────────── */
+.status-label {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.syncing-indicator {
+  color: #ffa657;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.offline-hint {
+  color: #ff7b72;
+  font-style: italic;
+  font-weight: 400;
+}

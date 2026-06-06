@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Activity Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Git telemetry / D3 dashboard</p>
+          <h1>Turn public GitHub work into a kinetic activity dossier.</h1>
+          <p class="lede">Pulls GitHub API data, normalizes commits, computes streaks, estimates language share, and renders a shareable profile card.</p>
+        </div>
+        <form id="search-form" class="search-panel">
+          <label for="username">GitHub username</label>
+          <div class="search-row">
+            <input id="username" name="username" value="octocat" autocomplete="off" placeholder="e.g. torvalds" />
+            <button type="submit">Visualize</button>
+          </div>
+          <p class="hint">Optional: add a token in the source as <code>GITHUB_TOKEN</code> for higher rate limits.</p>
+        </form>
+      </section>
+
+      <section id="status" class="status">Ready to scan public repositories.</section>
+
+      <section class="dashboard">
+        <article class="profile-card" id="profile-card">
+          <div class="profile-top">
+            <img id="avatar" alt="GitHub avatar" />
+            <div>
+              <p class="card-kicker">Shareable profile card</p>
+              <h2 id="display-name">—</h2>
+              <p id="bio">Search a username to generate a public activity snapshot.</p>
+            </div>
+          </div>
+          <div class="profile-stats">
+            <span><strong id="total-commits">0</strong> commits</span>
+            <span><strong id="current-streak">0</strong> day streak</span>
+            <span><strong id="best-streak">0</strong> best streak</span>
+          </div>
+          <button id="copy-card" type="button">Copy card summary</button>
+        </article>
+
+        <article class="panel wide">
+          <div class="panel-heading">
+            <div>
+              <p class="card-kicker">Commit heatmap</p>
+              <h2>Last 365 days</h2>
+            </div>
+            <span id="repo-count" class="pill">0 repos scanned</span>
+          </div>
+          <div id="heatmap" class="viz heatmap-wrap"></div>
+        </article>
+
+        <article class="panel">
+          <p class="card-kicker">Streak analytics</p>
+          <div id="streak-bars" class="viz"></div>
+        </article>
+
+        <article class="panel">
+          <p class="card-kicker">Language breakdown</p>
+          <div id="language-chart" class="viz"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="module" src="src/app.js"></script>
+  </body>
+</html>

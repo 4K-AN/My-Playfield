@@ -1,0 +1,286 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  AWS_REGION: ap-southeast-1
+  ECR_AUTH: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+
+jobs:
+  lint-and-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [auth-service, order-service, api-gateway]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install dependencies
+      working-directory: services/${{ matrix.service }}
+      run: npm ci
+
+    - name: Lint
+      working-directory: services/${{ matrix.service }}
+      run: npm run lint || true
+
+    - name: Unit tests with coverage
+      working-directory: services/${{ matrix.service }}
+      run: npm test
+
+    - name: Upload coverage reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-${{ matrix.service }}
+        path: services/${{ matrix.service }}/coverage/
+        retention-days: 30
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.event_name == 'push'
+
+    services:
+      mongo:
+        image: mongo:7
+        ports: ["27017:27017"]
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install all services
+      run: |
+        cd services/auth-service && npm ci
+        cd ../order-service && npm ci
+        cd ../api-gateway && npm ci
+
+    - name: Start services with Docker Compose
+      run: |
+        docker compose up -d
+        sleep 10
+
+    - name: Run auth-service integration tests
+      working-directory: services/auth-service
+      env:
+        MONGODB_URI: mongodb://localhost:27017/auth-service
+      run: npm test
+
+    - name: Run order-service integration tests
+      working-directory: services/order-service
+      env:
+        MONGODB_URI: mongodb://localhost:27017/order-service
+      run: npm test
+
+    - name: Run gateway integration tests
+      working-directory: services/api-gateway
+      env:
+        AUTH_SERVICE_URL: http://localhost:3001
+        ORDER_SERVICE_URL: http://localhost:3002
+      run: npm test
+
+    - name: Tear down
+      if: always()
+      run: docker compose down
+
+  build-and-push:
+    name: Build & Push Images
+    runs-on: ubuntu-latest
+    needs: integration-tests
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Set build timestamp and commit SHA
+      id: vars
+      run: |
+        echo "BUILD_ID=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_OUTPUT
+        echo "COMMIT_SHA=$(echo ${{ github.sha }} | cut -c1-8)" >> $GITHUB_OUTPUT
+
+    - name: Build, tag, and push auth-service
+      run: |
+        docker build -t ${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }} services/auth-service/
+        docker push ${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }}
+        docker tag ${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }} ${{ env.ECR_AUTH }}:latest
+        docker push ${{ env.ECR_AUTH }}:latest
+
+    - name: Build, tag, and push order-service
+      run: |
+        docker build -t ${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }} services/order-service/
+        docker push ${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }}
+        docker tag ${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }} ${{ env.ECR_AUTH }}:latest
+        docker push ${{ env.ECR_AUTH }}:latest
+
+    - name: Build, tag, and push api-gateway
+      run: |
+        docker build -t ${{ env.ECR_GATEWAY }}:${{ steps.vars.outputs.BUILD_ID }} services/api-gateway/
+        docker push ${{ env.ECR_GATEWAY }}:${{ steps.vars.outputs.BUILD_ID }}
+        docker tag ${{ env.ECR_GATEWAY }}:${{ steps.vars.outputs.BUILD_ID }} ${{ env.ECR_GATEWAY }}:latest
+        docker push ${{ env.ECR_GATEWAY }}:latest
+
+    - name: Pass image tags to deploy
+      run: |
+        echo "AUTH_IMAGE=${{ env.ECR_AUTH }}:${{ steps.vars.outputs.BUILD_ID }}" >> $GITHUB_ENV
+        echo "ORDERS_IMAGE=${{ env.ECR_ORDERS }}:${{ steps.vars.outputs.BUILD_ID }}" >> $GITHUB_ENV
+        echo "GATEWAY_IMAGE=${{ env.ECR_GATEWAY }}:${{ steps.vars.outputs.BUILD_ID }}" >> $GITHUB_ENV
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: v1.29.0
+
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --name microservices-cluster --region ${{ env.AWS_REGION }}
+
+    - name: Deploy to staging with Blue/Green
+      id: deploy
+      env:
+        AUTH_IMAGE: ${{ env.AUTH_IMAGE }}
+        ORDERS_IMAGE: ${{ env.ORDERS_IMAGE }}
+        GATEWAY_IMAGE: ${{ env.GATEWAY_IMAGE }}
+      run: bash scripts/deploy.sh staging ${{ github.sha }}
+
+    - name: Run smoke tests
+      env:
+        GATEWAY_URL: ${{ steps.deploy.outputs.GATEWAY_URL }}
+      run: bash scripts/smoke-test.sh
+
+    - name: Promote on success
+      if: success()
+      run: bash scripts/promote.sh staging
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: v1.29.0
+
+    - name: Update kubeconfig
+      run: aws eks update-kubeconfig --name microservices-cluster --region ${{ env.AWS_REGION }}
+
+    - name: Deploy to production with Canary (10%)
+      id: canary_deploy
+      env:
+        AUTH_IMAGE: ${{ env.AUTH_IMAGE }}
+        ORDERS_IMAGE: ${{ env.ORDERS_IMAGE }}
+        GATEWAY_IMAGE: ${{ env.GATEWAY_IMAGE }}
+      run: bash scripts/deploy.sh production ${{ github.sha }} 10
+
+    - name: Monitor canary metrics
+      run: bash scripts/monitor.sh production canary 300
+
+    - name: Rollback if unhealthy
+      if: failure()
+      run: bash scripts/rollback.sh production
+
+    - name: Promote to 100%
+      if: success()
+      run: bash scripts/promote.sh production
+
+    - name: Notify success
+      if: success()
+      run: bash scripts/notify.sh "Production deployment successful" ${{ github.sha }}
+
+  infrastructure:
+    name: Terraform Infrastructure
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.6.0
+
+    - name: Terraform Init
+      working-directory: terraform
+      run: terraform init
+
+    - name: Terraform Plan
+      working-directory: terraform
+      env:
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      run: terraform plan -out=tfplan -var="db_password=${{ secrets.DB_PASSWORD }}"
+
+    - name: Terraform Apply (staging only)
+      if: github.ref == 'refs/heads/develop'
+      working-directory: terraform
+      env:
+        TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+      run: terraform apply -auto-approve tfplan
+
+    - name: Save tfplan as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan-main
+        path: terraform/tfplan

@@ -1,0 +1,13 @@
+@echo off
+echo Starting Salary Predictor...
+
+echo Training Model (if not already trained)...
+py model\train.py
+
+echo Starting Backend API on port 8000...
+start cmd /k "title Salary Backend && py backend\main.py"
+
+echo Starting React Frontend...
+start cmd /k "title Salary Frontend && cd frontend && npm run dev"
+
+echo All services are launching in separate windows!

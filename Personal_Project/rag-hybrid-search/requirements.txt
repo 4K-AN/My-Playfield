@@ -1,0 +1,33 @@
+# Core ML / NLP
+sentence-transformers==2.7.0
+torch>=2.0.0
+transformers>=4.40.0
+
+# Vector DB
+chromadb==0.5.0
+
+# Sparse retrieval
+rank-bm25==0.2.2
+
+# Text processing
+nltk==3.8.1
+tiktoken==0.7.0
+langchain-text-splitters==0.2.0
+
+# LLM
+openai>=1.30.0
+
+# Evaluation
+ragas==0.1.9
+datasets>=2.19.0
+
+# Config & utilities
+pyyaml==6.0.1
+python-dotenv==1.0.1
+tqdm==4.66.4
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Testing
+pytest==8.2.0
+pytest-asyncio==0.23.7

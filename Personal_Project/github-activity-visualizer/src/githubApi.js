@@ -138,9 +138,15 @@ function calculateStreaks(days) {
 function countActiveWeeks(days) {
   const weeks = new Set();
   days.forEach((day) => {
-    if (day.count > 0) weeks.add(`${day.date.getFullYear()}-${d3.timeFormat("%U")(day.date)}`);
+    if (day.count > 0) weeks.add(`${day.date.getFullYear()}-${getWeekNumber(day.date)}`);
   });
   return weeks.size;
+}
+
+function getWeekNumber(date) {
+  const start = new Date(date.getFullYear(), 0, 1);
+  const diff = date - start + (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
+  return Math.floor(diff / (7 * ONE_DAY));
 }
 
 function mergeLanguages(languageGroups) {

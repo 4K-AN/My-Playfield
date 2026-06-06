@@ -39,10 +39,10 @@ def predict_salary(job: JobInput):
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded. Please train the model first.")
         
-    input_df = pd.DataFrame([job.dict()])
+    input_df = pd.DataFrame([job.model_dump()])
     
     try:
-        X_processed = preprocessor.transform(input_df)
+        X_processed = preprocessor.transform(input_df).astype(float)
         prediction = model.predict(X_processed)[0]
         shap_values = explainer.shap_values(X_processed)
         

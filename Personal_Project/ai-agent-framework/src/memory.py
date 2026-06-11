@@ -185,7 +185,7 @@ class Memory:
         
         self.conversation_history.append(message)
         
-        if self.current_session:
+        if self.current_session and self.current_session.conversation_history is not self.conversation_history:
             self.current_session.conversation_history.append(message)
     
     def add_fact(
@@ -207,7 +207,7 @@ class Memory:
         
         self.facts.append(entry)
         
-        if self.current_session:
+        if self.current_session and self.current_session.facts is not self.facts:
             self.current_session.facts.append(entry)
     
     def get_facts(self, category: Optional[str] = None) -> List[Dict[str, Any]]:

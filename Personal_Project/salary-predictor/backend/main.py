@@ -42,7 +42,7 @@ def predict_salary(job: JobInput):
     input_df = pd.DataFrame([job.model_dump()])
     
     try:
-        X_processed = preprocessor.transform(input_df).astype(float)
+        X_processed = preprocessor.transform(input_df).toarray().astype(float)
         prediction = model.predict(X_processed)[0]
         shap_values = explainer.shap_values(X_processed)
         

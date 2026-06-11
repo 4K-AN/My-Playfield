@@ -128,17 +128,17 @@ function App() {
                       layout="vertical"
                       margin={{ top: 5, right: 30, left: 60, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#ffffff22" />
-                      <XAxis type="number" tick={{ fill: '#ddd' }} />
-                      <YAxis dataKey="feature" type="category" tick={{ fill: '#ddd' }} />
-                      <Tooltip 
-                        contentStyle={{ backgroundColor: '#1a1a2e', borderColor: '#333', color: '#fff' }}
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                      <XAxis type="number" tick={{ fill: '#6b7280', fontSize: 12 }} />
+                      <YAxis dataKey="feature" type="category" tick={{ fill: '#6b7280', fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#fff', border: '1px solid #d1d5db', borderRadius: 0, color: '#111' }}
                         formatter={(value) => [`$${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, 'Impact']}
                       />
-                      <Bar dataKey="value" radius={[0, 4, 4, 0]}>
+                      <Bar dataKey="value" radius={[0, 0, 0, 0]}>
                         {
                           result.shap_values.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.value > 0 ? '#00e5ff' : '#ff3366'} />
+                            <Cell key={`cell-${index}`} fill={entry.value > 0 ? '#22c55e' : '#ef4444'} />
                           ))
                         }
                       </Bar>

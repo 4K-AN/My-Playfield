@@ -1,81 +1,62 @@
-/* ─── Connection status bar ─────────────────────────────────────── */
+/* ─── Connection status bar ──────────────────────── */
 .connection-status {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
-  font-size: 12px;
-  font-weight: 500;
+  gap: 6px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
   flex-shrink: 0;
-  transition: background 0.3s, color 0.3s;
+  border-bottom: 1px solid #000;
 }
 
 .status-connected {
-  background: #18242b;
-  color: #7ee787;
+  background: #cfc;
+  color: #060;
 }
 
 .status-connecting {
-  background: #1f2116;
-  color: #ffa657;
+  background: #ffc;
+  color: #860;
 }
 
 .status-disconnected {
-  background: #271818;
-  color: #ff7b72;
+  background: #fcc;
+  color: #800;
 }
 
-/* ─── Status dots ────────────────────────────────────────────────── */
+/* ─── Status dots ─────────────────────────────────── */
 .status-dot {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
 }
 
 .dot-green {
-  background: #3fb950;
+  background: #080;
 }
 
 .dot-yellow {
-  background: #d29922;
-  animation: pulse 1.2s ease-in-out infinite;
+  background: #cc0;
 }
 
 .dot-red {
-  background: #f85149;
+  background: #c00;
 }
 
-.dot-green-small {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #3fb950;
-  margin-right: 4px;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-/* ─── Status label ───────────────────────────────────────────────── */
+/* ─── Status label ────────────────────────────────── */
 .status-label {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .syncing-indicator {
-  color: #ffa657;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  animation: pulse 1.2s ease-in-out infinite;
+  color: #860;
 }
 
 .offline-hint {
-  color: #ff7b72;
+  color: #800;
   font-style: italic;
   font-weight: 400;
 }

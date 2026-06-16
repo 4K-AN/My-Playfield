@@ -82,7 +82,9 @@ class DLL<T> {
             current = current.next;
         }
     }
+hththnt
 
+khmh
     public void printBackward() {
         if (isEmpty()) {
             System.out.println("List Kosong");

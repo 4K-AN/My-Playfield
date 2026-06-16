@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "automated-release",
+			"path": "Tugas/Teknologi Integrasi Sistem/UAP_TIS_TIC/backend/vendor/swagger-api/swagger-ui",
+			"problemMatcher": [],
+			"label": "npm: automated-release - Tugas/Teknologi Integrasi Sistem/UAP_TIS_TIC/backend/vendor/swagger-api/swagger-ui",
+			"detail": "release-it -VV --config ./release/.release-it.json"
+		}
+	]
+}

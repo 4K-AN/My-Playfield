@@ -29,6 +29,14 @@ $keranjangBelanja = [
     "Penghapus" => 2
 ];
 
+
+
+$keranjangBelanja = [
+    "Buku Tulis" => 5,
+    "Pensil 2B" => 5,
+    "Penghapus" => 2
+];
+
 function HitungTotal(array $keranjang, array $stokBarang): int
 {
     $total = 0;
